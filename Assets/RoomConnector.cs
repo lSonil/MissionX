@@ -284,7 +284,7 @@ public class RoomConnector : MonoBehaviour
                     gScore[neighbor] = tentativeG;
 
                     bool isReused = usedHallPointsByFloor.ContainsKey(floor) && usedHallPointsByFloor[floor].Contains(neighbor);
-                    float reuseWeight = isReused ? 0.5f : 10f; // Lower cost for reused, higher for new
+                    float reuseWeight = isReused ? 0.5f : 50f; // Lower cost for reused, higher for new
                     fScore[neighbor] = tentativeG + Vector2Int.Distance(neighbor, end) + reuseWeight;
 
                     if (!openSet.Contains(neighbor))

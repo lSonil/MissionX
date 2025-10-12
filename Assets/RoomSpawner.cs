@@ -105,6 +105,9 @@ public class RoomSpawner : MonoBehaviour
             }
         }
 
+        if(numberOfFloors + roomsToAdd.Count <= maxHeight)
+        {
+
         foreach (var kvp in roomsToAdd)
         {
             int floorKey = kvp.Key;
@@ -121,6 +124,7 @@ public class RoomSpawner : MonoBehaviour
                 placedRects[floorKey] = new List<RectInt>();
 
             placedRects[floorKey].AddRange(kvp.Value);
+        }
         }
 
         floorsToAdd.Sort();
@@ -148,8 +152,6 @@ public class RoomSpawner : MonoBehaviour
                 SpawnRooms(flr, numberOfFloors + placedRooms.Count);
             }
         }
-
-
 
         RoomConnector connector = GetComponent<RoomConnector>();
         connector.ConnectRoomsOnFloor(floor, placedRooms[floor]);
