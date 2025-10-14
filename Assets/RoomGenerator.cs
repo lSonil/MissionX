@@ -19,6 +19,7 @@ public class RoomGenerator : MonoBehaviour
     public GameObject wall;
     public List<Transform> grid = new List<Transform>();
     public bool debug;
+    public GridManager gridManager;
     private void Awake()
     {
         allDoors.AddRange(spawnedRooms[0].doors);
@@ -41,20 +42,25 @@ public class RoomGenerator : MonoBehaviour
         if (maxNumberOfRooms + bonusRoomCount > spawnedRooms.Count)
         {
             List<(Transform, float)> shuffledDoors = unusedDoors.OrderBy(x => Guid.NewGuid()).ToList();
-            List<RoomSpawnEntry> shuffledRooms;
+            List<RoomSpawnEntry> shuffledRooms = possibleRooms.OrderBy(x => Guid.NewGuid()).ToList();
 
             float threshold = shuffledDoors[0].Item2; // value between 0 and 100
             float roll = UnityEngine.Random.Range(0f, 100f);
+            List<RoomSpawnEntry> roomsHall = possibleRooms.Where(entry => entry.room.hall).OrderBy(x => Guid.NewGuid()).ToList();
+            List<RoomSpawnEntry> roomsNoHall = possibleRooms.Where(entry => !entry.room.hall).OrderBy(x => Guid.NewGuid()).ToList();
 
-            if (roll <= threshold)
+            if (bonusRoomCount == 0)
             {
-                shuffledRooms = possibleRooms.Where(entry => entry.room.hall).OrderBy(x => Guid.NewGuid()).ToList();
+                if (roll <= threshold && roomsHall.Count > 0)
+                {
+                    shuffledRooms = roomsHall;
+                }
+                else
+                {
+                    shuffledRooms = roomsNoHall;
+                }
             }
-            else
-            {
-                shuffledRooms = possibleRooms.Where(entry => !entry.room.hall).OrderBy(x => Guid.NewGuid()).ToList();
-            }
-
+            
             Room listRoom = null;
             Room newRoom = null;
             Transform newDoor = null;
@@ -143,14 +149,12 @@ public class RoomGenerator : MonoBehaviour
                 if (maxNumberOfRooms > spawnedRooms.Count)
                 {
                     SpawneRooms(possibleRooms, bonusRoomCount);
-                    stopGeneration = false;
                 }
                 else
                 {
                     SpawneRooms(specificRoomsToSpawn, specificRoomsToSpawn.Count);
-                    stopGeneration = false;
                 }
-
+                stopGeneration = false;
             }
         }
         if(stopGeneration)
@@ -189,7 +193,7 @@ public class RoomGenerator : MonoBehaviour
                     grid.Add(node);
                 }
             }
-            GridManager.i.GridReady(grid);
+            gridManager.GridReady(grid);
         }
     }
 
