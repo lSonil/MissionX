@@ -14,9 +14,9 @@ public class GridManager : MonoBehaviour
         i = this;    
     }
 
-    public void GridReady(List<Transform> fullGrid)
+    public void GridReady(List<Transform> fullGrid = null)
     {
-        grid = fullGrid;
+        if (fullGrid != null) grid = fullGrid;
         StartCoroutine(DelayedBake());
     }
 
