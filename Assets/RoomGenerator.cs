@@ -45,13 +45,18 @@ public class RoomGenerator : MonoBehaviour
         bool stopGeneration = true;
         if (maxNumberOfRooms + bonusRoomCount > spawnedRooms.Count)
         {
+            Room newRoom = null;
+            Room listRoom = null;
+            Doorway newDoor = null;
+            bool foundRoom = false;
+
             List<(Doorway, float)> shuffledDoors = unusedDoors.OrderBy(x => Guid.NewGuid()).ToList();
             List<RoomSpawnEntry> shuffledRooms = possibleRooms.OrderBy(x => Guid.NewGuid()).ToList();
-
-            float threshold = shuffledDoors[0].Item2; // value between 0 and 100
-            float roll = UnityEngine.Random.Range(0f, 100f);
             List<RoomSpawnEntry> roomsHall = possibleRooms.Where(entry => entry.room.hall).OrderBy(x => Guid.NewGuid()).ToList();
             List<RoomSpawnEntry> roomsNoHall = possibleRooms.Where(entry => !entry.room.hall).OrderBy(x => Guid.NewGuid()).ToList();
+
+            float roll = UnityEngine.Random.Range(0f, 100f);
+            float threshold = shuffledDoors[0].Item2; // value between 0 and 100
 
             if (bonusRoomCount == 0)
             {
@@ -65,11 +70,6 @@ public class RoomGenerator : MonoBehaviour
                 }
             }
             
-            Room listRoom = null;
-            Room newRoom = null;
-            Doorway newDoor = null;
-            bool foundRoom = false;
-
             while (shuffledDoors.Count > 0 && !foundRoom)
             {
                 List<RoomSpawnEntry> copyOfShuffledRooms = new List<RoomSpawnEntry>(shuffledRooms);
@@ -160,12 +160,12 @@ public class RoomGenerator : MonoBehaviour
                     RoomSpawnEntry entry = possibleRooms[index];
                     entry.amount -= 1;
                     possibleRooms[index] = entry;
-
                     BoxCollider[] newColliders = newRoom.GetComponents<BoxCollider>();
                     foreach (BoxCollider col in newColliders)
                     {
                         Vector3 localCenter = col.center;
                         roomsPositions.Add(SetToResolution(newRoom.transform.TransformPoint(localCenter)));
+
                     }
                 }
 
@@ -201,18 +201,17 @@ public class RoomGenerator : MonoBehaviour
                     grid.Add(node);
                 }
             }
+            string output = "Room Positions: " + string.Join(", ", roomsPositions);
+
             gridManager.GridReady(grid);
         }
     }
 
     Vector3 SetToResolution(Vector3 worldCenter)
     {
-        float gridSize = 1f;
-        float heightSize = 0.5f;
-        worldCenter.x = Mathf.Round(worldCenter.x / gridSize) * gridSize;
-        worldCenter.y = Mathf.Round(worldCenter.y / heightSize) * heightSize;
-        worldCenter.z = Mathf.Round(worldCenter.z / gridSize) * gridSize;
-
+        worldCenter.x = Mathf.RoundToInt(worldCenter.x);
+        worldCenter.y = Mathf.RoundToInt(worldCenter.y);
+        worldCenter.z = Mathf.RoundToInt(worldCenter.z);
         return worldCenter;
     }
     void OnDrawGizmos()

@@ -23,6 +23,7 @@ public class TheWhisperingWalls : MonoBehaviour
 
     public void Start()
     {
+        startRoom = GetComponentInParent<Room>();
         transform.SetParent(RoomGenerator.i.NPC.transform);
         transform.position = Vector3.zero;
         startRoom.transform.SetParent(transform);
@@ -43,8 +44,9 @@ public class TheWhisperingWalls : MonoBehaviour
     {
         roomsPositions.Clear();
         unusedDoors.Clear();
+        allDoors.Clear();
         Room roomZero = spawnedRooms[0];
-        spawnedRooms.Remove(startRoom);
+        spawnedRooms.Remove(spawnedRooms[0]);
         foreach (Room room in spawnedRooms)
         {
             Destroy(room.gameObject);
@@ -80,33 +82,41 @@ public class TheWhisperingWalls : MonoBehaviour
         bool stopGeneration = true;
         if (maxNumberOfRooms > spawnedRooms.Count)
         {
-            stopGeneration = false;
-
-            List<(Doorway, float)> shuffledDoors = GetDoors(spawnedRooms[spawnedRooms.Count - 1]).OrderBy(x => Guid.NewGuid()).ToList();
-            List<RoomSpawnEntry> shuffledRooms = possibleRoomsToSpawn.OrderBy(x => Guid.NewGuid()).ToList();
-
-            float threshold = shuffledDoors[0].Item2; // value between 0 and 100
-            float roll = UnityEngine.Random.Range(0f, 100f);
-            List<RoomSpawnEntry> roomsHall = possibleRoomsToSpawn.Where(entry => entry.room.hall).OrderBy(x => Guid.NewGuid()).ToList();
-            List<RoomSpawnEntry> roomsNoHall = possibleRoomsToSpawn.Where(entry => !entry.room.hall).OrderBy(x => Guid.NewGuid()).ToList();
-
-            if ((roll <= threshold && roomsHall.Count > 0) || roomsNoHall.Count == 0)
-            {
-                shuffledRooms = roomsHall;
-            }
-            else
-            {
-                shuffledRooms = roomsNoHall;
-            }
-
             Room listRoom = null;
             Room newRoom = null;
             Doorway newDoor = null;
             bool foundRoom = false;
+            stopGeneration = false;
+
+            List<(Doorway, float)> shuffledDoors = GetDoors(spawnedRooms[spawnedRooms.Count - 1]).OrderBy(x => Guid.NewGuid()).ToList();
+            
+            List<RoomSpawnEntry> roomsHall = possibleRoomsToSpawn.Where(entry => entry.room.hall).OrderBy(x => Guid.NewGuid()).ToList();
+            List<RoomSpawnEntry> roomsNoHall = possibleRoomsToSpawn.Where(entry => !entry.room.hall).OrderBy(x => Guid.NewGuid()).ToList();
+            List<RoomSpawnEntry> shuffledRooms = possibleRoomsToSpawn.OrderBy(x => Guid.NewGuid()).ToList();
+
+            if (!alreadyReversed)
+            {
+
+                float threshold = shuffledDoors[0].Item2; // value between 0 and 100
+                float roll = UnityEngine.Random.Range(0f, 100f);
+
+                if ((roll <= threshold && roomsHall.Count > 0) || roomsNoHall.Count == 0)
+                {
+                    shuffledRooms = roomsHall;
+                }
+                else
+                {
+                    shuffledRooms = roomsNoHall;
+                }
+            }
+            else
+            {
+                shuffledDoors.Clear();
+                shuffledDoors.Add((spawnedRooms[spawnedRooms.Count - 1].startingDoor,100));
+            }
 
             while (shuffledDoors.Count > 0 && !foundRoom)
             {
-                int current_depth = 0;
                 List<RoomSpawnEntry> copyOfShuffledRooms = new List<RoomSpawnEntry>(shuffledRooms);
                 bool overlaps = false;
                 bool near = false;
@@ -114,19 +124,26 @@ public class TheWhisperingWalls : MonoBehaviour
                 {
                     overlaps = false;
                     near = false;
-                    current_depth++;
+                   
                     List<Vector3> roomBorders = new List<Vector3>();
 
                     listRoom = copyOfShuffledRooms[0].room;
 
                     newRoom = Instantiate(listRoom);
-
                     newDoor = shuffledDoors[0].Item1;
 
                     if (copyOfShuffledRooms[0].amount != 0)
                     {
                         newRoom.transform.position = newDoor.transform.position;
-                        newRoom.transform.rotation = newDoor.transform.rotation;
+                        if (alreadyReversed)
+                        {
+                            newRoom.transform.rotation = newDoor.transform.rotation * Quaternion.Euler(0f, 180f, 0f);
+                            alreadyReversed=false;
+                        }
+                        else
+                        {
+                            newRoom.transform.rotation = newDoor.transform.rotation;
+                        }
                         newRoom.transform.SetParent(transform);
                         BoxCollider[] newColliders = newRoom.GetComponents<BoxCollider>();
 
@@ -136,11 +153,11 @@ public class TheWhisperingWalls : MonoBehaviour
                             roomBorders.Add(SetToResolution(newRoom.transform.TransformPoint(localCenter)));
                         }
 
-                        List<Vector3> allRoomsPositions = new List<Vector3>(roomsPositions);
-                        allRoomsPositions.AddRange(RoomGenerator.i.roomsPositions);
-
+                        List<Vector3> allRoomsPositions = new List<Vector3>(RoomGenerator.i.roomsPositions);
+                        allRoomsPositions.AddRange(roomsPositions);
                         foreach (Vector3 col in roomBorders)
                         {
+
                             if (allRoomsPositions.Contains(col))
                             {
                                 overlaps = true;
@@ -149,7 +166,7 @@ public class TheWhisperingWalls : MonoBehaviour
 
                             near = near || RoomGenerator.i.roomsPositions.Any(roomPos =>
                                 Mathf.Abs(col.x - roomPos.x) <= 2 &&
-                                Mathf.Abs(col.y - roomPos.y) <= 1 &&
+                                Mathf.Abs(col.y - roomPos.y) <= 2 &&
                                 Mathf.Abs(col.z - roomPos.z) <= 2);
                         }
                     }
@@ -177,12 +194,7 @@ public class TheWhisperingWalls : MonoBehaviour
                         if (!alreadyReversed)
                         {
                             spawnedRooms.Reverse();
-                            alreadyReversed = true;
-                            SpawnRooms(alreadyReversed);
-                        }
-                        else
-                        {
-                            InitialStart();
+                            SpawnRooms(true);
                         }
                         return;
                     }
@@ -259,21 +271,17 @@ public class TheWhisperingWalls : MonoBehaviour
 
     Vector3 SetToResolution(Vector3 worldCenter)
     {
-        float gridSize = 1f;
-        float heightSize = 0.5f;
-        worldCenter.x = Mathf.Round(worldCenter.x / gridSize) * gridSize;
-        worldCenter.y = Mathf.Round(worldCenter.y / heightSize) * heightSize;
-        worldCenter.z = Mathf.Round(worldCenter.z / gridSize) * gridSize;
-
+        worldCenter.x = Mathf.RoundToInt(worldCenter.x);
+        worldCenter.y = Mathf.RoundToInt(worldCenter.y);
+        worldCenter.z = Mathf.RoundToInt(worldCenter.z);
         return worldCenter;
     }
 
     private IEnumerator Warping()
     {
-        yield return new WaitForSeconds(20f);
+        yield return new WaitForSeconds(1);
         while (true)
         {
-            print("go");
             if (CanMove() && spawnedRooms.Count != 0)
             {
                 Room roomToRemove = spawnedRooms[0];
