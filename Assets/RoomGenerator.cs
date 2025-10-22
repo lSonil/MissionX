@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.AI.Navigation;
 using UnityEngine;
-using Random = System.Random;
 public class RoomGenerator : MonoBehaviour
 {
     public List<RoomSpawnEntry> possibleRoomsToSpawn;
@@ -10,22 +11,25 @@ public class RoomGenerator : MonoBehaviour
     public List<Room> spawnedRooms;
     public int maxNumberOfRooms;
     [HideInInspector]
-    public List<Vector3> roomsPositions;
+    public List<Vector3> roomsPositions = new List<Vector3>();
     [HideInInspector]
-    public List<Transform> allDoors;
+    public List<Doorway> allDoors;
+    public GameObject NPC;
 
 
-    public List<(Transform, float)> unusedDoors = new List<(Transform, float)>();
-    public GameObject wall;
+    public List<(Doorway, float)> unusedDoors = new List<(Doorway, float)>();
+    [HideInInspector]
     public List<Transform> grid = new List<Transform>();
     public bool debug;
     public GridManager gridManager;
+    public static RoomGenerator i;
     private void Awake()
     {
+        i = this;
         allDoors.AddRange(spawnedRooms[0].doors);
         foreach (var door in spawnedRooms[0].doors)
         {
-            unusedDoors.Add((door, spawnedRooms[0].hallChance));
+            unusedDoors.Add((door, door.hallChance));
         }
         BoxCollider[] colliders = spawnedRooms[0].GetComponents<BoxCollider>();
 
@@ -41,17 +45,22 @@ public class RoomGenerator : MonoBehaviour
         bool stopGeneration = true;
         if (maxNumberOfRooms + bonusRoomCount > spawnedRooms.Count)
         {
-            List<(Transform, float)> shuffledDoors = unusedDoors.OrderBy(x => Guid.NewGuid()).ToList();
-            List<RoomSpawnEntry> shuffledRooms = possibleRooms.OrderBy(x => Guid.NewGuid()).ToList();
+            Room newRoom = null;
+            Room listRoom = null;
+            Doorway newDoor = null;
+            bool foundRoom = false;
 
-            float threshold = shuffledDoors[0].Item2; // value between 0 and 100
-            float roll = UnityEngine.Random.Range(0f, 100f);
+            List<(Doorway, float)> shuffledDoors = unusedDoors.OrderBy(x => Guid.NewGuid()).ToList();
+            List<RoomSpawnEntry> shuffledRooms = possibleRooms.OrderBy(x => Guid.NewGuid()).ToList();
             List<RoomSpawnEntry> roomsHall = possibleRooms.Where(entry => entry.room.hall).OrderBy(x => Guid.NewGuid()).ToList();
             List<RoomSpawnEntry> roomsNoHall = possibleRooms.Where(entry => !entry.room.hall).OrderBy(x => Guid.NewGuid()).ToList();
 
+            float roll = UnityEngine.Random.Range(0f, 100f);
+            float threshold = shuffledDoors[0].Item2; // value between 0 and 100
+
             if (bonusRoomCount == 0)
             {
-                if (roll <= threshold && roomsHall.Count > 0)
+                if ((roll <= threshold && roomsHall.Count > 0) || roomsNoHall.Count == 0)
                 {
                     shuffledRooms = roomsHall;
                 }
@@ -61,11 +70,6 @@ public class RoomGenerator : MonoBehaviour
                 }
             }
             
-            Room listRoom = null;
-            Room newRoom = null;
-            Transform newDoor = null;
-            bool foundRoom = false;
-
             while (shuffledDoors.Count > 0 && !foundRoom)
             {
                 List<RoomSpawnEntry> copyOfShuffledRooms = new List<RoomSpawnEntry>(shuffledRooms);
@@ -73,7 +77,7 @@ public class RoomGenerator : MonoBehaviour
                 while (copyOfShuffledRooms.Count > 0 && !foundRoom)
                 {
                     bool overlaps = false;
-                    List<Vector3> roomPositions = new List<Vector3>();
+                    List<Vector3> roomBorders = new List<Vector3>();
 
                     listRoom = copyOfShuffledRooms[0].room;
                     newRoom = Instantiate(listRoom);
@@ -81,17 +85,17 @@ public class RoomGenerator : MonoBehaviour
 
                     if (copyOfShuffledRooms[0].amount != 0)
                     {
-                        newRoom.transform.position = newDoor.position;
-                        newRoom.transform.rotation = newDoor.rotation;
-                        newRoom.transform.SetParent(transform);
+                        newRoom.transform.position = newDoor.transform.position;
+                        newRoom.transform.rotation = newDoor.transform.rotation;
+                        newRoom.transform.SetParent(bonusRoomCount==0?transform: NPC.transform);
                         BoxCollider[] newColliders = newRoom.GetComponents<BoxCollider>();
 
                         foreach (BoxCollider col in newColliders)
                         {
                             Vector3 localCenter = col.center;
-                            roomPositions.Add(SetToResolution(newRoom.transform.TransformPoint(localCenter)));
+                            roomBorders.Add(SetToResolution(newRoom.transform.TransformPoint(localCenter)));
                         }
-                        foreach (Vector3 col in roomPositions)
+                        foreach (Vector3 col in roomBorders)
                         {
                             if (roomsPositions.Contains(col))
                             {
@@ -127,23 +131,42 @@ public class RoomGenerator : MonoBehaviour
             {
                 spawnedRooms.Add(newRoom); // Add to list if no overlap
                 unusedDoors.RemoveAll(pair => pair.Item1 == newDoor);
+                newDoor.ConnectTo(newRoom.startingDoor);
 
-                foreach (var door in newRoom.doors)
+                if (!newRoom.CompareTag("SCP"))
                 {
-                    unusedDoors.Add((door, newRoom.hallChance));
-                }
+                    foreach (var door in newRoom.doors)
+                    {
+                        bool isConnected = false;
+                        (Doorway, float) element = new(null, 0);
+                        foreach (var maybeDoorConnected in unusedDoors)
+                        {
+                            if (door.transform.position == maybeDoorConnected.Item1.transform.position)
+                            {
+                                element = maybeDoorConnected;
+                                isConnected = true;
+                                door.ConnectTo(maybeDoorConnected.Item1);
+                            }
+                        }
+                        if (!isConnected)
+                            unusedDoors.Add((door, door.hallChance));
+                        else
+                            unusedDoors.Remove(element);
+                    }
 
-                allDoors.AddRange(newRoom.doors);
-                int index = possibleRooms.FindIndex(entry => entry.room == listRoom);
-                RoomSpawnEntry entry = possibleRooms[index];
-                entry.amount -= 1;
-                possibleRooms[index] = entry;
+                    allDoors.AddRange(newRoom.doors);
 
-                BoxCollider[] newColliders = newRoom.GetComponents<BoxCollider>();
-                foreach (BoxCollider col in newColliders)
-                {
-                    Vector3 localCenter = col.center;
-                    roomsPositions.Add(SetToResolution(newRoom.transform.TransformPoint(localCenter)));
+                    int index = possibleRooms.FindIndex(entry => entry.room == listRoom);
+                    RoomSpawnEntry entry = possibleRooms[index];
+                    entry.amount -= 1;
+                    possibleRooms[index] = entry;
+                    BoxCollider[] newColliders = newRoom.GetComponents<BoxCollider>();
+                    foreach (BoxCollider col in newColliders)
+                    {
+                        Vector3 localCenter = col.center;
+                        roomsPositions.Add(SetToResolution(newRoom.transform.TransformPoint(localCenter)));
+
+                    }
                 }
 
                 if (maxNumberOfRooms > spawnedRooms.Count)
@@ -157,33 +180,18 @@ public class RoomGenerator : MonoBehaviour
                 stopGeneration = false;
             }
         }
-        if(stopGeneration)
+        if (stopGeneration)
         {
-            List<int> overlaps = new List<int>();
-            for(int i = 0; i < unusedDoors.Count; i++)
+            foreach (Doorway door in allDoors)
             {
-                for (int j = 0; j < unusedDoors.Count; j++)
-                {
-                    if(unusedDoors[i].Item1.position == unusedDoors[j].Item1.position && i!=j)
-                    {
-                        if(!overlaps.Contains(i))overlaps.Add(i);
-                        if(!overlaps.Contains(j))overlaps.Add(j);
-                        break;
-                    }
+                bool isHall1 = door.GetComponentInParent<Room>().hall;
+                bool isHall2 = false;
+                if(door.connectedTo)
+                { 
+                    isHall2 = door.connectedTo.GetComponentInParent<Room>().hall;
+                    door.connectedTo.Fill(isHall1 && isHall2);
                 }
-            }
-            overlaps = overlaps.OrderByDescending(x => x).ToList();
-            foreach (int i in overlaps)
-            {
-                unusedDoors.RemoveAt(i);
-            }
-
-            foreach (var door in unusedDoors)
-            {
-                GameObject cover = Instantiate(wall);
-                cover.transform.position = door.Item1.position;
-                cover.transform.rotation = door.Item1.rotation;
-                cover.transform.SetParent(door.Item1.transform);
+                door.Fill(isHall1 && isHall2);
             }
 
             foreach (Room room in spawnedRooms)
@@ -193,20 +201,18 @@ public class RoomGenerator : MonoBehaviour
                     grid.Add(node);
                 }
             }
+            string output = "Room Positions: " + string.Join(", ", roomsPositions);
+
             gridManager.GridReady(grid);
         }
     }
 
     Vector3 SetToResolution(Vector3 worldCenter)
     {
-        float gridSize = 1f;
-        float heightSize = 0.5f;
-        worldCenter.x = Mathf.Round(worldCenter.x / gridSize) * gridSize;
-        worldCenter.y = Mathf.Round(worldCenter.y / heightSize) * heightSize;
-        worldCenter.z = Mathf.Round(worldCenter.z / gridSize) * gridSize;
-
+        worldCenter.x = Mathf.RoundToInt(worldCenter.x);
+        worldCenter.y = Mathf.RoundToInt(worldCenter.y);
+        worldCenter.z = Mathf.RoundToInt(worldCenter.z);
         return worldCenter;
-
     }
     void OnDrawGizmos()
     {
@@ -215,7 +221,7 @@ public class RoomGenerator : MonoBehaviour
 
         for (int i = 0; i < unusedDoors.Count; i++)
         {
-            Transform door = unusedDoors[i].Item1;
+            Transform door = unusedDoors[i].Item1.transform;
             if (door == null) continue;
 
             Vector3 pos = door.position;
