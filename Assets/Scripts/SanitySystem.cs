@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -7,7 +8,6 @@ public class SanitySystem : MonoBehaviour
     [Range(0, 100)] public float maxSanity = 100f;
     public float currentSanity;
     public float regenRate = 2f;
-    public float drainCooldown = 0.1f;
 
     [Header("Thresholds")]
     public float mildThreshold = 80f;
@@ -24,7 +24,7 @@ public class SanitySystem : MonoBehaviour
     public UnityEvent<float, float> OnSanityChanged;
 
     private bool inSafeZone = false;
-    private float lastDrainTime;
+    private Coroutine regenCoroutine;
 
     private void Start()
     {
@@ -32,25 +32,12 @@ public class SanitySystem : MonoBehaviour
         OnSanityChanged?.Invoke(currentSanity, maxSanity);
     }
 
-    void Update()
-    {
-        HandleRegeneration();
-        CheckSanityLevels();
-        currentSanity = Mathf.Clamp(currentSanity, 0, maxSanity);
-    }
-
     public void DrainSanity(float amount)
     {
-        if (Time.time - lastDrainTime < drainCooldown) return;
         Debug.Log("Drain sanity " + amount);
-
         currentSanity = Mathf.Clamp(currentSanity - amount, 0, maxSanity);
-        lastDrainTime = Time.time;
-
         OnSanityChanged?.Invoke(currentSanity, maxSanity);
-
-        if (currentSanity <= 0)
-            TriggerInsanity();
+        CheckSanityLevels();
     }
 
     public void RestoreSanity(float amount)
@@ -59,23 +46,35 @@ public class SanitySystem : MonoBehaviour
         OnSanityChanged?.Invoke(currentSanity, maxSanity);
     }
 
-    public void SetSafeZone(bool value)
+    public void OnPlayerEnterSafeZone()
     {
-        inSafeZone = value;
+        inSafeZone = true;
+        regenCoroutine = StartCoroutine(HandleRegeneration());
     }
 
-    private void HandleRegeneration()
+    public void OnPlayerLeaveSafeZone()
     {
-        if (inSafeZone && currentSanity < maxSanity)
+        inSafeZone = false;
+        StopCoroutine(regenCoroutine);
+    }
+
+    private IEnumerator HandleRegeneration()
+    {
+        if (currentSanity >= maxSanity)
+            yield break;
+
+        while (inSafeZone)
         {
-            currentSanity += regenRate;
-            OnSanityChanged?.Invoke(currentSanity, maxSanity);
+            RestoreSanity(regenRate);
+            yield return new WaitForSeconds(1f);
         }
     }
 
     private void CheckSanityLevels()
     {
-        if (currentSanity <= criticalThreshold)
+        if (currentSanity <= 0)
+            TriggerInsanity();
+        else if (currentSanity <= criticalThreshold)
             OnCriticalDistortion?.Invoke();
         else if (currentSanity <= severeThreshold)
             OnSevereDistortion?.Invoke();
