@@ -12,13 +12,13 @@ public class ObserverNPCRoam : MonoBehaviour
     public List<Transform> usedGrid;
     public bool following;
 
-    void Start()
+    void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
 
         if (GridManager.i != null)
         {
-            usedGrid = GridManager.i.grid;
+            usedGrid = new List < Transform > (GridManager.i.grid);
         }
         else
         {
@@ -52,7 +52,7 @@ public class ObserverNPCRoam : MonoBehaviour
         }
         else
         {
-            usedGrid = GridManager.i.grid;
+            usedGrid = new List<Transform>(GridManager.i.grid);
             furtherTarget = GridManager.i.GetFurthestPoint(usedGrid, transform);
             agent.SetDestination(furtherTarget.position);
             usedGrid.Remove(furtherTarget);

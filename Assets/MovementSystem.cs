@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
-public class PlayerMovement : MonoBehaviour
+public class MovementSystem : MonoBehaviour
 {
     [Header("Movement Settings")]
     public float walkSpeed = 5f;
@@ -24,6 +24,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 velocity;
     private bool isGrounded;
     private bool isCrouching = false;
+    public bool isBlocked = false;
 
     void Start()
     {
@@ -34,6 +35,10 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        if (isBlocked)
+        {
+            return;
+        }
         MouseLook();
         MovePlayer();
         HandleCrouch();
@@ -90,6 +95,16 @@ public class PlayerMovement : MonoBehaviour
             isCrouching = false;
             controller.height = standingHeight;
             playerCamera.localPosition = new Vector3(0f, standingCameraHeight, 0f);
+        }
+    }
+    public void Block()
+    {
+        isBlocked = !isBlocked;
+
+        if (isBlocked)
+        {
+            velocity = Vector3.zero; // Reset all movement, especially vertical
+            controller.Move(new Vector3());
         }
     }
 }
