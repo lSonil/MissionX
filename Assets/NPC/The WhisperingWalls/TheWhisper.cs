@@ -105,32 +105,7 @@ public class TheWhisper : MonoBehaviour
         float angle = Vector3.Angle(player.forward, directionToWhisper);
         if (angle > 90f) return false;
 
-        return true; // ✅ All conditions for green are met
-    }
-    public bool IsVisibleToPlayerReason()
-    {
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        if (playerObj == null) return false;
-
-        Transform player = playerObj.transform;
-        Vector3 from = transform.position + new Vector3(0, 0.45f, 0);
-        Vector3 to = player.position;
-
-        float distance = Vector3.Distance(from, to);
-        print("distance");
-        if (distance > 10f) return false;
-
-        bool hasLineOfSight = !Physics.Linecast(to, from, blockingMask);
-        print("lineofsight");
-        if (distance <= .5f) return true;
-        if (!hasLineOfSight) return false;
-
-        Vector3 directionToWhisper = (from - to).normalized;
-        float angle = Vector3.Angle(player.forward, directionToWhisper);
-        print("angle");
-        if (angle > 90f) return false;
-
-        return true; // ✅ All conditions for green are met
+        return true; // All conditions for green are met
     }
 
     private void OnDrawGizmos()

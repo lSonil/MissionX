@@ -174,18 +174,31 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3fd104b7fab01f34692ba1b14b20454b, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 9117074760595068984}
+      addedObject: {fileID: 282973196925018212}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3fd104b7fab01f34692ba1b14b20454b, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 282973196925018212}
+      addedObject: {fileID: 6167088945894673944}
   m_SourcePrefab: {fileID: 100100000, guid: 3fd104b7fab01f34692ba1b14b20454b, type: 3}
 --- !u!1 &1609044329368679677 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 3fd104b7fab01f34692ba1b14b20454b, type: 3}
   m_PrefabInstance: {fileID: 1915455475427396012}
   m_PrefabAsset: {fileID: 0}
---- !u!64 &9117074760595068984
-MeshCollider:
+--- !u!114 &282973196925018212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1609044329368679677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ec4a3b11e9350847beb27345075f16e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Door
+  interactionPromptText: Toggle Door
+--- !u!65 &6167088945894673944
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -202,23 +215,9 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4493585093827132993, guid: 3fd104b7fab01f34692ba1b14b20454b, type: 3}
---- !u!114 &282973196925018212
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1609044329368679677}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ec4a3b11e9350847beb27345075f16e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Door
-  interactionPromptText: Toggle Door
+  serializedVersion: 3
+  m_Size: {x: 0.050000153, y: 0.2736843, z: 5.2500014}
+  m_Center: {x: -0.0006578937, y: 0.11250001, z: 2.6249993}
 --- !u!4 &2098582757848395335 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3fd104b7fab01f34692ba1b14b20454b, type: 3}

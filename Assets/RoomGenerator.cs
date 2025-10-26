@@ -16,16 +16,20 @@ public class RoomGenerator : MonoBehaviour
     public List<Doorway> allDoors;
     public GameObject NPC;
 
-
     public List<(Doorway, float)> unusedDoors = new List<(Doorway, float)>();
     [HideInInspector]
     public List<Transform> grid = new List<Transform>();
     public bool debug;
     public GridManager gridManager;
+
     public static RoomGenerator i;
     private void Awake()
     {
+
         i = this;
+    }
+    private void Start()
+    {
         allDoors.AddRange(spawnedRooms[0].doors);
         foreach (var door in spawnedRooms[0].doors)
         {
@@ -37,6 +41,8 @@ public class RoomGenerator : MonoBehaviour
         {
             Vector3 localCenter = col.center;
             roomsPositions.Add(SetToResolution(spawnedRooms[0].transform.TransformPoint(localCenter)));
+        
+            Destroy(col);
         }
         SpawneRooms(possibleRoomsToSpawn, 0);
     }
@@ -50,8 +56,10 @@ public class RoomGenerator : MonoBehaviour
             Doorway newDoor = null;
             bool foundRoom = false;
 
+            List<(Room, Doorway, int)> posibleRoomsToAdd = new List<(Room, Doorway, int)>();
             List<(Doorway, float)> shuffledDoors = unusedDoors.OrderBy(x => Guid.NewGuid()).ToList();
-            List<RoomSpawnEntry> shuffledRooms = possibleRooms.OrderBy(x => Guid.NewGuid()).ToList();
+            List<RoomSpawnEntry> shuffledRooms = new List<RoomSpawnEntry>();
+            List<RoomSpawnEntry> spareShuffledRooms = new List<RoomSpawnEntry>();
             List<RoomSpawnEntry> roomsHall = possibleRooms.Where(entry => entry.room.hall).OrderBy(x => Guid.NewGuid()).ToList();
             List<RoomSpawnEntry> roomsNoHall = possibleRooms.Where(entry => !entry.room.hall).OrderBy(x => Guid.NewGuid()).ToList();
 
@@ -63,19 +71,22 @@ public class RoomGenerator : MonoBehaviour
                 if ((roll <= threshold && roomsHall.Count > 0) || roomsNoHall.Count == 0)
                 {
                     shuffledRooms = roomsHall;
+                    spareShuffledRooms = roomsNoHall;
                 }
                 else
                 {
                     shuffledRooms = roomsNoHall;
+                    spareShuffledRooms = roomsHall;
                 }
             }
-            
-            while (shuffledDoors.Count > 0 && !foundRoom)
+
+            while (shuffledDoors.Count > 0)
             {
                 List<RoomSpawnEntry> copyOfShuffledRooms = new List<RoomSpawnEntry>(shuffledRooms);
 
                 while (copyOfShuffledRooms.Count > 0 && !foundRoom)
                 {
+                    int numberOfDoors = 0;
                     bool overlaps = false;
                     List<Vector3> roomBorders = new List<Vector3>();
 
@@ -87,7 +98,7 @@ public class RoomGenerator : MonoBehaviour
                     {
                         newRoom.transform.position = newDoor.transform.position;
                         newRoom.transform.rotation = newDoor.transform.rotation;
-                        newRoom.transform.SetParent(bonusRoomCount==0?transform: NPC.transform);
+                        newRoom.transform.SetParent(bonusRoomCount == 0 ? transform : NPC.transform);
                         BoxCollider[] newColliders = newRoom.GetComponents<BoxCollider>();
 
                         foreach (BoxCollider col in newColliders)
@@ -103,32 +114,50 @@ public class RoomGenerator : MonoBehaviour
                                 break;
                             }
                         }
+
+                        foreach (var door in newRoom.doors)
+                        {
+                            bool isConnected = false;
+                            foreach (var maybeDoorConnected in unusedDoors)
+                            {
+                                if (door.transform.position == maybeDoorConnected.Item1.transform.position)
+                                {
+                                    isConnected = true;
+                                }
+                            }
+                            if (isConnected)
+                                numberOfDoors++;
+                        }
                     }
                     else
                     {
                         overlaps = true;
                     }
 
-                    if (overlaps)
+                    if (!overlaps)
                     {
-                        Destroy(newRoom.gameObject); // Optional: remove overlapping room
-                        copyOfShuffledRooms.RemoveAt(0);
-                    }
-                    else
-                    {
+                        posibleRoomsToAdd.Add((listRoom, newDoor, numberOfDoors));
                         foundRoom = true;
-                        break;
                     }
+                    Destroy(newRoom.gameObject); // Optional: remove overlapping room
+                    copyOfShuffledRooms.RemoveAt(0);
                 }
-
-                if (!foundRoom)
-                {
-                    shuffledDoors.RemoveAt(0);
-                }
+                shuffledDoors.RemoveAt(0);
             }
 
             if (foundRoom)
             {
+                int maxValue = posibleRoomsToAdd.Max(x => x.Item3);
+                var highestRooms = posibleRoomsToAdd.Where(x => x.Item3 == maxValue).ToList();
+                var chosen = highestRooms[UnityEngine.Random.Range(0, highestRooms.Count)];
+                listRoom =  chosen.Item1;
+                newDoor =  chosen.Item2;
+
+                newRoom = Instantiate(listRoom);
+                newRoom.transform.position = newDoor.transform.position;
+                newRoom.transform.rotation = newDoor.transform.rotation;
+                newRoom.transform.SetParent(bonusRoomCount == 0 ? transform : NPC.transform);
+
                 spawnedRooms.Add(newRoom); // Add to list if no overlap
                 unusedDoors.RemoveAll(pair => pair.Item1 == newDoor);
                 newDoor.ConnectTo(newRoom.startingDoor);
@@ -137,6 +166,8 @@ public class RoomGenerator : MonoBehaviour
                 {
                     foreach (var door in newRoom.doors)
                     {
+                        door.connectedTo = null;
+
                         bool isConnected = false;
                         (Doorway, float) element = new(null, 0);
                         foreach (var maybeDoorConnected in unusedDoors)
@@ -165,7 +196,6 @@ public class RoomGenerator : MonoBehaviour
                     {
                         Vector3 localCenter = col.center;
                         roomsPositions.Add(SetToResolution(newRoom.transform.TransformPoint(localCenter)));
-
                     }
                 }
 
@@ -186,8 +216,8 @@ public class RoomGenerator : MonoBehaviour
             {
                 bool isHall1 = door.GetComponentInParent<Room>().hall;
                 bool isHall2 = false;
-                if(door.connectedTo)
-                { 
+                if (door.connectedTo)
+                {
                     isHall2 = door.connectedTo.GetComponentInParent<Room>().hall;
                     door.connectedTo.Fill(isHall1 && isHall2);
                 }
@@ -201,8 +231,6 @@ public class RoomGenerator : MonoBehaviour
                     grid.Add(node);
                 }
             }
-            string output = "Room Positions: " + string.Join(", ", roomsPositions);
-
             gridManager.GridReady(grid);
         }
     }
@@ -236,5 +264,18 @@ public class RoomGenerator : MonoBehaviour
             UnityEditor.Handles.Label(pos + Vector3.up * 0.3f, $"Door {i}\n{pos.ToString("F1")}");
 #endif
         }
+    }
+}
+
+[System.Serializable]
+public struct RoomSpawnEntry
+{
+    public Room room;
+    public int amount;
+
+    public RoomSpawnEntry(Room placeStart, int v) : this()
+    {
+        this.room = placeStart;
+        this.amount = v;
     }
 }

@@ -7,10 +7,14 @@ public class GridManager : MonoBehaviour
 {
     public List<Transform> grid;
     public static GridManager i;
+    public int startMaxMonsterDifficulty;
+    public static float currentMonsterDifficulty;
+    public static int maxMonsterDifficulty;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
     {
+        currentMonsterDifficulty = 0;
         i = this;    
     }
 
@@ -18,16 +22,20 @@ public class GridManager : MonoBehaviour
     {
         if (fullGrid != null) grid = fullGrid;
         StartCoroutine(DelayedBake());
+        maxMonsterDifficulty = startMaxMonsterDifficulty;
     }
 
     private IEnumerator DelayedBake()
     {
         yield return new WaitForSeconds(.1f);
 
-        NavMeshSurface surface = GetComponent<NavMeshSurface>();
+        NavMeshSurface[] surface = GetComponents<NavMeshSurface>();
         if (surface != null)
         {
-            surface.BuildNavMesh();
+            foreach (NavMeshSurface subsurface in surface)
+            {
+                subsurface.BuildNavMesh();
+            }
         }
         else
         {
