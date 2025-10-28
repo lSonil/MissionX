@@ -393,24 +393,24 @@ GameObject:
   m_Component:
   - component: {fileID: 2616688238610928474}
   - component: {fileID: 2350745012977439139}
-  - component: {fileID: 2939844649529929754}
-  - component: {fileID: 3735367543953233541}
-  - component: {fileID: 4698881253638205190}
-  - component: {fileID: 4183827803419092930}
-  - component: {fileID: 528245284024601466}
-  - component: {fileID: 4128802376192479166}
-  - component: {fileID: 7415701925208727072}
-  - component: {fileID: 4518977560546925169}
-  - component: {fileID: 4355368261288966123}
-  - component: {fileID: 3102863989583302297}
-  - component: {fileID: 7688241413373517958}
-  - component: {fileID: 34209525830557169}
-  - component: {fileID: 1274090956025872154}
-  - component: {fileID: 1228083382871388049}
-  - component: {fileID: 2053688751711701740}
-  - component: {fileID: 2703639169397413318}
-  - component: {fileID: 1803249870890233170}
-  - component: {fileID: 1488623186015632464}
+  - component: {fileID: 8460070683162870520}
+  - component: {fileID: 7680886698130454167}
+  - component: {fileID: 8530354419233467728}
+  - component: {fileID: 5995594814054274888}
+  - component: {fileID: 6753423799494754144}
+  - component: {fileID: 7836998511516556568}
+  - component: {fileID: 6507226058823015689}
+  - component: {fileID: 6129903063133081788}
+  - component: {fileID: 1241518642970800731}
+  - component: {fileID: 1969475031000579453}
+  - component: {fileID: 7431665089718598867}
+  - component: {fileID: 9145011630079942805}
+  - component: {fileID: 9136123042391261998}
+  - component: {fileID: 5186073824421190984}
+  - component: {fileID: 4452792009897930073}
+  - component: {fileID: 4235324374551381721}
+  - component: {fileID: 6046337881266193477}
+  - component: {fileID: 2972300502446810879}
   m_Layer: 0
   m_Name: Room
   m_TagString: Untagged
@@ -463,7 +463,7 @@ MonoBehaviour:
   - {fileID: 8389715448670915052}
   - {fileID: 2849081579697087923}
   hall: 0
---- !u!65 &2939844649529929754
+--- !u!65 &8460070683162870520
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -484,7 +484,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 0, y: 0.8, z: 1}
---- !u!65 &3735367543953233541
+--- !u!65 &7680886698130454167
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -505,7 +505,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 2, y: 0.8, z: 1}
---- !u!65 &4698881253638205190
+--- !u!65 &8530354419233467728
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -526,7 +526,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: -2, y: 0.8, z: 1}
---- !u!65 &4183827803419092930
+--- !u!65 &5995594814054274888
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -547,7 +547,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 0, y: 2.8, z: 1}
---- !u!65 &528245284024601466
+--- !u!65 &6753423799494754144
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -568,7 +568,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 0, y: 0.8, z: 3}
---- !u!65 &4128802376192479166
+--- !u!65 &7836998511516556568
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -589,7 +589,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 2, y: 2.8, z: 1}
---- !u!65 &7415701925208727072
+--- !u!65 &6507226058823015689
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -610,7 +610,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 2, y: 0.8, z: 3}
---- !u!65 &4518977560546925169
+--- !u!65 &6129903063133081788
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -631,7 +631,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: -2, y: 2.8, z: 1}
---- !u!65 &4355368261288966123
+--- !u!65 &1241518642970800731
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -652,7 +652,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: -2, y: 0.8, z: 3}
---- !u!65 &3102863989583302297
+--- !u!65 &1969475031000579453
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -673,7 +673,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 0, y: 2.8, z: 3}
---- !u!65 &7688241413373517958
+--- !u!65 &7431665089718598867
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -694,7 +694,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 0, y: 0.8, z: 5}
---- !u!65 &34209525830557169
+--- !u!65 &9145011630079942805
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -715,7 +715,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 2, y: 2.8, z: 3}
---- !u!65 &1274090956025872154
+--- !u!65 &9136123042391261998
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -736,7 +736,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 2, y: 0.8, z: 5}
---- !u!65 &1228083382871388049
+--- !u!65 &5186073824421190984
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -757,7 +757,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: -2, y: 2.8, z: 3}
---- !u!65 &2053688751711701740
+--- !u!65 &4452792009897930073
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -778,7 +778,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: -2, y: 0.8, z: 5}
---- !u!65 &2703639169397413318
+--- !u!65 &4235324374551381721
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -799,7 +799,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 0, y: 2.8, z: 5}
---- !u!65 &1803249870890233170
+--- !u!65 &6046337881266193477
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -820,7 +820,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 2, y: 2.8, z: 5}
---- !u!65 &1488623186015632464
+--- !u!65 &2972300502446810879
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -855,11 +855,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: fbf55a1bf51be694bbb42ccc9ec6dcd4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.8000001
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: fbf55a1bf51be694bbb42ccc9ec6dcd4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: fbf55a1bf51be694bbb42ccc9ec6dcd4, type: 3}
       propertyPath: m_LocalRotation.w
@@ -919,7 +919,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: fbf55a1bf51be694bbb42ccc9ec6dcd4, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 420871645919416425}
+      addedObject: {fileID: 8382182962295940288}
   m_SourcePrefab: {fileID: 100100000, guid: fbf55a1bf51be694bbb42ccc9ec6dcd4, type: 3}
 --- !u!4 &2480928455716896239 stripped
 Transform:
@@ -931,7 +931,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: fbf55a1bf51be694bbb42ccc9ec6dcd4, type: 3}
   m_PrefabInstance: {fileID: 2730516405892192772}
   m_PrefabAsset: {fileID: 0}
---- !u!64 &420871645919416425
+--- !u!64 &8382182962295940288
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -952,7 +952,7 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: -2228417370725966487, guid: fbf55a1bf51be694bbb42ccc9ec6dcd4, type: 3}
+  m_Mesh: {fileID: 5551418225153903260, guid: fbf55a1bf51be694bbb42ccc9ec6dcd4, type: 3}
 --- !u!1001 &2879877238440683250
 PrefabInstance:
   m_ObjectHideFlags: 0

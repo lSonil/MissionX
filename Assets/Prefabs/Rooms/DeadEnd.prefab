@@ -105,7 +105,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4438867987438866841}
   - component: {fileID: 2350341281066181865}
-  - component: {fileID: 4434469655780397300}
+  - component: {fileID: 5256977353699289979}
   m_Layer: 0
   m_Name: DeadEnd
   m_TagString: Untagged
@@ -149,7 +149,7 @@ MonoBehaviour:
   nodes:
   - {fileID: 158744219385952520}
   hall: 1
---- !u!65 &4434469655780397300
+--- !u!65 &5256977353699289979
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -169,7 +169,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
-  m_Center: {x: 0, y: 0.8, z: 1}
+  m_Center: {x: 0, y: 1, z: 1}
 --- !u!1001 &808133509004187737
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -184,7 +184,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 61fb40af25aee334f86da37d0fbd5a78, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.20000005
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 61fb40af25aee334f86da37d0fbd5a78, type: 3}
       propertyPath: m_LocalPosition.z
@@ -300,14 +300,14 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 61fb40af25aee334f86da37d0fbd5a78, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2335457802131257847}
+      addedObject: {fileID: 8715465275078519581}
   m_SourcePrefab: {fileID: 100100000, guid: 61fb40af25aee334f86da37d0fbd5a78, type: 3}
 --- !u!1 &573778995850896648 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 61fb40af25aee334f86da37d0fbd5a78, type: 3}
   m_PrefabInstance: {fileID: 808133509004187737}
   m_PrefabAsset: {fileID: 0}
---- !u!64 &2335457802131257847
+--- !u!64 &8715465275078519581
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -328,7 +328,7 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: -2228417370725966487, guid: 61fb40af25aee334f86da37d0fbd5a78, type: 3}
+  m_Mesh: {fileID: 5551418225153903260, guid: 61fb40af25aee334f86da37d0fbd5a78, type: 3}
 --- !u!4 &918074996875968434 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 61fb40af25aee334f86da37d0fbd5a78, type: 3}

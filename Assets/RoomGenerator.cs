@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.AI.Navigation;
 using UnityEngine;
+using static UnityEditor.Search.SearchColumn;
 public class RoomGenerator : MonoBehaviour
 {
     public List<RoomSpawnEntry> possibleRoomsToSpawn;
@@ -58,8 +59,7 @@ public class RoomGenerator : MonoBehaviour
 
             List<(Room, Doorway, int)> posibleRoomsToAdd = new List<(Room, Doorway, int)>();
             List<(Doorway, float)> shuffledDoors = unusedDoors.OrderBy(x => Guid.NewGuid()).ToList();
-            List<RoomSpawnEntry> shuffledRooms = new List<RoomSpawnEntry>();
-            List<RoomSpawnEntry> spareShuffledRooms = new List<RoomSpawnEntry>();
+            List<RoomSpawnEntry> shuffledRooms = possibleRooms.OrderBy(x => Guid.NewGuid()).ToList();
             List<RoomSpawnEntry> roomsHall = possibleRooms.Where(entry => entry.room.hall).OrderBy(x => Guid.NewGuid()).ToList();
             List<RoomSpawnEntry> roomsNoHall = possibleRooms.Where(entry => !entry.room.hall).OrderBy(x => Guid.NewGuid()).ToList();
 
@@ -68,15 +68,13 @@ public class RoomGenerator : MonoBehaviour
 
             if (bonusRoomCount == 0)
             {
-                if ((roll <= threshold && roomsHall.Count > 0) || roomsNoHall.Count == 0)
+                if ((roll <= threshold && roomsHall.Count > 0) || roomsNoHall.Count == 0 || shuffledDoors.Count==1)
                 {
                     shuffledRooms = roomsHall;
-                    spareShuffledRooms = roomsNoHall;
                 }
                 else
                 {
                     shuffledRooms = roomsNoHall;
-                    spareShuffledRooms = roomsHall;
                 }
             }
 
@@ -190,7 +188,11 @@ public class RoomGenerator : MonoBehaviour
                     int index = possibleRooms.FindIndex(entry => entry.room == listRoom);
                     RoomSpawnEntry entry = possibleRooms[index];
                     entry.amount -= 1;
-                    possibleRooms[index] = entry;
+                    if (entry.amount == 0)
+                        possibleRooms.RemoveAt(index);
+                    else
+                        possibleRooms[index] = entry;
+
                     BoxCollider[] newColliders = newRoom.GetComponents<BoxCollider>();
                     foreach (BoxCollider col in newColliders)
                     {
