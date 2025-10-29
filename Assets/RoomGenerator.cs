@@ -200,6 +200,7 @@ public class RoomGenerator : MonoBehaviour
                         roomsPositions.Add(SetToResolution(newRoom.transform.TransformPoint(localCenter)));
                     }
                 }
+                newRoom.surface.BuildNavMesh();
 
                 if (maxNumberOfRooms > spawnedRooms.Count)
                 {

@@ -49,6 +49,7 @@ public class GridManager : MonoBehaviour
 
         foreach (Transform point in usedGrid)
         {
+            if(point==null) continue;
             float dist = Vector3.Distance(target.position, point.position);
             if (dist < minDistance)
             {
@@ -66,6 +67,7 @@ public class GridManager : MonoBehaviour
 
         foreach (Transform point in grid)
         {
+            if(point==null) continue;
             float dist = Vector3.Distance(target.position, point.position);
             if (dist > maxDistance)
             {
@@ -82,6 +84,7 @@ public class GridManager : MonoBehaviour
 
         foreach (Transform point in grid)
         {
+            if(point==null) continue;
             if (Vector3.Distance(target.position, point.position) <= range)
             {
                 candidates.Add(point);

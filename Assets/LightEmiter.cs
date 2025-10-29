@@ -4,6 +4,7 @@ public class LightEmiter : MonoBehaviour
 {
     public LayerMask blockingMask;     // e.g. Structure
     public bool isLightOn=true;
+    public bool debug;
     void Update()
     {
         bool currentlyVisible = IsVisibleToPlayer();
@@ -34,6 +35,7 @@ public class LightEmiter : MonoBehaviour
     }
     private void OnDrawGizmos()
     {
+        if (!debug) return;
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj == null) return;
 

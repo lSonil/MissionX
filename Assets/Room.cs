@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.AI.Navigation;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -11,11 +12,15 @@ public class Room : MonoBehaviour
     public List<Doorway> doors;
     public Doorway startingDoor;
     public List<Transform> nodes;
+    public NavMeshSurface surface;
     public bool hall;
-
     private List<Vector3> debugOverlapPositions = new();
     private List<Bounds> placedColliderBounds = new();
 
+    private void Start()
+    {
+        surface = GetComponent<NavMeshSurface>();
+    }
     public void RegenerateColliders()
     {
         // Remove only BoxColliders on this object (not children)

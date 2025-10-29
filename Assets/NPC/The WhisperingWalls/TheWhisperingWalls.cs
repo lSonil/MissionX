@@ -58,9 +58,12 @@ public class TheWhisperingWalls : MonoBehaviour
 
         Vector3 localCenter = colliders[0].center;
         roomsPositions.Add(SetToResolution(roomZero.transform.TransformPoint(localCenter)));
-
-        allDoors.AddRange(startRoom.doors);
-        unusedDoors.AddRange(GetDoors(startRoom));
+        foreach (BoxCollider col in colliders.Skip(1))
+        {
+            Destroy(col);
+        }
+        allDoors.AddRange(spawnedRooms[0].doors);
+        unusedDoors.AddRange(GetDoors(spawnedRooms[0]));
 
         SpawnRooms();
     }
@@ -138,7 +141,6 @@ public class TheWhisperingWalls : MonoBehaviour
                         if (alreadyReversed)
                         {
                             newRoom.transform.rotation = newDoor.transform.rotation * Quaternion.Euler(0f, 180f, 0f);
-                            alreadyReversed=false;
                         }
                         else
                         {
@@ -174,7 +176,6 @@ public class TheWhisperingWalls : MonoBehaviour
                     {
                         overlaps = true;
                     }
-
                     if (overlaps || !near)
                     {
                         Destroy(newRoom.gameObject); // Optional: remove overlapping room
@@ -191,12 +192,18 @@ public class TheWhisperingWalls : MonoBehaviour
                     shuffledDoors.RemoveAt(0);
                     if (shuffledDoors.Count == 0)
                     {
+                        print(alreadyReversed);
                         if (!alreadyReversed)
                         {
                             spawnedRooms.Reverse();
                             SpawnRooms(true);
                         }
-                        return;
+                        else
+                        {
+                            print("A");
+                            StartGenerating();
+                        }
+                            return;
                     }
                 }
             }
@@ -207,12 +214,12 @@ public class TheWhisperingWalls : MonoBehaviour
                 unusedDoors.RemoveAll(pair => pair.Item1 == newDoor);
                 newDoor.ConnectTo(newRoom.startingDoor);
 
-                List<(Doorway, float)> alUnusedDoors = new List<(Doorway, float)>(RoomGenerator.i.unusedDoors);
-                alUnusedDoors.AddRange(unusedDoors);
+                List<(Doorway, float)> allUnusedDoors = new List<(Doorway, float)>(RoomGenerator.i.unusedDoors);
+                allUnusedDoors.AddRange(unusedDoors);
                 foreach (var door in newRoom.doors)
                 {
                     bool isConnected = false;
-                    foreach (var maybeDoorConnected in alUnusedDoors)
+                    foreach (var maybeDoorConnected in allUnusedDoors)
                     {
                         if (Vector3.Distance(door.transform.position, maybeDoorConnected.Item1.transform.position) < .1f && door != maybeDoorConnected.Item1)
                         {
@@ -237,7 +244,10 @@ public class TheWhisperingWalls : MonoBehaviour
                     Vector3 localCenter = col.center;
                     roomsPositions.Add(SetToResolution(newRoom.transform.TransformPoint(localCenter)));
                 }
+                newRoom.surface.BuildNavMesh();
+
                 SpawnRooms();
+                return;
             }
         }
 
@@ -300,14 +310,8 @@ public class TheWhisperingWalls : MonoBehaviour
                 foreach (var box in colliders)
                 {
                     Vector3 localCenter = box.center;
-                    roomBorders.Add(SetToResolution(roomToRemove.transform.TransformPoint(localCenter)));
+                    roomsPositions.Remove(SetToResolution(roomToRemove.transform.TransformPoint(localCenter)));
                 }
-
-                foreach (Vector3 col in roomBorders)
-                {
-                    roomsPositions.Remove(col);
-                }
-
                 foreach (var door in roomToRemove.doors)
                 {
                     unusedDoors.RemoveAll(pair => pair.Item1 == door);
