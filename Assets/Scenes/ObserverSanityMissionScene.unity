@@ -4102,7 +4102,7 @@ MonoBehaviour:
   specificRoomsToSpawn: []
   spawnedRooms:
   - {fileID: 1032575357}
-  maxNumberOfRooms: 15
+  maxNumberOfRooms: 20
   roomsPositions: []
   allDoors: []
   NPC: {fileID: 1005770875}
@@ -4666,6 +4666,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3645744365085331798, guid: d522cb0e84a375140a95726e07b070e2, type: 3}
+      propertyPath: rubyPrefab
+      value: 
+      objectReference: {fileID: 7949183992549473668, guid: b648cbb7fa81a044aaced10cb79375cb, type: 3}
     - target: {fileID: 3645744365085331798, guid: d522cb0e84a375140a95726e07b070e2, type: 3}
       propertyPath: roomsPerRuby
       value: 2
