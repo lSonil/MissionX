@@ -12,6 +12,7 @@ public class Room : MonoBehaviour
     public Doorway startingDoor;
     public List<Transform> nodes;
     public bool hall;
+    public Transform Ruby;
 
     private List<Vector3> debugOverlapPositions = new();
     private List<Bounds> placedColliderBounds = new();
