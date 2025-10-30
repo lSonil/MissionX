@@ -61,8 +61,7 @@ public class RubiesGenerator : MonoBehaviour
 
     private void SpawnCrystalsInRoom(Room room)
     {
-        if (room.Ruby == null) return;
-        Transform spawnPoint = room.Ruby;
-        Instantiate(rubyPrefab, spawnPoint.position, Quaternion.identity, room.transform);
+        if (room.Rubies == null || room.Rubies.Count == 0) return;
+        room.Rubies.ForEach(rubyTransform => Instantiate(rubyPrefab, rubyTransform.position, Quaternion.identity, room.transform));
     }
 }

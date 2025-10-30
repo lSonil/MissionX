@@ -14,7 +14,7 @@ public class Room : MonoBehaviour
     public List<Transform> nodes;
     public NavMeshSurface surface;
     public bool hall;
-    public Transform Ruby;
+    public List<Transform> Rubies;
 
     private List<Vector3> debugOverlapPositions = new();
     private List<Bounds> placedColliderBounds = new();
