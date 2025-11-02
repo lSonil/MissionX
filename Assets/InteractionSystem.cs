@@ -3,7 +3,6 @@ using UnityEngine;
 public class InteractionSystem : MonoBehaviour
 {
     public float maxDistance = 2;
-    public LayerMask interactionMask; // Set this in the Inspector
 
     void Update()
     {
@@ -11,6 +10,7 @@ public class InteractionSystem : MonoBehaviour
         RaycastHit hit;
 
         UISystem.i.EnableInteractButton(null);
+        LayerMask interactionMask = LayerMask.GetMask("Interactable", "Item");
         if (Physics.Raycast(ray, out hit, maxDistance, interactionMask))
         {
             IInteraction interactable = hit.collider.GetComponent<IInteraction>();

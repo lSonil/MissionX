@@ -245,6 +245,25 @@ public class RoomGenerator : MonoBehaviour
         worldCenter.z = Mathf.RoundToInt(worldCenter.z);
         return worldCenter;
     }
+    public Transform FindClosestRoom()
+    {
+        Transform closest = null;
+        float minDist = float.MaxValue;
+
+        foreach (Room room in spawnedRooms)
+        {
+            if (room == null) continue;
+            float dist = Vector3.Distance(transform.position, room.transform.position);
+            if (dist < minDist)
+            {
+                minDist = dist;
+                closest = room.transform;
+            }
+        }
+
+        return closest != null ? closest : transform; // Fallback to self
+    }
+
     void OnDrawGizmos()
     {
         if (!debug) return;

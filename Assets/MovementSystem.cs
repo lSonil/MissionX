@@ -15,12 +15,10 @@ public class MovementSystem : MonoBehaviour
     private float xRotation = 0f;
 
     [Header("Crouch Settings")]
-    public float crouchHeight = 1f;
-    public float standingHeight = 2f;
-    public float crouchCameraHeight = 0.5f;
-    public float standingCameraHeight = 1.6f;
+    public float crouchHeight = .5f;
+    public float standingHeight = 1f;
 
-    private CharacterController controller;
+    public CharacterController controller;
     private Vector3 velocity;
     private bool isGrounded;
     private bool isCrouching = false;
@@ -56,7 +54,7 @@ public class MovementSystem : MonoBehaviour
         float moveZ = Input.GetAxis("Vertical");
 
         Vector3 move = transform.right * moveX + transform.forward * moveZ;
-        float currentSpeed = isCrouching ? crouchSpeed : walkSpeed;
+        float currentSpeed = isCrouching && isGrounded ? crouchSpeed : walkSpeed;
         controller.Move(move * currentSpeed * Time.deltaTime);
 
         // Jump
@@ -88,13 +86,11 @@ public class MovementSystem : MonoBehaviour
         {
             isCrouching = true;
             controller.height = crouchHeight;
-            playerCamera.localPosition = new Vector3(0f, crouchCameraHeight, 0f);
         }
         else if (Input.GetKeyUp(KeyCode.LeftControl))
         {
             isCrouching = false;
             controller.height = standingHeight;
-            playerCamera.localPosition = new Vector3(0f, standingCameraHeight, 0f);
         }
     }
     public void Block()

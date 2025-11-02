@@ -26,6 +26,12 @@ public class SanitySystem : MonoBehaviour
     private bool inSafeZone = false;
     private Coroutine regenCoroutine;
 
+    private HealthSystem playerHealth;
+
+    private void Awake()
+    {
+        playerHealth = GetComponent<HealthSystem>();
+    }
     private void Start()
     {
         currentSanity = maxSanity;
@@ -88,5 +94,9 @@ public class SanitySystem : MonoBehaviour
     {
         OnInsanity?.Invoke();
         Debug.Log("Player lost all sanity!");
+        if (playerHealth != null)
+        {
+            playerHealth.Die();
+        }
     }
 }

@@ -1,45 +1,63 @@
 using System.Collections;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class Door : MonoBehaviour, IInteraction
 {
     public string interactionPromptText;
-    bool rotated = false;
-    bool started = false;
+
+    private bool isOpen = false;
+    private bool started = false;
+
+    private Quaternion closedRotation;
+    private Quaternion openRotation;
+
+    void Start()
+    {
+        closedRotation = transform.rotation;
+    }
+    public string GetTextUse() => interactionPromptText;
+    public string GetTextPrimary() => "";
+    public string GetTextSecundary() => "";
+
     public void Action()
     {
-        if(started) return;
-        float rotationAmount = rotated ? 90f : -90f;
-        StartCoroutine(RotateXByAmount(rotationAmount, 0.2f));
-        rotated = !rotated;
+        if (started) return;
+
+        if (!isOpen)
+        {
+            // Determine open direction based on player position
+            Vector3 toPlayer = GameObject.FindWithTag("Player").transform.position - transform.position;
+            float dot = Vector3.Dot(transform.right, toPlayer); // right = hinge axis
+
+            float deltaZ = dot > 0 ? 90f : -90f;
+            Vector3 openEuler = transform.eulerAngles;
+            openEuler.z += deltaZ;
+            openRotation = Quaternion.Euler(openEuler);
+
+            StartCoroutine(RotateTo(openRotation, 0.2f));
+        }
+        else
+        {
+            StartCoroutine(RotateTo(closedRotation, 0.2f));
+        }
+
+        isOpen = !isOpen;
     }
 
-    IEnumerator RotateXByAmount(float deltaX, float time)
+    IEnumerator RotateTo(Quaternion targetRotation, float time)
     {
         started = true;
         Quaternion startRotation = transform.rotation;
-        Vector3 startEuler = startRotation.eulerAngles;
-
-        // Calculate new X rotation by adding delta
-        float targetX = startEuler.z + deltaX;
-        Vector3 endEuler = new Vector3(startEuler.x, startEuler.y, targetX);
-        Quaternion endRotation = Quaternion.Euler(endEuler);
-
         float elapsed = 0f;
+
         while (elapsed < time)
         {
-            transform.rotation = Quaternion.Slerp(startRotation, endRotation, elapsed / time);
+            transform.rotation = Quaternion.Slerp(startRotation, targetRotation, elapsed / time);
             elapsed += Time.deltaTime;
             yield return null;
         }
+
+        transform.rotation = targetRotation;
         started = false;
-        transform.rotation = endRotation;
-    }
-
-
-    public string GetText()
-    {
-        return interactionPromptText;
     }
 }
