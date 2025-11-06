@@ -5,20 +5,25 @@ using UnityEngine.AI;
 
 public class ObserverNPCRoam : MonoBehaviour
 {
-    [Header("Sanity Interaction")]
-    public float sanityDrainRate = 10f;
+    public float sanityDrainRate = 0.01f;
 
-    private NavMeshAgent agent;
+    [Header("Ruby Patrol Settings")]
+    public float stareTimeAtRuby = 3f;
+    public float rubyProximityThreshold = 1.5f;
+
     public List<Transform> usedGrid;
     public bool following;
+
+    public NavMeshAgent agent;
+
+    private IObserverState currentState;
 
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
-
         if (GridManager.i != null)
         {
-            usedGrid = new List < Transform > (GridManager.i.grid);
+            usedGrid = new List<Transform>(GridManager.i.grid);
         }
         else
         {
@@ -26,38 +31,31 @@ public class ObserverNPCRoam : MonoBehaviour
         }
     }
 
+    void Start()
+    {
+        StartCoroutine(WaitForRubiesAndStart());
+    }
+
+    private IEnumerator WaitForRubiesAndStart()
+    {
+        yield return new WaitUntil(() => RubiesGenerator.Instance != null && RubiesGenerator.Instance.spawnedRubies.Count > 0);
+        ChangeState(new PatrolState());
+    }
+
     void Update()
     {
         if (GridManager.i == null || agent.pathPending) return;
         RaycastCone(); // Visualize cone
-        if ((!agent.hasPath || agent.remainingDistance <= agent.stoppingDistance) && !following)
-        {
-            NormalPatrol();
-        }
+        currentState?.Execute(this);
     }
 
-    public void NormalPatrol()
+    public void ChangeState(IObserverState newState)
     {
-        Transform closestTarget = GridManager.i.GetRandomPointInRange(usedGrid, transform, 10);
-        Transform furtherTarget = GridManager.i.GetFurthestPoint(usedGrid, transform);
-        if (closestTarget != null)
-        {
-            agent.SetDestination(closestTarget.position);
-            usedGrid.Remove(closestTarget);
-        }
-        else if (furtherTarget != null)
-        {
-            agent.SetDestination(furtherTarget.position);
-            usedGrid.Remove(furtherTarget);
-        }
-        else
-        {
-            usedGrid = new List<Transform>(GridManager.i.grid);
-            furtherTarget = GridManager.i.GetFurthestPoint(usedGrid, transform);
-            agent.SetDestination(furtherTarget.position);
-            usedGrid.Remove(furtherTarget);
-        }
+        currentState?.Exit(this);
+        currentState = newState;
+        currentState.Enter(this);
     }
+
     public void RaycastCone(float horizontalAngle = 60f, float verticalAngle = 30f, int horizontalRays = 10, int verticalRays = 5, float rayLength = 20f)
     {
         Vector3 origin = transform.position; // Slightly above ground
@@ -65,6 +63,7 @@ public class ObserverNPCRoam : MonoBehaviour
 
         float halfH = horizontalAngle / 2f;
         float halfV = verticalAngle / 2f;
+        var playerSeen = false;
 
         for (int v = 0; v < verticalRays; v++)
         {
@@ -82,16 +81,16 @@ public class ObserverNPCRoam : MonoBehaviour
 
                 if (Physics.Raycast(origin, direction, out RaycastHit hit, rayLength, obstacleMask))
                 {
-                    if (Physics.Raycast(origin, direction, out RaycastHit hunt, rayLength, playerMask) && !following)
+                    if (Physics.Raycast(origin, direction, out RaycastHit hunt, rayLength, playerMask))
                     {
                         Debug.DrawLine(origin, hit.point, Color.blue);
-                        agent.SetDestination(GridManager.i.GetPlayerTransform().position);
-                        StartCoroutine(WaitToLeave());
+                        playerSeen = true;
                         following = true;
-                        OnPlayerSpotted(GridManager.i.GetPlayerTransform().gameObject);
                     }
                     else
+                    {
                         Debug.DrawLine(origin, hit.point, Color.red);
+                    }
                 }
                 else
                 {
@@ -101,30 +100,7 @@ public class ObserverNPCRoam : MonoBehaviour
             }
         }
 
-    }
-
-    private IEnumerator WaitToLeave()
-    {
-        yield return new WaitForSeconds(10f);
-
-        following = false;
-    }
-
-    private void OnPlayerSpotted(GameObject playerObject)
-    {
-        StartCoroutine(DrainSanityWhileFollowing(playerObject));
-    }
-
-    private IEnumerator DrainSanityWhileFollowing(GameObject playerObject)
-    {
-        SanitySystem sanity = playerObject.GetComponent<SanitySystem>();
-        if (sanity == null)
-            yield break;
-
-        while (following)
-        {
-            sanity.DrainSanity(sanityDrainRate);
-            yield return new WaitForSeconds(1f); 
-        }
+        if (!playerSeen)
+            following = false;
     }
 }

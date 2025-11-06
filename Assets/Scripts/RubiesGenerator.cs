@@ -10,11 +10,18 @@ public class RubiesGenerator : MonoBehaviour
     [Tooltip("Number of normal rooms per crystal room (e.g., 5 = 1 crystal room for 5 normal rooms).")]
     public int roomsPerRuby = 5;
 
+    public static RubiesGenerator Instance;
+    public List<GameObject> spawnedRubies = new List<GameObject>();
+
     private RoomGenerator roomGenerator;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void Start()
     {
-        // Try to find the existing RoomGenerator
         roomGenerator = RoomGenerator.i;
         if (roomGenerator == null)
         {
@@ -22,16 +29,13 @@ public class RubiesGenerator : MonoBehaviour
             return;
         }
 
-        // Wait for the rooms to finish generating
         StartCoroutine(WaitForRoomGeneration());
     }
 
     private IEnumerator WaitForRoomGeneration()
     {
-        // Wait until the RoomGenerator has built its grid and spawned rooms
         yield return new WaitUntil(() => roomGenerator.spawnedRooms != null && roomGenerator.spawnedRooms.Count > 0);
-
-        yield return new WaitForSeconds(1f); // short delay to ensure grid is ready
+        yield return new WaitForSeconds(1f);
         SpawnCrystals();
     }
 
@@ -62,6 +66,10 @@ public class RubiesGenerator : MonoBehaviour
     private void SpawnCrystalsInRoom(Room room)
     {
         if (room.Rubies == null || room.Rubies.Count == 0) return;
-        room.Rubies.ForEach(rubyTransform => Instantiate(rubyPrefab, rubyTransform.position, Quaternion.identity, room.transform));
+        room.Rubies.ForEach(rubyTransform =>
+        {
+            var ruby = Instantiate(rubyPrefab, rubyTransform.position, Quaternion.identity, room.transform);
+            spawnedRubies.Add(ruby);
+        });
     }
 }
