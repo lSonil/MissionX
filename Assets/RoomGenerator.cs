@@ -200,13 +200,24 @@ public class RoomGenerator : MonoBehaviour
                         roomsPositions.Add(SetToResolution(newRoom.transform.TransformPoint(localCenter)));
                     }
                 }
+                else
+                {
+                    int index = possibleRooms.FindIndex(entry => entry.room == listRoom);
+                    RoomSpawnEntry entry = possibleRooms[index];
+                    entry.amount -= 1;
+                    if (entry.amount == 0)
+                        possibleRooms.RemoveAt(index);
+                    else
+                        possibleRooms[index] = entry;
+                }
+
                 newRoom.surface.BuildNavMesh();
 
-                if (maxNumberOfRooms > spawnedRooms.Count)
+                if (maxNumberOfRooms + bonusRoomCount > spawnedRooms.Count)
                 {
                     SpawneRooms(possibleRooms, bonusRoomCount);
                 }
-                else
+                else if(bonusRoomCount==0)
                 {
                     SpawneRooms(specificRoomsToSpawn, specificRoomsToSpawn.Count);
                 }
