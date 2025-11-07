@@ -63,6 +63,8 @@ public class ObserverNPCRoam : MonoBehaviour
 
         float halfH = horizontalAngle / 2f;
         float halfV = verticalAngle / 2f;
+
+        int combinedMask = LayerMask.GetMask("Player", "Structure");
         var playerSeen = false;
 
         for (int v = 0; v < verticalRays; v++)
@@ -76,18 +78,19 @@ public class ObserverNPCRoam : MonoBehaviour
                 Quaternion rotation = Quaternion.Euler(vAngle, hAngle, 0);
                 Vector3 direction = rotation * forward;
 
-                int obstacleMask = LayerMask.GetMask("Structure");
-                int playerMask = LayerMask.GetMask("Player");
+                //int obstacleMask = LayerMask.GetMask("Structure");
+                //int playerMask = LayerMask.GetMask("Player");
 
-                if (Physics.Raycast(origin, direction, out RaycastHit hit, rayLength, obstacleMask))
+                if (Physics.Raycast(origin, direction, out RaycastHit hit, rayLength, combinedMask))
                 {
-                    if (Physics.Raycast(origin, direction, out RaycastHit hunt, rayLength, playerMask))
+                    //if (Physics.Raycast(origin, direction, out RaycastHit hunt, rayLength, playerMask))
+                    if (hit.collider.CompareTag("Player"))
                     {
                         Debug.DrawLine(origin, hit.point, Color.blue);
                         playerSeen = true;
                         following = true;
                     }
-                    else
+                    else if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Structure"))
                     {
                         Debug.DrawLine(origin, hit.point, Color.red);
                     }
