@@ -969,11 +969,13 @@ MonoBehaviour:
   - room: {fileID: 8175912968028434839, guid: 782514b49aca67346af0fd51d57d6803, type: 3}
     amount: 3
   specificRoomsToSpawn:
+  - room: {fileID: 2350745012977439139, guid: 1df3b4f6d605b584b843efbf3eee1d7a, type: 3}
+    amount: 1
   - room: {fileID: 8175912968028434839, guid: 9a9c4d9444b6b9c478d66b8f72c3ab3f, type: 3}
     amount: 1
   spawnedRooms:
   - {fileID: 943896657}
-  maxNumberOfRooms: 15
+  maxNumberOfRooms: 12
   roomsPositions: []
   allDoors: []
   NPC: {fileID: 1283017214}

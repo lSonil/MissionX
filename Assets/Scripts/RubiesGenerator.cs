@@ -65,7 +65,7 @@ public class RubiesGenerator : MonoBehaviour
 
     private void SpawnCrystalsInRoom(Room room)
     {
-        if (room.Rubies == null || room.Rubies.Count == 0) return;
+        if (room.Rubies == null || room.Rubies.Count == 0 || room.name.Contains("SanityRegenRoom")) return;
         room.Rubies.ForEach(rubyTransform =>
         {
             var ruby = Instantiate(rubyPrefab, rubyTransform.position, Quaternion.identity, room.transform);

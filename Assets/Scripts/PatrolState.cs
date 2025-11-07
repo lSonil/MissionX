@@ -51,7 +51,7 @@ public class PatrolState : IObserverState
     private IEnumerator WaitAtRuby(ObserverNPCRoam npc)
     {
         waiting = true;
-        Debug.Log("at ruby");
+        //Debug.Log("at ruby");
         //Debug.Log(currentIndex);
         yield return new WaitForSeconds(npc.stareTimeAtRuby);
    
@@ -69,7 +69,7 @@ public class PatrolState : IObserverState
             //Debug.Log($"Leaving ruby {currentIndex} at position {rubyTargets[currentIndex].transform.position}");
         }
 
-        Debug.Log("leave ruby");
+        //Debug.Log("leave ruby");
         //Debug.Log(currentIndex);
         waiting = false;
     }
@@ -87,7 +87,7 @@ public class PatrolState : IObserverState
         {
             bool success = agent.SetDestination(hit.position);
             currentNavTarget = hit.position;
-            Debug.Log(success + " " + hit.position);
+            //Debug.Log(success + " " + hit.position);
             if (!success)
                 Debug.LogWarning($"SetDestination failed: {target}");
             return success;

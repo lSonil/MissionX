@@ -76,7 +76,7 @@ GameObject:
   - component: {fileID: 8175912968028434839}
   - component: {fileID: 1529952543048039811}
   - component: {fileID: -4293193577678541646}
-  - component: {fileID: 8853620610333406430}
+  - component: {fileID: 7726837607785191965}
   m_Layer: 0
   m_Name: EmptyWithObserverMonster
   m_TagString: Untagged
@@ -185,7 +185,7 @@ MonoBehaviour:
   m_Bidirectional: 1
   m_AutoUpdatePosition: 0
   m_Area: 0
---- !u!65 &8853620610333406430
+--- !u!65 &7726837607785191965
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

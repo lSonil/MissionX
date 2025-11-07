@@ -64,7 +64,7 @@ public class ObserverNPCRoam : MonoBehaviour
         float halfH = horizontalAngle / 2f;
         float halfV = verticalAngle / 2f;
 
-        int combinedMask = LayerMask.GetMask("Player", "Structure");
+        int combinedMask = LayerMask.GetMask("Player", "Structure", "Interactable");
         var playerSeen = false;
 
         for (int v = 0; v < verticalRays; v++)
@@ -90,7 +90,8 @@ public class ObserverNPCRoam : MonoBehaviour
                         playerSeen = true;
                         following = true;
                     }
-                    else if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Structure"))
+                    else if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Structure") ||
+                            hit.collider.gameObject.layer == LayerMask.NameToLayer("Interactable"))
                     {
                         Debug.DrawLine(origin, hit.point, Color.red);
                     }
