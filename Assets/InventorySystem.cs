@@ -107,6 +107,7 @@ public class InventorySystem : MonoBehaviour
         item.transform.localPosition = Vector3.zero;
         item.transform.localRotation = Quaternion.identity;
         item.gameObject.SetActive(true);
+        item.gameObject.layer = 12;
         Rigidbody rb = item.GetComponent<Rigidbody>();
         if (rb != null) rb.isKinematic = true;
 
@@ -120,6 +121,8 @@ public class InventorySystem : MonoBehaviour
 
         if (item.transform.parent == handTransform)
         {
+            item.gameObject.layer = 11;
+
             item.transform.SetParent(null);
             item.gameObject.SetActive(false);
 

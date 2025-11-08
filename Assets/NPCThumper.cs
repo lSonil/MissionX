@@ -1,29 +1,45 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEngine.GraphicsBuffer;
 
 public class NPCThumper : MonoBehaviour
 {
     public enum NPCState
     {
-        Wait,
-        WaitToMove,
+        Patrol,
+        Hide,
+
         Approach,
-        Attack
+        Lurk,
+
+        Chase
     }
+
     private NavMeshAgent agent;
-    public List<Transform> usedGrid;
-    public bool following;
-    private bool waitingForVisibilityDrop;
-    public LayerMask blockingMask;
+    private List<Transform> usedGrid;
+    public DamageZone damageZone;
     public float forwardLineLength = 10f;
-    public float attackRange = 2f;
-    public NPCState currentState = NPCState.Wait;
+    public float attackRange = 1f;
+    public float chaseRange = 3f;
+    public float lurkTime = 5;
+    public float forgetTime = 10;
+
+    public Vector3 speed = new Vector3(0.1f, 2, 4);
+    public NPCState currentState = NPCState.Hide;
+    public LayerMask blockingMask;
+    private Animator animator;
+
+    bool contained = false;
+
+    bool forget = false;
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
+        agent.enabled = true;
+        animator = GetComponent<Animator>();
 
         if (GridManager.i != null)
         {
@@ -33,122 +49,101 @@ public class NPCThumper : MonoBehaviour
         {
             Debug.LogError("GridManager not found in scene.");
         }
-        Transform closestTarget = GridManager.i.GetClosestPoint(usedGrid, transform);
-        transform.position = new Vector3(closestTarget.position.x, transform.position.y, closestTarget.position.z);
 
-        // Check if new X position is odd
-        int xRounded = Mathf.RoundToInt(transform.position.x);
-        bool isOdd = xRounded % 2 != 0;
-
-        // Apply rotation based on X parity
-        float yRotation = isOdd ? 90f : 0f;
-        transform.rotation = Quaternion.Euler(0f, yRotation, 0f);
+        StartCoroutine(WaitInPlace());
     }
-
     void Update()
     {
-        if (GridManager.i == null || !agent.isOnNavMesh || agent.pathPending) return;
-
-        if ((!agent.hasPath || agent.remainingDistance <= agent.stoppingDistance) && !following && !waitingForVisibilityDrop)
+        UpdateAnimatorStates();
+    }
+    private void UpdateAnimatorStates()
+    {
+        animator.SetBool("IsMoving", !(currentState == NPCState.Hide || currentState == NPCState.Lurk));
+    }
+    public void RoutinSelection()
+    {
+        if (contained)
         {
-            if (currentState == NPCState.Approach)
-                PrepareAttack();
-            if (currentState == NPCState.Attack)
-                StartAttack();
+            StartCoroutine(WaitInPlace());
+            return;
         }
-
-
-        if (DrawLineToPlayerIfVisible() && currentState == NPCState.Wait)
+        switch (currentState)
         {
-            currentState = NPCState.WaitToMove;
-            StartCoroutine(LostSight(2f));
-            agent.ResetPath();
+            case NPCState.Patrol:
+                NormalPatrol();
+                break;
+
+            case NPCState.Hide:
+                StartCoroutine(WaitInPlace());
+                break;
+
+            case NPCState.Approach:
+                StartCoroutine(Approach());
+                break;
+
+            case NPCState.Lurk:
+                StartCoroutine(WaitToMove());
+                break;
+
+            case NPCState.Chase:
+                StartCoroutine(Chase());
+                break;
+
         }
-        if (currentState == NPCState.WaitToMove || currentState == NPCState.Approach)
+    }
+
+    public IEnumerator WaitInPlace()
+    {
+        SetSpeed(speed[0]);
+
+        float timer = 0f;
+        while (timer < lurkTime)
         {
-            if (!IsVisibleToPlayer())
+            if (DirectLineToPlayer())
             {
-                currentState = NPCState.WaitToMove;
-                Transform closestTarget = GridManager.i.GetClosestPoint(usedGrid, transform);
-                transform.position = new Vector3(closestTarget.position.x, transform.position.y, closestTarget.position.z);
-                agent.ResetPath();
+                break; // Exit early if condition is met
             }
-            else
-            {
-                currentState = NPCState.Approach;
-            }
-            if (GetDistanceToPlayer())
-            {
-                currentState = NPCState.Attack;
-            }
+            timer += Time.deltaTime;
+            yield return null; // wait one frame
         }
-    }
-    public bool GetDistanceToPlayer()
-    {
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        Vector3 npcPosition = transform.position;
-        Vector3 playerPosition = playerObj.transform.position;
 
-        // Check if new X position is odd
-        int xRounded = Mathf.RoundToInt(transform.position.x);
-        bool isOdd = xRounded % 2 != 0;
+        yield return new WaitForSeconds(.5f);
 
-        // Apply rotation based on X parity
-        float yRotation = isOdd ? 90f : 0f;
-        transform.rotation = Quaternion.Euler(0f, yRotation, 0f);
+        if (DirectLineToPlayer())
+            currentState = IsVisibleToPlayer() ? NPCState.Lurk : NPCState.Approach;
+        else
+            currentState = NPCState.Patrol;
+        RoutinSelection();
+    }
+    public IEnumerator WaitToMove()
+    {
+        SetSpeed(speed[1]);
 
-        return attackRange >= Vector3.Distance(npcPosition, playerPosition);
-    }
-
-    public void PrepareAttack()
-    {
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        agent.SetDestination(playerObj.transform.position);
-    }
-    public void StartAttack()
-    {
-        agent.speed = 4;
-        StartCoroutine(Attack(2f));
-    }
-    private IEnumerator LostSight(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        Debug.Log("Waited " + delay + " seconds.");
-    }
-    private IEnumerator Attack(float delay)
-    {
-        while (true)
+        agent.ResetPath();
+        agent.velocity = Vector3.zero;
+        while (IsVisibleToPlayer() && !IsInRange(attackRange))
         {
-            yield return null;
-            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-            agent.SetDestination(playerObj.transform.position);
+            yield return null; // wait one frame
+        }
+        if (!IsVisibleToPlayer())
+        {
+            yield return new WaitForSeconds(.1f);
+            currentState = NPCState.Approach;
+            RoutinSelection();
+        }
+        else
+        {
+            animator.SetTrigger("Bite");
+            yield return new WaitForSeconds(.1f);
+            currentState = NPCState.Chase;
+            RoutinSelection();
         }
     }
-    public bool IsVisibleToPlayer()
-    {
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        if (playerObj == null || agent == null || !agent.isOnNavMesh) return false;
-
-        Transform player = playerObj.transform;
-        Vector3 npcPosition = transform.position + new Vector3(0, 0.45f, 0);
-        Vector3 playerPosition = player.position;
-
-        float distance = Vector3.Distance(npcPosition, playerPosition);
-        if (distance > 10f) return false;
-
-        bool hasLineOfSight = !Physics.Linecast(playerPosition, npcPosition, blockingMask);
-        if (!hasLineOfSight) return true;
-
-        Vector3 directionToNPC = (npcPosition - playerPosition).normalized;
-        float angle = Vector3.Angle(player.forward, directionToNPC);
-
-        // Return true if player is NOT looking at NPC
-        return angle > 90f;
-    }
-
 
     public void NormalPatrol()
     {
+        SetSpeed(speed[0]);
+
         Transform closestTarget = GridManager.i.GetRandomPointInRange(usedGrid, transform, 10);
         Transform furtherTarget = GridManager.i.GetFurthestPoint(usedGrid, transform);
 
@@ -169,11 +164,130 @@ public class NPCThumper : MonoBehaviour
             agent.SetDestination(furtherTarget.position);
             usedGrid.Remove(furtherTarget);
         }
+        StartCoroutine(CheckDestination());
     }
-    private bool DrawLineToPlayerIfVisible()
+    public IEnumerator Approach()
+    {
+        SetSpeed(speed[1]);
+
+        forget = false;
+        Coroutine forgetRoutine;
+        forgetRoutine = StartCoroutine(ForgetPlayer());
+
+        while (!IsVisibleToPlayer() && !IsInRange(chaseRange) && !forget)
+        {
+            Transform playerPos = GridManager.i.GetPlayerTransform();
+            yield return null; // wait one frame
+            agent.SetDestination(playerPos.position);
+        }
+        if (forgetRoutine != null)
+        {
+            StopCoroutine(forgetRoutine);
+        }
+        if (IsVisibleToPlayer())
+        {
+            yield return new WaitForSeconds(.1f);
+            currentState = NPCState.Hide;
+            RoutinSelection();
+        }
+        else if (IsInRange(chaseRange))
+        {
+            animator.SetTrigger("Morph");
+
+            currentState = NPCState.Chase;
+            RoutinSelection();
+        }
+        else
+        {
+            currentState = NPCState.Hide;
+            RoutinSelection();
+        }
+    }
+
+    public IEnumerator Chase()
+    {
+        SetSpeed(speed[2]);
+
+        animator.SetBool("IsChasing", true);
+        forget = false;
+        Coroutine forgetRoutine;
+        forgetRoutine = StartCoroutine(ForgetPlayer());
+
+        while (!IsInRange(attackRange) && !forget)
+        {
+            Transform playerPos = GridManager.i.GetPlayerTransform();
+            yield return null; // wait one frame
+            if (playerPos == null)
+            {
+                forget = true;
+            }
+            else
+            agent.SetDestination(playerPos.position);
+        }
+        if (forgetRoutine != null)
+        {
+            StopCoroutine(forgetRoutine);
+        }
+        if (forget)
+        {
+            currentState = NPCState.Hide;
+            RoutinSelection();
+        }
+        else
+        {
+            animator.SetTrigger("Bite");
+            yield return new WaitForSeconds(.1f);
+            currentState = NPCState.Chase;
+            RoutinSelection();
+        }
+    }
+    
+    public IEnumerator CheckDestination()
+    {
+        while (!HasReachedDestination(agent))
+        {
+            if (DirectLineToPlayer())
+            {
+                agent.ResetPath();
+                agent.velocity = Vector3.zero;
+                break;
+            }
+            yield return null;
+        }
+        currentState = DirectLineToPlayer() ? NPCState.Lurk : NPCState.Hide;
+        RoutinSelection();
+    }
+    public IEnumerator ForgetPlayer()
+    {
+        float timer = 0f;
+        while (!IsVisibleToPlayer() && timer < forgetTime)
+        {
+            if (DirectLineToPlayer())
+            {
+                break; // Exit early if condition is met
+            }
+            timer += Time.deltaTime;
+            yield return null; // wait one frame
+        }
+
+        if (timer >= forgetTime)
+        {
+
+            forget = true;
+        }
+    }
+
+    private bool HasReachedDestination(NavMeshAgent agent)
+    {
+        return !agent.pathPending &&
+               agent.remainingDistance <= agent.stoppingDistance &&
+               (!agent.hasPath || agent.velocity.sqrMagnitude == 0f);
+    }
+    private bool DirectLineToPlayer()
     {
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj == null) return false;
+        if (playerObj.GetComponent<HealthSystem>().CurrentHealth() <= 0) return false;
 
         Transform player = playerObj.transform;
         Vector3 npcPosition = transform.position + new Vector3(0, 0.45f, 0);
@@ -184,19 +298,62 @@ public class NPCThumper : MonoBehaviour
         float angle = Vector3.Angle(transform.forward, directionToPlayer);
 
         // Check if Player is in front of NPC
-        if (angle < 90f)
+
+        if (angle < 80f && forwardLineLength >= Vector3.Distance(npcPosition, playerPosition))
         {
+            //print(Vector3.Distance(npcPosition, playerPosition));
             // Check for wall obstruction
             bool blocked = Physics.Linecast(npcPosition, playerPosition, blockingMask);
 
             if (!blocked)
             {
+                //Time.timeScale = 0f;
                 return true;
             }
         }
         return false;
     }
+    private bool IsVisibleToPlayer()
+    {
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj == null || agent == null || !agent.isOnNavMesh) return false;
+        if (playerObj.GetComponent<HealthSystem>().CurrentHealth() <= 0) return false;
+        Transform player = playerObj.transform;
+        Vector3 npcPosition = transform.position + new Vector3(0, 0.45f, 0);
+        Vector3 playerPosition = player.position;
 
+        float distance = Vector3.Distance(npcPosition, playerPosition);
+        if (distance > 10f) return false;
+
+        bool hasLineOfSight = !Physics.Linecast(playerPosition, npcPosition, blockingMask);
+        if (!hasLineOfSight) return false;
+
+        Vector3 directionToNPC = (npcPosition - playerPosition).normalized;
+        float angle = Vector3.Angle(player.forward, directionToNPC);
+
+        // Return true if player is NOT looking at NPC
+        return angle < 80f;
+    }
+    private bool IsInRange(float range)
+    {
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj == null) return false;
+        Vector3 npcPosition = transform.position;
+        Vector3 playerPosition = playerObj.transform.position;
+
+        // Check if new X position is odd
+        int xRounded = Mathf.RoundToInt(transform.position.x);
+        bool isOdd = xRounded % 2 != 0;
+
+        // Apply rotation based on X parity
+        float yRotation = isOdd ? 90f : 0f;
+        return range >= Vector3.Distance(npcPosition, playerPosition);
+    }
+
+    private void SetSpeed(float value)
+    {
+        agent.speed = value;
+    }    
 
     private void OnDrawGizmos()
     {
@@ -207,28 +364,10 @@ public class NPCThumper : MonoBehaviour
         Vector3 npcPosition = transform.position + new Vector3(0, 0.45f, 0);
         Vector3 playerPosition = player.position;
 
-        // Direction from NPC to Player
-        Vector3 directionToPlayer = (playerPosition - npcPosition).normalized;
-        float angle = Vector3.Angle(transform.forward, directionToPlayer);
-
-        // Check if Player is in front of NPC
-        if (angle < 90f)
+        if (DirectLineToPlayer())
         {
-            // Check for wall obstruction
-            bool blocked = Physics.Linecast(npcPosition, playerPosition, blockingMask);
-
-            if (!blocked)
-            {
-                Gizmos.color = Color.green;
-                Gizmos.DrawLine(npcPosition, playerPosition);
-                Gizmos.DrawSphere(npcPosition, 0.2f);
-                Gizmos.DrawSphere(playerPosition, 0.2f);
-            }
-            else
-            {
-                Gizmos.color = Color.gray;
-                Gizmos.DrawLine(npcPosition, playerPosition); // Optional: show blocked line in gray
-            }
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(npcPosition, playerPosition); // Optional: show blocked line in gray
         }
     }
 }

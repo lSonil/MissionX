@@ -14,16 +14,17 @@ public class HealthSystem : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //if (currentHealth > 0)
-        //{
-        //    TakeDamage(1);
-        //}
-        //else
-        //{
-        //    Die();
-        //}
+       //if (currentHealth > 0)
+       //{
+       //    TakeDamage(1);
+       //}
+       //else
+       //{
+       //    Die();
+       //}
     }
 
+    public int CurrentHealth() => currentHealth;
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;

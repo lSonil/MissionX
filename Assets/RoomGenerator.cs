@@ -217,7 +217,7 @@ public class RoomGenerator : MonoBehaviour
                 {
                     SpawneRooms(possibleRooms, bonusRoomCount);
                 }
-                else if(bonusRoomCount==0)
+                else
                 {
                     SpawneRooms(specificRoomsToSpawn, specificRoomsToSpawn.Count);
                 }

@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7155f8190b382b488be2f6b56564fde, type: 3}
+  m_Name: ThumperRoom
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterRoom
+  room: {fileID: 2350745012977439139, guid: a1c6753d7e648cd468b80acf9d74329d, type: 3}
+  monster: {fileID: 11400000, guid: c779ff8d246425140ae0320bb62d02f7, type: 2}

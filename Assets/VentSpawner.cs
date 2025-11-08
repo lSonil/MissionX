@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class VentSpawner : MonoBehaviour
@@ -12,8 +11,8 @@ public class VentSpawner : MonoBehaviour
 
     private void Start()
     {
-        vent2.SetActive(false);
-        vent1.SetActive(true);
+        if (vent2 != null) vent2.SetActive(false);
+        if (vent1 != null) vent1.SetActive(true);
 
         StartCoroutine(SpawnLoop());
     }
@@ -22,6 +21,7 @@ public class VentSpawner : MonoBehaviour
     {
         while (true)
         {
+            yield return new WaitForSeconds(1f);
             Monster monsterToSpawn = GetValidMonster();
             if (monsterToSpawn != null)
             {
@@ -29,7 +29,6 @@ public class VentSpawner : MonoBehaviour
                 GridManager.currentMonsterDifficulty += monsterToSpawn.difficulty;
             }
 
-            yield return new WaitForSeconds(5f);
         }
     }
 
@@ -37,7 +36,7 @@ public class VentSpawner : MonoBehaviour
     {
         List<Monster> validMonsters = new();
 
-        foreach(Monster m in monsterPool)
+        foreach (Monster m in monsterPool)
         {
             if (GridManager.currentMonsterDifficulty + m.difficulty <= GridManager.maxMonsterDifficulty)
             {
@@ -53,8 +52,8 @@ public class VentSpawner : MonoBehaviour
     private void SpawnMonster(Monster monster)
     {
         if (monster.body == null || spawnPoint == null) return;
-        vent1.SetActive(false);
-        vent2.SetActive(true);
+        if (vent1 != null) vent1.SetActive(false);
+        if (vent2 != null) vent2.SetActive(true);
         Instantiate(monster.body, spawnPoint.position, Quaternion.identity);
     }
 }

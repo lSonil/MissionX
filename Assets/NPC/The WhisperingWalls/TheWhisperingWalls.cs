@@ -171,7 +171,6 @@ public class TheWhisperingWalls : MonoBehaviour
                 shuffledDoors.RemoveAt(0);
                 if (shuffledDoors.Count == 0)
                 {
-                    print("what");
                     StartCoroutine(Warping(true));
                     return;
                 }

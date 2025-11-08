@@ -193,6 +193,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4fd828b3ba72f1940b30f41c17c188fd, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -212,6 +216,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4fd828b3ba72f1940b30f41c17c188fd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6005565205274618948}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4fd828b3ba72f1940b30f41c17c188fd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4404194318050987730}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4fd828b3ba72f1940b30f41c17c188fd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -5681427896858886436}
     - targetCorrespondingSourceObject: {fileID: 6905609870639353253, guid: 4fd828b3ba72f1940b30f41c17c188fd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4771182527674949251}
@@ -1379,3 +1389,38 @@ CharacterJoint:
   m_EnablePreprocessing: 0
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!135 &4404194318050987730
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8080793605942164656}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.25
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-5681427896858886436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8080793605942164656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad1d05d0e2a59084cafbdf5f73cf98e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthSystem
+  maxHealth: 0
+  ragdollPrefab: {fileID: 0}
