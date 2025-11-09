@@ -14,12 +14,12 @@ GameObject:
   - component: {fileID: 7765801277182609395}
   - component: {fileID: 4499079335415564087}
   m_Layer: 0
-  m_Name: WallMonster
+  m_Name: Thumper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8949350271797635255
 Transform:
   m_ObjectHideFlags: 0
@@ -93,17 +93,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea0ed24fcff077a4bb1d868366c4494b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPCThumper
-  damageZone: {fileID: 0}
+  info: {fileID: 11400000, guid: 22f2d6a8b58b3634cbbedff604af74c3, type: 2}
+  agent: {fileID: 0}
+  contained: 0
+  blockingMask:
+    serializedVersion: 2
+    m_Bits: 8
   forwardLineLength: 10
+  damageZone: {fileID: 0}
   attackRange: 1.5
   chaseRange: 3
   lurkTime: 5
   forgetTime: 20
   speed: {x: 1, y: 3, z: 5}
   currentState: 1
-  blockingMask:
-    serializedVersion: 2
-    m_Bits: 8
 --- !u!65 &4499079335415564087
 BoxCollider:
   m_ObjectHideFlags: 0

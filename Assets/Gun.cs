@@ -5,7 +5,7 @@ public class Gun : Item
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private Transform firePoint;
     [SerializeField] private float bulletSpeed = 100f;
-    [SerializeField] private float cooldown = .1f;
+    //[SerializeField] private float cooldown = .1f;
     [SerializeField] private int maxAmmo = 6;
 
     private int currentAmmo = 6;

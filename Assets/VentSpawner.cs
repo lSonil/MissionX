@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class VentSpawner : MonoBehaviour
 {
-    public List<Monster> monsterPool; // Assign in Inspector
+    public List<NPCEntry> monsterPool; // Assign in Inspector
     public Transform spawnPoint;      // Where monsters appear
     public GameObject vent1;      // Where monsters appear
     public GameObject vent2;      // Where monsters appear
@@ -21,8 +21,8 @@ public class VentSpawner : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(1f);
-            Monster monsterToSpawn = GetValidMonster();
+            yield return new WaitForSeconds(.1f);
+            NPCEntry monsterToSpawn = GetValidMonster();
             if (monsterToSpawn != null)
             {
                 SpawnMonster(monsterToSpawn);
@@ -32,11 +32,11 @@ public class VentSpawner : MonoBehaviour
         }
     }
 
-    private Monster GetValidMonster()
+    private NPCEntry GetValidMonster()
     {
-        List<Monster> validMonsters = new();
+        List<NPCEntry> validMonsters = new();
 
-        foreach (Monster m in monsterPool)
+        foreach (NPCEntry m in monsterPool)
         {
             if (GridManager.currentMonsterDifficulty + m.difficulty <= GridManager.maxMonsterDifficulty)
             {
@@ -49,11 +49,11 @@ public class VentSpawner : MonoBehaviour
         return validMonsters[Random.Range(0, validMonsters.Count)];
     }
 
-    private void SpawnMonster(Monster monster)
+    private void SpawnMonster(NPCEntry monster)
     {
-        if (monster.body == null || spawnPoint == null) return;
+        if (monster.npc == null || spawnPoint == null) return;
         if (vent1 != null) vent1.SetActive(false);
         if (vent2 != null) vent2.SetActive(true);
-        Instantiate(monster.body, spawnPoint.position, Quaternion.identity);
+        Instantiate(monster.npc, spawnPoint.position, Quaternion.identity);
     }
 }

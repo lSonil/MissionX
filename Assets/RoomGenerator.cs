@@ -26,11 +26,16 @@ public class RoomGenerator : MonoBehaviour
     public static RoomGenerator i;
     private void Awake()
     {
-
         i = this;
     }
     private void Start()
-    {
+    {        
+        foreach (NPCEntry roomToAdd in SceneData.monstersToTransfer)
+        {
+            specificRoomsToSpawn.Add(new RoomSpawnEntry(roomToAdd.room, 1));
+        }
+
+
         allDoors.AddRange(spawnedRooms[0].doors);
         foreach (var door in spawnedRooms[0].doors)
         {
@@ -155,7 +160,6 @@ public class RoomGenerator : MonoBehaviour
                 newRoom.transform.position = newDoor.transform.position;
                 newRoom.transform.rotation = newDoor.transform.rotation;
                 newRoom.transform.SetParent(bonusRoomCount == 0 ? transform : NPC.transform);
-
                 spawnedRooms.Add(newRoom); // Add to list if no overlap
                 unusedDoors.RemoveAll(pair => pair.Item1 == newDoor);
                 newDoor.ConnectTo(newRoom.startingDoor);
@@ -274,7 +278,20 @@ public class RoomGenerator : MonoBehaviour
 
         return closest != null ? closest : transform; // Fallback to self
     }
-
+    public void ClearNPC()
+    {
+        foreach (Transform child in NPC.transform)
+        {
+            Destroy(child.gameObject);
+        }
+    }
+    public void ClearRooms()
+    {
+        foreach (Transform child in transform.Cast<Transform>().Skip(1))
+        {
+            Destroy(child.gameObject);
+        }
+    }
     void OnDrawGizmos()
     {
         if (!debug) return;

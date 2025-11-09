@@ -19,6 +19,8 @@ public class TheWhisper : MonoBehaviour
     {
         bool currentlyVisible = IsVisibleToPlayer();
 
+        NPCTheWhisperingWalls brain = GetComponentInParent<NPCTheWhisperingWalls>();
+        if (brain) if (GetComponentInParent<NPCTheWhisperingWalls>().contained == ContainedState.Contained) return;
         switch (visibilityState)
         {
             case VisibilityState.Unseen:

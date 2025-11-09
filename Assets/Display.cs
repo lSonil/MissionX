@@ -1,11 +1,10 @@
 using UnityEngine;
 
-public class Panel : MonoBehaviour, IInteraction
+public class Display : MonoBehaviour, IInteraction
 {
     public string interactionPromptText ="Use Terminal";
 
     public Transform targetPosition; // Assign in Inspector or dynamically
-    public Terminal terminal;
     public string GetTextUse() => interactionPromptText;
     public string GetTextPrimary() => "";
     public string GetTextSecundary() => "";

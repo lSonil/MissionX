@@ -9,8 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7155f8190b382b488be2f6b56564fde, type: 3}
-  m_Name: ThumperRoom
+  m_Script: {fileID: 11500000, guid: b6a017878e73ff243b646f78144b5343, type: 3}
+  m_Name: Thumper
   m_EditorClassIdentifier: Assembly-CSharp::MonsterRoom
+  id: 001
+  monsterName: no name
+  difficulty: 1
   room: {fileID: 2350745012977439139, guid: a1c6753d7e648cd468b80acf9d74329d, type: 3}
-  monster: {fileID: 11400000, guid: c779ff8d246425140ae0320bb62d02f7, type: 2}
+  npc: {fileID: 7765801277182609395, guid: 0a441c0252ebd014a97f79ff6cb4d169, type: 3}

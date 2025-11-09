@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
-public class TheWhisperingWalls : MonoBehaviour
+public class NPCTheWhisperingWalls : NPCBase
 {
     public List<RoomSpawnEntry> possibleRoomsToSpawn;
     public List<Room> spawnedRooms;
@@ -25,6 +25,7 @@ public class TheWhisperingWalls : MonoBehaviour
     public void Start()
     {
         startRoom = GetComponentInParent<Room>();
+        spawnedRooms.Add(startRoom);
         transform.SetParent(RoomGenerator.i.NPC.transform);
         transform.position = Vector3.zero;
         startRoom.transform.SetParent(transform);
@@ -246,6 +247,10 @@ public class TheWhisperingWalls : MonoBehaviour
         yield return new WaitForSeconds(1);
         while (true)
         {
+            while(contained==ContainedState.Contained)
+            {
+                yield return null;
+            }
             if (CanMove() && spawnedRooms.Count != 0)
             {
                 if ((maxNumberOfRooms <= spawnedRooms.Count || stuck) && spawnedRooms.Count!=1)

@@ -12,6 +12,7 @@ public class UISystem : MonoBehaviour
     public GameObject usePrimaryButton;
     public GameObject useSecundaryButton;
     public GameObject dropButton;
+    public PopUpHandle popUpHanle;
 
     [Header("Inventory UI")]
     public Image[] slotIcons;

@@ -1,11 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
-using static UnityEngine.GraphicsBuffer;
 
-public class NPCThumper : MonoBehaviour
+public class NPCThumper : NPCBase
 {
     public enum NPCState
     {
@@ -18,10 +16,9 @@ public class NPCThumper : MonoBehaviour
         Chase
     }
 
-    private NavMeshAgent agent;
     private List<Transform> usedGrid;
     public DamageZone damageZone;
-    public float forwardLineLength = 10f;
+
     public float attackRange = 1f;
     public float chaseRange = 3f;
     public float lurkTime = 5;
@@ -29,12 +26,11 @@ public class NPCThumper : MonoBehaviour
 
     public Vector3 speed = new Vector3(0.1f, 2, 4);
     public NPCState currentState = NPCState.Hide;
-    public LayerMask blockingMask;
+
     private Animator animator;
 
-    bool contained = false;
-
     bool forget = false;
+
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -62,11 +58,6 @@ public class NPCThumper : MonoBehaviour
     }
     public void RoutinSelection()
     {
-        if (contained)
-        {
-            StartCoroutine(WaitInPlace());
-            return;
-        }
         switch (currentState)
         {
             case NPCState.Patrol:
@@ -241,9 +232,12 @@ public class NPCThumper : MonoBehaviour
             RoutinSelection();
         }
     }
-    
+
     public IEnumerator CheckDestination()
     {
+
+        StartCoroutine(WaitInPlace());
+
         while (!HasReachedDestination(agent))
         {
             if (DirectLineToPlayer())
@@ -252,8 +246,14 @@ public class NPCThumper : MonoBehaviour
                 agent.velocity = Vector3.zero;
                 break;
             }
+            if (contained != ContainedState.Free)
+            {
+                agent.ResetPath();
+                agent.velocity = Vector3.zero;
+            }
             yield return null;
         }
+
         currentState = DirectLineToPlayer() ? NPCState.Lurk : NPCState.Hide;
         RoutinSelection();
     }
@@ -282,72 +282,6 @@ public class NPCThumper : MonoBehaviour
         return !agent.pathPending &&
                agent.remainingDistance <= agent.stoppingDistance &&
                (!agent.hasPath || agent.velocity.sqrMagnitude == 0f);
-    }
-    private bool DirectLineToPlayer()
-    {
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        if (playerObj == null) return false;
-        if (playerObj.GetComponent<HealthSystem>().CurrentHealth() <= 0) return false;
-
-        Transform player = playerObj.transform;
-        Vector3 npcPosition = transform.position + new Vector3(0, 0.45f, 0);
-        Vector3 playerPosition = player.position;
-
-        // Direction from NPC to Player
-        Vector3 directionToPlayer = (playerPosition - npcPosition).normalized;
-        float angle = Vector3.Angle(transform.forward, directionToPlayer);
-
-        // Check if Player is in front of NPC
-
-        if (angle < 80f && forwardLineLength >= Vector3.Distance(npcPosition, playerPosition))
-        {
-            //print(Vector3.Distance(npcPosition, playerPosition));
-            // Check for wall obstruction
-            bool blocked = Physics.Linecast(npcPosition, playerPosition, blockingMask);
-
-            if (!blocked)
-            {
-                //Time.timeScale = 0f;
-                return true;
-            }
-        }
-        return false;
-    }
-    private bool IsVisibleToPlayer()
-    {
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        if (playerObj == null || agent == null || !agent.isOnNavMesh) return false;
-        if (playerObj.GetComponent<HealthSystem>().CurrentHealth() <= 0) return false;
-        Transform player = playerObj.transform;
-        Vector3 npcPosition = transform.position + new Vector3(0, 0.45f, 0);
-        Vector3 playerPosition = player.position;
-
-        float distance = Vector3.Distance(npcPosition, playerPosition);
-        if (distance > 10f) return false;
-
-        bool hasLineOfSight = !Physics.Linecast(playerPosition, npcPosition, blockingMask);
-        if (!hasLineOfSight) return false;
-
-        Vector3 directionToNPC = (npcPosition - playerPosition).normalized;
-        float angle = Vector3.Angle(player.forward, directionToNPC);
-
-        // Return true if player is NOT looking at NPC
-        return angle < 80f;
-    }
-    private bool IsInRange(float range)
-    {
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        if (playerObj == null) return false;
-        Vector3 npcPosition = transform.position;
-        Vector3 playerPosition = playerObj.transform.position;
-
-        // Check if new X position is odd
-        int xRounded = Mathf.RoundToInt(transform.position.x);
-        bool isOdd = xRounded % 2 != 0;
-
-        // Apply rotation based on X parity
-        float yRotation = isOdd ? 90f : 0f;
-        return range >= Vector3.Distance(npcPosition, playerPosition);
     }
 
     private void SetSpeed(float value)

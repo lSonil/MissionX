@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class InventorySystem : MonoBehaviour
 {
-    [SerializeField] private int maxSlots = 4;
+    //[SerializeField] private int maxSlots = 4;
     [SerializeField] private Transform handTransform;
 
     private Item[] items = new Item[4];
