@@ -342,7 +342,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 687cce737bcf26e4aa9f43468e6c4763, type: 2}
+  - {fileID: 2100000, guid: 2d3f618445686294c91209e8bb8ea0e1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3464,10 +3464,6 @@ MonoBehaviour:
   useSecundaryButton: {fileID: 1370209371}
   dropButton: {fileID: 2076710864}
   popUpHanle: {fileID: 1949141268}
-  lTerminal: {fileID: 124896425}
-  lobby: {fileID: 1927404446}
-  mTerminal: {fileID: 0}
-  rooms: {fileID: 0}
   slotIcons:
   - {fileID: 1816813452}
   - {fileID: 2077323377}
@@ -4348,11 +4344,6 @@ Transform:
   - {fileID: 1760696070}
   m_Father: {fileID: 33582531}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1927404446 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 53d410d3f5feb5542b6bc4bbe61ee6e7, type: 3}
-  m_PrefabInstance: {fileID: 33582529}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1949141265
 GameObject:
   m_ObjectHideFlags: 0
