@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class ObserverNPCRoam : MonoBehaviour
+public class ObserverNPCRoam : NPCBase
 {
     public float sanityDrainRate = 0.01f;
 
@@ -11,24 +11,13 @@ public class ObserverNPCRoam : MonoBehaviour
     public float stareTimeAtRuby = 3f;
     public float rubyProximityThreshold = 1.5f;
 
-    public List<Transform> usedGrid;
     public bool following;
-
-    public NavMeshAgent agent;
 
     private IObserverState currentState;
 
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
-        if (GridManager.i != null)
-        {
-            usedGrid = new List<Transform>(GridManager.i.grid);
-        }
-        else
-        {
-            Debug.LogError("GridManager not found in scene.");
-        }
     }
 
     void Start()

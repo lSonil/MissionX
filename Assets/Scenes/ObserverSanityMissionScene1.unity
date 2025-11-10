@@ -523,7 +523,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Panel
   interactionPromptText: Use Terminal
   targetPosition: {fileID: 1874396009}
-  terminal: {fileID: 124896425}
 --- !u!114 &124896425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -542,7 +541,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8f6660bb886f14544b30f4ba7a0a6fbc, type: 2}
   maxMissionDifficultyCap: 2
   minMissionDifficultyCap: 2
-  rooms: {fileID: 243926074}
 --- !u!1 &159249791
 GameObject:
   m_ObjectHideFlags: 0
@@ -1721,7 +1719,6 @@ MonoBehaviour:
   bulletPrefab: {fileID: 6435923183865460769, guid: 90b688b51ccbbf54797e19a404f0abf7, type: 3}
   firePoint: {fileID: 1487193781}
   bulletSpeed: 20
-  cooldown: 5
   maxAmmo: 6
 --- !u!4 &596952203 stripped
 Transform:
@@ -4230,7 +4227,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de3bc6f56425ee944943cb6d3b853ca2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Inventory
-  maxSlots: 4
   handTransform: {fileID: 544170421}
 --- !u!114 &1079244146
 MonoBehaviour:
@@ -5890,6 +5886,7 @@ MonoBehaviour:
   usePrimaryButton: {fileID: 180246882}
   useSecundaryButton: {fileID: 1370209371}
   dropButton: {fileID: 2076710864}
+  popUpHanle: {fileID: 0}
   slotIcons:
   - {fileID: 1816813452}
   - {fileID: 2077323377}
@@ -7663,6 +7660,10 @@ PrefabInstance:
     - target: {fileID: 8472418816829292734, guid: 4b6971832db7cd64aaf2ef1125763c3f, type: 3}
       propertyPath: m_Name
       value: SanityMonsterSpawner
+      objectReference: {fileID: 0}
+    - target: {fileID: 8472418816829292734, guid: 4b6971832db7cd64aaf2ef1125763c3f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
