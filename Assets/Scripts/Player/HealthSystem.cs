@@ -44,6 +44,8 @@ public class HealthSystem : MonoBehaviour
         }
 
         gameObject.SetActive(false); // Disable player
+        
+        MissionTerminal.i.AbortMission();
     }
 
 }

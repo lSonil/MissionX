@@ -1,7 +1,9 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.GraphicsBuffer;
 
 public class UISystem : MonoBehaviour
 {
@@ -18,6 +20,30 @@ public class UISystem : MonoBehaviour
     public Image[] slotIcons;
     public Sprite fullIcon;
     public Sprite emptyIcon;
+    public ResultsHandler results;
+    public TextMeshProUGUI currentDay;
+
+    private void Start()
+    {
+
+        currentDay.text = SceneData.day.ToString();
+        if (SceneData.showResults)
+        {
+            SceneData.PrepareResults(false);
+            StartCoroutine(ShowResults());
+        }
+        else
+            results.gameObject.SetActive(false);
+    }
+
+    public IEnumerator ShowResults()
+    {
+        results.DisplayResults(SceneData.containmentResults);
+        results.gameObject.SetActive(true); // Make visible
+        yield return new WaitForSeconds(5f);
+        results.gameObject.SetActive(false); // Hide after 5 seconds
+    }
+
     public void EnableInteractButton(IInteraction interaction)
     {
         interactButton.SetActive(interaction != null);

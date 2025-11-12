@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 public class LobyTerminal : Terminal
 {
+    public static LobyTerminal i;
     public List<NPCEntry> allMonsters = new List<NPCEntry>();
 
     private List<NPCEntry> mission1Monsters = new List<NPCEntry>();
@@ -16,9 +17,9 @@ public class LobyTerminal : Terminal
     private enum TerminalState { MainMenu, ErrorScreen }
     private TerminalState currentState = TerminalState.MainMenu;
     private int selectedMission = -1; // -1 means no mission selected
-
     public override void Start()
     {
+        i = this;
         AssignMonstersToMissions();
         base.Start();
     }
@@ -72,8 +73,7 @@ public class LobyTerminal : Terminal
         terminalText.text = "Initiating jump sequence...\nLoading new scene...";
         HandleEscape();
         yield return new WaitForSeconds(2f);
-        SceneData.monstersToTransfer = new List<NPCEntry>(mainMonsters);
-
+        SceneData.SetMonsters(mainMonsters);
         SceneManager.LoadScene("Mission"); // Replace with your actual scene name
     }
     void LoadTargetScene()
