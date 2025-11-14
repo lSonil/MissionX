@@ -33,6 +33,12 @@ public class ObserverNPCRoam : NPCBase
 
     void Update()
     {
+        if(contained != ContainedState.Free && currentState is not SanityContainedState)
+        {
+            ChangeState(new SanityContainedState());
+            return;
+        }
+        if (contained != ContainedState.Free) return;
         if (GridManager.i == null || agent.pathPending) return;
         RaycastCone(); // Visualize cone
         currentState?.Execute(this);
