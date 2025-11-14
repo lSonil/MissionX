@@ -90,7 +90,7 @@ public class NPCStatue : NPCBase
         float timer = 0f;
         while (timer < lurkTime)
         {
-            if (DirectLineToPlayer())
+            if (PlayerInView())
             {
                 break; // Exit early if condition is met
             }
@@ -100,7 +100,7 @@ public class NPCStatue : NPCBase
 
         yield return new WaitForSeconds(.5f);
 
-        if (DirectLineToPlayer())
+        if (PlayerInView())
             currentState = IsVisibleToPlayer() ? NPCState.Lurk : NPCState.Approach;
         else
             currentState = NPCState.Patrol;
@@ -240,7 +240,7 @@ public class NPCStatue : NPCBase
 
         while (!HasReachedDestination(agent))
         {
-            if (DirectLineToPlayer())
+            if (PlayerInView())
             {
                 agent.ResetPath();
                 agent.velocity = Vector3.zero;
@@ -254,7 +254,7 @@ public class NPCStatue : NPCBase
             yield return null;
         }
 
-        currentState = DirectLineToPlayer() ? NPCState.Lurk : NPCState.Hide;
+        currentState = PlayerInView() ? NPCState.Lurk : NPCState.Hide;
         RoutinSelection();
     }
     public IEnumerator ForgetPlayer()
@@ -262,7 +262,7 @@ public class NPCStatue : NPCBase
         float timer = 0f;
         while (!IsVisibleToPlayer() && timer < forgetTime)
         {
-            if (DirectLineToPlayer())
+            if (PlayerInView())
             {
                 break; // Exit early if condition is met
             }
@@ -298,7 +298,7 @@ public class NPCStatue : NPCBase
         Vector3 npcPosition = transform.position + new Vector3(0, 0.45f, 0);
         Vector3 playerPosition = player.position;
 
-        if (DirectLineToPlayer())
+        if (PlayerInView())
         {
             Gizmos.color = Color.red;
             Gizmos.DrawLine(npcPosition, playerPosition); // Optional: show blocked line in gray

@@ -44,7 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b74edd6a20a2784a8a02ae800583596, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TheWhisperingWalls
-  info: {fileID: 11400000, guid: 8f6660bb886f14544b30f4ba7a0a6fbc, type: 2}
   agent: {fileID: 0}
   contained: 0
   blockingMask:
@@ -59,8 +58,6 @@ MonoBehaviour:
   - room: {fileID: 2350341281066181865, guid: fea01ca9387800d4c99a40fe7003b5d3, type: 3}
     amount: -1
   - room: {fileID: 8175912968028434839, guid: 1132c4b93f3af9549a38e44ba7826309, type: 3}
-    amount: -1
-  - room: {fileID: 8175912968028434839, guid: 85445ca73107bde4293c95e278127764, type: 3}
     amount: -1
   spawnedRooms:
   - {fileID: 0}

@@ -15,20 +15,51 @@ public abstract class NPCBase : MonoBehaviour
     public ContainedState contained= ContainedState.Free;
     public LayerMask blockingMask;
     public float forwardLineLength = 10f;
+    public Transform viewPoint;
+    public bool PlayerInConeLineOfSight(float angleSize = 40f)
+    {
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj == null || viewPoint == null) return false;
 
-    public virtual bool DirectLineToPlayer()
+        Vector3 npcPosition = viewPoint.position;
+        Vector3 playerPosition = playerObj.transform.position;
+
+        // Direction to player
+        Vector3 toPlayer = (playerPosition - npcPosition).normalized;
+        float distToPlayer = Vector3.Distance(npcPosition, playerPosition);
+
+        // Angle check
+        float angleToPlayer = Vector3.Angle(viewPoint.forward, toPlayer);
+
+        // Conditions: inside cone + within range
+        if (angleToPlayer <= angleSize * 0.5f && distToPlayer <= forwardLineLength)
+        {
+            // Obstruction check
+            if (!Physics.Linecast(npcPosition, playerPosition, blockingMask))
+            {
+                return true;
+            }
+        }
+        if(distToPlayer <= 2)
+                return true;
+
+
+        return false;
+    }
+
+    public virtual bool PlayerInView()
     {
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj == null) return false;
         if (playerObj.GetComponent<HealthSystem>().CurrentHealth() <= 0) return false;
 
         Transform player = playerObj.transform;
-        Vector3 npcPosition = transform.position + new Vector3(0, 0.45f, 0);
+        Vector3 npcPosition = viewPoint.position;
         Vector3 playerPosition = player.position;
 
         // Direction from NPC to Player
         Vector3 directionToPlayer = (playerPosition - npcPosition).normalized;
-        float angle = Vector3.Angle(transform.forward, directionToPlayer);
+        float angle = Vector3.Angle(viewPoint.forward, directionToPlayer);
 
         // Check if Player is in front of NPC
 
@@ -49,10 +80,9 @@ public abstract class NPCBase : MonoBehaviour
     public virtual bool IsVisibleToPlayer()
     {
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        if (playerObj == null || agent == null || !agent.isOnNavMesh) return false;
         if (playerObj.GetComponent<HealthSystem>().CurrentHealth() <= 0) return false;
         Transform player = playerObj.transform;
-        Vector3 npcPosition = transform.position + new Vector3(0, 0.45f, 0);
+        Vector3 npcPosition = viewPoint.position;
         Vector3 playerPosition = player.position;
 
         float distance = Vector3.Distance(npcPosition, playerPosition);

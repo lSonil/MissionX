@@ -96,7 +96,6 @@ public class MissionTerminal : Terminal
 
         for (int i = 0; i < activNPCInfo.Count; i++)
         {
-            print(1);
             string id = activNPCInfo[i].id;
             ContainedState state = activNPC[i].contained;
             results[id] = state;
@@ -107,6 +106,7 @@ public class MissionTerminal : Terminal
     IEnumerator DelayedSceneLoad()
     {
         StoreContainmentStatesToSceneData();
+        SceneData.IncrementDay();
         SceneData.PrepareResults();
         yield return new WaitForSeconds(5f);
 

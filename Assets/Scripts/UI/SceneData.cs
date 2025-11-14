@@ -9,11 +9,14 @@ public static class SceneData
 
     public static void SetMonsters(List<NPCEntry> monstersOfTheDay)
     {
-        monstersToTransfer = new List<NPCEntry>(monstersOfTheDay); ;
+        monstersToTransfer = new List<NPCEntry>(monstersOfTheDay);
     }
-    public static void PrepareResults(bool state=true)
+    public static void PrepareResults(bool state = true)
     {
         showResults = state;
+    }
+    public static void IncrementDay()
+    {
         day++;
     }
     public static void StoreContainmentResults(Dictionary<string, ContainedState> results)

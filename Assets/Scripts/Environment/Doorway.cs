@@ -2,8 +2,6 @@ using UnityEngine;
 
 public class Doorway : MonoBehaviour
 {
-    public GameObject linkHall;
-    public GameObject linkDoor;
     public GameObject hallDoor;
     public GameObject roomDoor;
     public GameObject wall;
