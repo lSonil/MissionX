@@ -16,6 +16,9 @@ public abstract class NPCBase : MonoBehaviour
     public LayerMask blockingMask;
     public float forwardLineLength = 10f;
     public Transform viewPoint;
+
+    public bool useWideCone = false; // state flag
+
     public bool PlayerInConeLineOfSight(float angleSize = 40f)
     {
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
@@ -23,29 +26,60 @@ public abstract class NPCBase : MonoBehaviour
 
         Vector3 npcPosition = viewPoint.position;
         Vector3 playerPosition = playerObj.transform.position;
+        Vector3 toPlayer = (playerPosition - npcPosition);
+        float distToPlayer = toPlayer.magnitude;
 
-        // Direction to player
-        Vector3 toPlayer = (playerPosition - npcPosition).normalized;
-        float distToPlayer = Vector3.Distance(npcPosition, playerPosition);
+        if (distToPlayer <= 2f)
+            return true;
 
-        // Angle check
-        float angleToPlayer = Vector3.Angle(viewPoint.forward, toPlayer);
+        Vector3 direction = toPlayer.normalized;
+        float halfAngle = angleSize * 0.5f;
 
-        // Conditions: inside cone + within range
-        if (angleToPlayer <= angleSize * 0.5f && distToPlayer <= forwardLineLength)
+        // --- Narrow cone mode (single line) ---
+        if (!useWideCone)
         {
-            // Obstruction check
-            if (!Physics.Linecast(npcPosition, playerPosition, blockingMask))
+            float angleToPlayer = Vector3.Angle(viewPoint.forward, direction);
+            if (angleToPlayer <= halfAngle && distToPlayer <= forwardLineLength)
             {
-                return true;
+                if (!Physics.Linecast(npcPosition, playerPosition, blockingMask))
+                {
+                    useWideCone = true; // switch to wide mode
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // --- Wide cone mode (7 parallel lines along one axis) ---
+        float offsetStep = 0.1f; // tweak spacing
+        bool anySuccess = false;
+
+        for (int i = -3; i <= 3; i++)
+        {
+            Vector3 offset = viewPoint.right * (i * offsetStep); // horizontal offsets
+            Vector3 castDir = (direction + offset).normalized;
+            float castAngle = Vector3.Angle(viewPoint.forward, castDir);
+
+            if (castAngle <= halfAngle && distToPlayer <= forwardLineLength)
+            {
+                if (!Physics.Linecast(npcPosition, npcPosition + castDir * distToPlayer, blockingMask))
+                {
+                    anySuccess = true;
+                    break;
+                }
             }
         }
-        if(distToPlayer <= 2)
-                return true;
 
+        if (!anySuccess)
+        {
+            useWideCone = false; // revert back to narrow mode
+            return false;
+        }
 
-        return false;
+        return true;
     }
+
+
 
     public virtual bool PlayerInView()
     {

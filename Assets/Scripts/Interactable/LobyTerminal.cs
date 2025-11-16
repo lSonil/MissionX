@@ -16,7 +16,8 @@ public class LobyTerminal : Terminal
 
     private enum TerminalState { MainMenu, ErrorScreen }
     private TerminalState currentState = TerminalState.MainMenu;
-    private int selectedMission = -1; // -1 means no mission selected
+    private int selectedMission = -1;
+
     public override void Start()
     {
         i = this;
@@ -74,7 +75,7 @@ public class LobyTerminal : Terminal
         HandleEscape();
         yield return new WaitForSeconds(2f);
         SceneData.SetMonsters(mainMonsters);
-        SceneManager.LoadScene("Mission"); // Replace with your actual scene name
+        SceneManager.LoadScene("Mission");
     }
     void LoadTargetScene()
     {
@@ -100,7 +101,6 @@ public class LobyTerminal : Terminal
         inputField.text = "";
         inputField.ActivateInputField();
 
-        // 🔧 Global commands
         if (input == "esc")
         {
             HandleEscape();
@@ -127,7 +127,6 @@ public class LobyTerminal : Terminal
             return;
         }
 
-        // 🔧 Mission selection — allowed from any state
         if (input == "1")
         {
             if (mission1Monsters.Count > 0)
@@ -185,7 +184,6 @@ public class LobyTerminal : Terminal
             return;
         }
 
-        // 🔧 Fallback for invalid input
         terminalText.text = "ERROR: Invalid input.\nPress Enter to return to main menu.";
         currentState = TerminalState.ErrorScreen;
     }

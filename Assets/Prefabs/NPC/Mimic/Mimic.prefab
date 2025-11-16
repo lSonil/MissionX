@@ -218,8 +218,8 @@ MonoBehaviour:
   blockingMask:
     serializedVersion: 2
     m_Bits: 8
-  forwardLineLength: 10
-  viewPoint: {fileID: 8910924529986812208}
+  forwardLineLength: 30
+  viewPoint: {fileID: 5802084329247011202}
   eye: {fileID: 5240689485936714831}
   eyebody: {fileID: 7343483495599303884}
   mouth: {fileID: 1981332237977043052}
@@ -276,6 +276,37 @@ Transform:
   m_Children:
   - {fileID: 8911821852478893572}
   m_Father: {fileID: 710157383412612060}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2438838058528306551
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5802084329247011202}
+  m_Layer: 0
+  m_Name: ViewPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5802084329247011202
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2438838058528306551}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.005}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8910924529986812208}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3397647261457064328
 GameObject:
@@ -588,7 +619,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -4624576529387397074, guid: ad7d2d2cca32e8e42ae6d5d768ea29eb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5802084329247011202}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ad7d2d2cca32e8e42ae6d5d768ea29eb, type: 3}
 --- !u!4 &4895830603629444853 stripped

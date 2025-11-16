@@ -73,7 +73,6 @@ public class MimicSpawn : NPCBase
 
             float delta = Vector3.SignedAngle(currentOnPlane, desiredOnPlane, axisLocal);
             eyebody.transform.localRotation = Quaternion.AngleAxis(delta, axisLocal) * eyebody.transform.localRotation;
-
             yield return null;
         }
         animator.SetBool("LookedAt", IsVisibleToPlayer());
@@ -105,7 +104,18 @@ public class MimicSpawn : NPCBase
                 StopCoroutine(Rotate());
 
                 Transform player = GameObject.FindGameObjectWithTag("Player").transform;
-                StartCoroutine(FocusOnPlayerCoroutine(player));
+
+                if (isBiting)
+                {
+                    isBiting = false;
+
+                    animator.SetTrigger("Bite");
+                    currentState = NPCState.Check;
+
+                    RoutinSelection();
+                }
+                else
+                    StartCoroutine(FocusOnPlayerCoroutine(player));
 
                 yield break;
             }
@@ -201,7 +211,6 @@ public class MimicSpawn : NPCBase
                 {
                     playerCameBack = true;
                     break;
-
                 }
 
                 timer += Time.deltaTime;
@@ -264,20 +273,48 @@ public class MimicSpawn : NPCBase
 
         if (angleToPlayer <= angleSize * 0.5f && distToPlayer <= forwardLineLength)
         {
-            if (!Physics.Linecast(npcPosition, playerPosition, blockingMask))
+            if (!useWideCone)
             {
-                Gizmos.color = Color.green; // clear line of sight
-                Gizmos.DrawLine(npcPosition, playerPosition);
-                Gizmos.DrawSphere(playerPosition, 0.2f);
+                // Narrow mode: single line
+                if (!Physics.Linecast(npcPosition, playerPosition, blockingMask))
+                {
+                    Gizmos.color = Color.green;
+                    Gizmos.DrawLine(npcPosition, playerPosition);
+                    Gizmos.DrawSphere(playerPosition, 0.2f);
+                }
+                else
+                {
+                    Gizmos.color = Color.yellow;
+                    Gizmos.DrawLine(npcPosition, playerPosition);
+                }
             }
             else
             {
-                Gizmos.color = Color.yellow; // blocked
-                Gizmos.DrawLine(npcPosition, playerPosition);
+                // Wide mode: 7 rays along one axis (example: horizontal offsets)
+                float offsetStep = 0.2f; // tweak spacing
+                for (int i = -3; i <= 3; i++)
+                {
+                    Vector3 offset = viewPoint.right * (i * offsetStep);
+                    Vector3 castDir = (toPlayer + offset).normalized;
+                    float castAngle = Vector3.Angle(viewPoint.forward, castDir);
+                    if (castAngle > angleSize * 0.5f) continue;
+
+                    Vector3 castEnd = npcPosition + castDir * distToPlayer;
+                    if (Physics.Linecast(npcPosition, castEnd, out RaycastHit hit, blockingMask))
+                    {
+                        Gizmos.color = Color.yellow;
+                        Gizmos.DrawLine(npcPosition, hit.point);
+                        Gizmos.DrawSphere(hit.point, 0.1f);
+                    }
+                    else
+                    {
+                        Gizmos.color = Color.green;
+                        Gizmos.DrawLine(npcPosition, castEnd);
+                    }
+                }
             }
         }
     }
-
 
     private void OnTriggerEnter(Collider other)
     {
@@ -287,4 +324,5 @@ public class MimicSpawn : NPCBase
             isBiting = true;
         }
     }
+
 }

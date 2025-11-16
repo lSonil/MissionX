@@ -9,6 +9,7 @@ using UnityEditor.SceneManagement;
 
 public class Room : MonoBehaviour
 {
+    public List<GameObject> layouts;
     public List<Doorway> doors;
     public Doorway startingDoor;
     public List<Transform> nodes;
@@ -22,6 +23,17 @@ public class Room : MonoBehaviour
     private void Start()
     {
         surface = GetComponent<NavMeshSurface>();
+
+        if (layouts == null || layouts.Count == 0) return;
+
+        // Pick a random index
+        int randomIndex = Random.Range(0, layouts.Count);
+
+        for (int i = 0; i < layouts.Count; i++)
+        {
+            // Enable only the chosen one
+            layouts[i].SetActive(i == randomIndex);
+        }
     }
     public void RegenerateColliders()
     {
