@@ -53,7 +53,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
-  m_Center: {x: 0, y: 1, z: -1}
+  m_Center: {x: 0, y: 0, z: -1}
 --- !u!114 &1761191033995806371
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67,6 +67,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DamageZone
   damageAmount: 10
+  destroyOnTrigger: 0
 --- !u!1 &2154996344796182719
 GameObject:
   m_ObjectHideFlags: 0
@@ -82,7 +83,7 @@ GameObject:
   - component: {fileID: 136333543942152073}
   - component: {fileID: 4950041918720935684}
   - component: {fileID: 3412546079707505047}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Mimic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -160,7 +161,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
-  m_Center: {x: 0, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 1}
 --- !u!114 &3832292345779854519
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -220,6 +221,8 @@ MonoBehaviour:
     m_Bits: 8
   forwardLineLength: 30
   viewPoint: {fileID: 5802084329247011202}
+  useWideCone: 0
+  isVisible: 0
   eye: {fileID: 5240689485936714831}
   eyebody: {fileID: 7343483495599303884}
   mouth: {fileID: 1981332237977043052}
@@ -244,7 +247,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
-  m_Center: {x: 0, y: 1, z: -1}
+  m_Center: {x: 0, y: 0, z: -1}
 --- !u!1 &2332279445271466474
 GameObject:
   m_ObjectHideFlags: 0
@@ -468,7 +471,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 807b1d2ef57cb054e959906a010fcd9a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.05
+      value: -1.05
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 807b1d2ef57cb054e959906a010fcd9a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -506,6 +509,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MimicMouth
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 807b1d2ef57cb054e959906a010fcd9a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -535,7 +542,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ad7d2d2cca32e8e42ae6d5d768ea29eb, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.05
+      value: -1.05
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ad7d2d2cca32e8e42ae6d5d768ea29eb, type: 3}
       propertyPath: m_LocalPosition.z
@@ -592,6 +599,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: ad7d2d2cca32e8e42ae6d5d768ea29eb, type: 3}
       propertyPath: m_Name
       value: MimicEye
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: ad7d2d2cca32e8e42ae6d5d768ea29eb, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7767223447606418228, guid: ad7d2d2cca32e8e42ae6d5d768ea29eb, type: 3}
       propertyPath: m_LocalRotation.w

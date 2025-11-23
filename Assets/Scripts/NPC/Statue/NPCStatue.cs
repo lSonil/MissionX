@@ -17,14 +17,13 @@ public class NPCStatue : NPCBase
     }
 
     private List<Transform> usedGrid;
-    public DamageZone damageZone;
 
     public float attackRange = 1f;
     public float chaseRange = 3f;
     public float lurkTime = 5;
     public float forgetTime = 10;
 
-    public Vector3 speed = new Vector3(0.1f, 2, 4);
+    public Vector2 speed = new Vector3(5f, 20);
     public NPCState currentState = NPCState.Hide;
 
     private Animator animator;
@@ -79,7 +78,6 @@ public class NPCStatue : NPCBase
             case NPCState.Chase:
                 StartCoroutine(Chase());
                 break;
-
         }
     }
 
@@ -101,7 +99,7 @@ public class NPCStatue : NPCBase
         yield return new WaitForSeconds(.5f);
 
         if (PlayerInView())
-            currentState = IsVisibleToPlayer() ? NPCState.Lurk : NPCState.Approach;
+            currentState = isVisible ? NPCState.Lurk : NPCState.Approach;
         else
             currentState = NPCState.Patrol;
         RoutinSelection();
@@ -112,21 +110,14 @@ public class NPCStatue : NPCBase
 
         agent.ResetPath();
         agent.velocity = Vector3.zero;
-        while (IsVisibleToPlayer() && !IsInRange(attackRange))
+        while (isVisible)
         {
             yield return null; // wait one frame
         }
-        if (!IsVisibleToPlayer())
+        if (!isVisible)
         {
             yield return new WaitForSeconds(.1f);
             currentState = NPCState.Approach;
-            RoutinSelection();
-        }
-        else
-        {
-            animator.SetTrigger("Bite");
-            yield return new WaitForSeconds(.1f);
-            currentState = NPCState.Chase;
             RoutinSelection();
         }
     }
@@ -165,7 +156,7 @@ public class NPCStatue : NPCBase
         Coroutine forgetRoutine;
         forgetRoutine = StartCoroutine(ForgetPlayer());
 
-        while (!IsVisibleToPlayer() && !IsInRange(chaseRange) && !forget)
+        while (!isVisible && !IsInRange(chaseRange) && !forget)
         {
             Transform playerPos = GridManager.i.GetPlayerTransform();
             yield return null; // wait one frame
@@ -175,7 +166,7 @@ public class NPCStatue : NPCBase
         {
             StopCoroutine(forgetRoutine);
         }
-        if (IsVisibleToPlayer())
+        if (isVisible)
         {
             yield return new WaitForSeconds(.1f);
             currentState = NPCState.Hide;
@@ -183,8 +174,7 @@ public class NPCStatue : NPCBase
         }
         else if (IsInRange(chaseRange))
         {
-            animator.SetTrigger("Morph");
-
+            GridManager.i.GetPlayerTransform().gameObject.GetComponent<HealthSystem>().Die();
             currentState = NPCState.Chase;
             RoutinSelection();
         }
@@ -197,9 +187,8 @@ public class NPCStatue : NPCBase
 
     public IEnumerator Chase()
     {
-        SetSpeed(speed[2]);
+        SetSpeed(speed[1]);
 
-        animator.SetBool("IsChasing", true);
         forget = false;
         Coroutine forgetRoutine;
         forgetRoutine = StartCoroutine(ForgetPlayer());
@@ -226,7 +215,6 @@ public class NPCStatue : NPCBase
         }
         else
         {
-            animator.SetTrigger("Bite");
             yield return new WaitForSeconds(.1f);
             currentState = NPCState.Chase;
             RoutinSelection();
@@ -235,7 +223,6 @@ public class NPCStatue : NPCBase
 
     public IEnumerator CheckDestination()
     {
-
         StartCoroutine(WaitInPlace());
 
         while (!HasReachedDestination(agent))
@@ -260,7 +247,7 @@ public class NPCStatue : NPCBase
     public IEnumerator ForgetPlayer()
     {
         float timer = 0f;
-        while (!IsVisibleToPlayer() && timer < forgetTime)
+        while (!isVisible && timer < forgetTime)
         {
             if (PlayerInView())
             {
@@ -291,17 +278,17 @@ public class NPCStatue : NPCBase
 
     private void OnDrawGizmos()
     {
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        if (playerObj == null) return;
-
-        Transform player = playerObj.transform;
-        Vector3 npcPosition = transform.position + new Vector3(0, 0.45f, 0);
-        Vector3 playerPosition = player.position;
-
-        if (PlayerInView())
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(npcPosition, playerPosition); // Optional: show blocked line in gray
-        }
+        //GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        //if (playerObj == null) return;
+        //
+        //Transform player = playerObj.transform;
+        //Vector3 npcPosition = transform.position + new Vector3(0, 0.45f, 0);
+        //Vector3 playerPosition = player.position;
+        //
+        //if (PlayerInView())
+        //{
+        //    Gizmos.color = Color.red;
+        //    Gizmos.DrawLine(npcPosition, playerPosition); // Optional: show blocked line in gray
+        //}
     }
 }

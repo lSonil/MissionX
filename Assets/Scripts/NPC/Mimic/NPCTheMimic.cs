@@ -43,9 +43,9 @@ public class NPCTheMimic : NPCBase
 
             GameObject doorwayInstance = Instantiate(mimicInstance);
             doorwayInstance.GetComponent<MimicSpawn>().Initialize(forwardLineLength,blockingMask);
-            doorwayInstance.transform.position = selectedDoor.transform.position;
+            doorwayInstance.transform.position = selectedDoor.transform.position+new Vector3(0,1,0);
             doorwayInstance.transform.rotation = selectedDoor.transform.rotation;
-
+            doorwayInstance.transform.SetParent(transform);
             List<Vector3> mimicBorders = new List<Vector3>();
             BoxCollider[] colliders = doorwayInstance.GetComponents<BoxCollider>();
 

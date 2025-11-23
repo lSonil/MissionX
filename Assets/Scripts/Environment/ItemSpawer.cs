@@ -20,14 +20,12 @@ public class ItemSpawner : MonoBehaviour
     {
         if (items == null || items.Count == 0)
         {
-            Debug.LogWarning("ItemSpawner: No items assigned.");
             return;
         }
 
         float roll = Random.Range(0f, 100f);
         if (roll > spawnChancePercent)
         {
-            Debug.Log("ItemSpawner: Spawn roll failed (" + roll + ")");
             return;
         }
 
@@ -37,7 +35,5 @@ public class ItemSpawner : MonoBehaviour
         Quaternion randomRotation = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
 
         GameObject spawned = Instantiate(chosenItem.gameObject, transform.position, randomRotation, transform.parent);
-
-        Debug.Log("ItemSpawner: Spawned " + spawned.name + " with roll " + roll);
     }
 }

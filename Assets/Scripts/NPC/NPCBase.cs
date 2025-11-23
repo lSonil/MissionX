@@ -19,6 +19,9 @@ public abstract class NPCBase : MonoBehaviour
 
     public bool useWideCone = false; // state flag
 
+    public bool isVisible = false;
+    public bool debug=false;
+
     public bool PlayerInConeLineOfSight(float angleSize = 40f)
     {
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
@@ -110,26 +113,6 @@ public abstract class NPCBase : MonoBehaviour
             }
         }
         return false;
-    }
-    public virtual bool IsVisibleToPlayer()
-    {
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        if (playerObj.GetComponent<HealthSystem>().CurrentHealth() <= 0) return false;
-        Transform player = playerObj.transform;
-        Vector3 npcPosition = viewPoint.position;
-        Vector3 playerPosition = player.position;
-
-        float distance = Vector3.Distance(npcPosition, playerPosition);
-        if (distance > 10f) return false;
-
-        bool hasLineOfSight = !Physics.Linecast(playerPosition, npcPosition, blockingMask);
-        if (!hasLineOfSight) return false;
-
-        Vector3 directionToNPC = (npcPosition - playerPosition).normalized;
-        float angle = Vector3.Angle(player.forward, directionToNPC);
-
-        // Return true if player is NOT looking at NPC
-        return angle < 80f;
     }
     public virtual bool IsInRange(float range)
     {

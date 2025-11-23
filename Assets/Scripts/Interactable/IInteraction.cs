@@ -1,4 +1,4 @@
-public interface IInteraction
+public interface  IInteraction
 {
     void Action();
     string GetTextUse();

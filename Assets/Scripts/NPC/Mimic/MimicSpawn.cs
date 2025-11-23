@@ -58,9 +58,9 @@ public class MimicSpawn : NPCBase
     }
     private IEnumerator WaitToNotBeSeen(Transform player)
     {
-        animator.SetBool("LookedAt", IsVisibleToPlayer());
+        animator.SetBool("LookedAt", isVisible);
         animator.SetTrigger("Look");
-        while (IsVisibleToPlayer())
+        while (isVisible)
         {
             Vector3 axisLocal = Vector3.forward;
             Vector3 currentLocal = eyebody.transform.InverseTransformDirection(viewPoint.forward);
@@ -75,7 +75,7 @@ public class MimicSpawn : NPCBase
             eyebody.transform.localRotation = Quaternion.AngleAxis(delta, axisLocal) * eyebody.transform.localRotation;
             yield return null;
         }
-        animator.SetBool("LookedAt", IsVisibleToPlayer());
+        animator.SetBool("LookedAt", isVisible);
         animator.SetTrigger("Look");
         StartCoroutine(FocusOnPlayerCoroutine(player));
     }
@@ -192,7 +192,7 @@ public class MimicSpawn : NPCBase
                     yield break;
                 }
 
-                if (IsVisibleToPlayer())
+                if (isVisible)
                 {
                     StartCoroutine(WaitToNotBeSeen(player));
                     yield break;
@@ -228,6 +228,7 @@ public class MimicSpawn : NPCBase
     }
     private void OnDrawGizmos()
     {
+        if (!debug) return;
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj == null || viewPoint == null) return;
 
@@ -315,7 +316,7 @@ public class MimicSpawn : NPCBase
             }
         }
     }
-
+    //
     private void OnTriggerEnter(Collider other)
     {
 

@@ -8,7 +8,7 @@ public class Gun : Item
     //[SerializeField] private float cooldown = .1f;
     [SerializeField] private int maxAmmo = 6;
 
-    private int currentAmmo = 6;
+    public int currentAmmo = 100;
     private float lastFireTime = -Mathf.Infinity;
 
     public override void PrimaryUse()
