@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Rendering.VirtualTexturing;
 public class NPCTheWhisperingWalls : NPCBase
 {
     public List<RoomSpawnEntry> possibleRoomsToSpawn;
@@ -135,8 +136,9 @@ public class NPCTheWhisperingWalls : NPCBase
                         roomBorders.Add(SetToResolution(newRoom.transform.TransformPoint(localCenter)));
                     }
 
-                    List<Vector3> allRoomsPositions = new List<Vector3>(RoomGenerator.i.roomsPositions);
+                    List<Vector3> allRoomsPositions = new List<Vector3>(RoomGenerator.i.AllOccupiedSpaces());
                     allRoomsPositions.AddRange(roomsPositions);
+
                     foreach (Vector3 col in roomBorders)
                     {
 
@@ -146,7 +148,7 @@ public class NPCTheWhisperingWalls : NPCBase
                             break;
                         }
 
-                        near = near || RoomGenerator.i.roomsPositions.Any(roomPos =>
+                        near = near || RoomGenerator.i.AllOccupiedSpaces(roomsPositions).Any(roomPos =>
                             Mathf.Abs(col.x - roomPos.x) <= 2 &&
                             Mathf.Abs(col.y - roomPos.y) <= 2 &&
                             Mathf.Abs(col.z - roomPos.z) <= 2);
@@ -213,7 +215,10 @@ public class NPCTheWhisperingWalls : NPCBase
             foreach (BoxCollider col in newColliders)
             {
                 Vector3 localCenter = col.center;
-                roomsPositions.Add(SetToResolution(newRoom.transform.TransformPoint(localCenter)));
+                Vector3 resolved = SetToResolution(newRoom.transform.TransformPoint(localCenter));
+
+                roomsPositions.Add(resolved);
+                RoomGenerator.i.bonusRoomsPositions.Add(resolved);
             }
             newRoom.surface.BuildNavMesh();
 
@@ -282,7 +287,9 @@ public class NPCTheWhisperingWalls : NPCBase
         foreach (var box in colliders)
         {
             Vector3 localCenter = box.center;
-            roomsPositions.Remove(SetToResolution(roomToRemove.transform.TransformPoint(localCenter)));
+            Vector3 resolved = SetToResolution(roomToRemove.transform.TransformPoint(localCenter));
+            roomsPositions.Remove(resolved);
+            RoomGenerator.i.bonusRoomsPositions.Remove(resolved);
         }
         foreach (var door in roomToRemove.doors)
         {

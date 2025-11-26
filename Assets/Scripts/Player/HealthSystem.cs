@@ -1,4 +1,7 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class HealthSystem : MonoBehaviour
 {
@@ -12,22 +15,22 @@ public class HealthSystem : MonoBehaviour
         currentHealth = maxHealth;
     }
 
-    private void FixedUpdate()
-    {
-       //if (currentHealth > 0)
-       //{
-       //    TakeDamage(1);
-       //}
-       //else
-       //{
-       //    Die();
-       //}
-    }
-
     public int CurrentHealth() => currentHealth;
+
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
+
+        // trigger overlay effect
+        UISystem.i.FadeDamageRoutine();
+        GetComponent<AudioSystem>()?.PlayDamage();
+
+        // call tilt on damage
+        MovementSystem movement = GetComponent<MovementSystem>();
+        if (movement != null)
+        {
+            movement.TiltOnDamage();
+        }
 
         if (currentHealth <= 0)
         {
@@ -37,15 +40,16 @@ public class HealthSystem : MonoBehaviour
 
     public void Die()
     {
-
         if (ragdollPrefab != null)
         {
-            Instantiate(ragdollPrefab, transform.position, transform.rotation);
+            GameObject body = Instantiate(ragdollPrefab, transform.position, transform.rotation);
+            body.name = "Player";
         }
 
-        gameObject.SetActive(false); // Disable player
-        
-        MissionTerminal.i.AbortMission();
+        gameObject.SetActive(false);
+        if (SceneManager.GetActiveScene().name == "Mission")
+        {
+            MissionTerminal.i.AbortMission();
+        }
     }
-
 }

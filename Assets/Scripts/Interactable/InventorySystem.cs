@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InventorySystem : MonoBehaviour
 {
+    public static InventorySystem i;
     //[SerializeField] private int maxSlots = 4;
     [SerializeField] private Transform handTransform;
 
@@ -11,44 +13,23 @@ public class InventorySystem : MonoBehaviour
 
     private void Start()
     {
+        i = this;
         UISystem.i.UpdateInventoryUI(items, currentIndex);
         HoldItem(items[currentIndex]);
     }
 
-    void Update()
-    {
-        if (items.Length > 0)
-        {
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                items[currentIndex]?.PrimaryUse();
-            }
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                items[currentIndex]?.SecundaryUse();
-            }
-
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                DropCurrentItem();
-            }
-
-            float scroll = Input.GetAxis("Mouse ScrollWheel");
-            if (scroll != 0)
-            {
-
-                int direction = scroll > 0 ? 1 : -1;
-                ReleaseItem(items[currentIndex]);
-                currentIndex = (currentIndex + direction + items.Length) % items.Length;
-
-                HoldItem(items[currentIndex]);
-                UISystem.i.UpdateInventoryUI(items, currentIndex);
-            }
-        }
-    }
     public Item GetHeldItem()
     {
         return items[currentIndex];
+    }
+    public int GetItemType()
+    {
+        return items[currentIndex] == null ? 0 : items[currentIndex].itemTypeId;
+    }
+
+    public bool HasItems()
+    {
+        return items.Length > 0;
     }
 
     public bool TryAddItem(Item item)
@@ -85,13 +66,14 @@ public class InventorySystem : MonoBehaviour
 
         return false;
     }
-    void DropCurrentItem()
+    public void DropCurrentItem()
     {
         Item item = items[currentIndex];
         if (item == null) return;
 
         ReleaseItem(item);
-        item.transform.SetParent(RoomGenerator.i.FindClosestRoom().transform);
+        if(RoomGenerator.i!=null)
+            item.transform.SetParent(RoomGenerator.i.FindClosestRoom().transform);
         item.gameObject.SetActive(true);
         item.transform.position = handTransform.position;
 
@@ -133,7 +115,18 @@ public class InventorySystem : MonoBehaviour
             if (col != null) col.enabled = true;
         }
     }
+    public void Scroll(float scroll)
+    {
+        if (scroll == 0)return;
 
+        int direction = scroll > 0 ? 1 : -1;
+        ReleaseItem(items[currentIndex]);
+        currentIndex = (currentIndex + direction + items.Length) % items.Length;
+
+        HoldItem(items[currentIndex]);
+        UISystem.i.UpdateInventoryUI(items, currentIndex);
+
+    }
     public Item ConsumeFirstMatching(System.Predicate<Item> match)
     {
         for (int i = 0; i < items.Length; i++)

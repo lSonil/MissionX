@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
 public class MovementSystem : MonoBehaviour
@@ -11,7 +12,7 @@ public class MovementSystem : MonoBehaviour
 
     [Header("Mouse Look Settings")]
     public float mouseSensitivity = 100f;
-    public Transform playerCamera;
+    public Transform body;
     private float xRotation = 0f;
 
     [Header("Crouch Settings")]
@@ -21,9 +22,10 @@ public class MovementSystem : MonoBehaviour
     public CharacterController controller;
     private Vector3 velocity;
     private bool isGrounded;
+    private bool inAir=false;
     private bool isCrouching = false;
     public bool isBlocked = false;
-
+    private Coroutine footstepRoutine;
     void Start()
     {
         controller = GetComponent<CharacterController>();
@@ -47,11 +49,22 @@ public class MovementSystem : MonoBehaviour
         // Ground check
         isGrounded = controller.isGrounded;
         if (isGrounded && velocity.y < 0)
+        {
+            if (inAir)
+            {
+                GetComponent<AudioSystem>().PlayLandEffect();
+                inAir = false;
+            }
             velocity.y = -2f;
+        }
 
         // Get input
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
+        if ((moveX != 0 || moveZ != 0) && footstepRoutine == null)
+        {
+            footstepRoutine = StartCoroutine(FootstepLoop());
+        }
 
         Vector3 move = transform.right * moveX + transform.forward * moveZ;
         float currentSpeed = isCrouching && isGrounded ? crouchSpeed : walkSpeed;
@@ -60,12 +73,32 @@ public class MovementSystem : MonoBehaviour
         // Jump
         if (Input.GetButtonDown("Jump") && isGrounded && !isCrouching)
         {
+            inAir = true;
+            GetComponent<AudioSystem>().PlayJumpEffect();
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
 
         // Apply gravity
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
+    }
+    IEnumerator FootstepLoop()
+    {
+        var audio = GetComponent<AudioSystem>();
+
+        while (true)
+        {
+            float moveX = Input.GetAxis("Horizontal");
+            float moveZ = Input.GetAxis("Vertical");
+
+            if (moveX == 0f && moveZ == 0f)
+            {
+                footstepRoutine = null;
+                yield break; 
+            }
+            audio.PlayFootstep();
+            yield return new WaitForSeconds(0.3f);
+        }
     }
 
     void MouseLook()
@@ -74,9 +107,9 @@ public class MovementSystem : MonoBehaviour
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
         xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+        xRotation = Mathf.Clamp(xRotation, -180f, 0f);
 
-        playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        body.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         transform.Rotate(Vector3.up * mouseX);
     }
 
@@ -92,6 +125,40 @@ public class MovementSystem : MonoBehaviour
             isCrouching = false;
             controller.height = standingHeight;
         }
+    }
+    public void TiltOnDamage(float tiltAmount = 10f, float duration = 0.2f)
+    {
+        // pick random side: left (-tilt) or right (+tilt)
+        float randomTilt = Random.value < 0.5f ? -tiltAmount : tiltAmount;
+
+        // start coroutine to tilt and reset
+        StartCoroutine(TiltRoutine(randomTilt, duration));
+    }
+
+    private IEnumerator TiltRoutine(float angle, float duration)
+    {
+        Quaternion startRot = body.localRotation;
+        Quaternion tiltRot = startRot * Quaternion.Euler(0f, 0f, angle);
+
+        // tilt quickly
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime / duration;
+            body.localRotation = Quaternion.Slerp(startRot, tiltRot, t);
+            yield return null;
+        }
+
+        // return to normal
+        t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime / duration;
+            body.localRotation = Quaternion.Slerp(tiltRot, startRot, t);
+            yield return null;
+        }
+
+        body.localRotation = startRot;
     }
     public void Block()
     {

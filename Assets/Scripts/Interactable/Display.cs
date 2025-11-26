@@ -10,23 +10,24 @@ public class Display : MonoBehaviour, IInteraction
     public string GetTextSecundary() => "";
     public void Action()
     {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player == null) return;
-        player.GetComponent<MovementSystem>().Block();
         GetComponent<Terminal>().enabled = !GetComponent<Terminal>().enabled;
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player.GetComponent<MovementSystem>() == null) return;
+            player.GetComponent<MovementSystem>().Block();
         if (player.GetComponent<MovementSystem>().isBlocked)
         {
-            // Force move player to target position
             player.transform.position = targetPosition.position;
 
-            Camera mainCam = Camera.main;
-            if (mainCam == null || targetPosition == null) return;
+            Vector3 direction = transform.position - player.transform.position;
+            direction.y = 0f; // flatten to horizontal plane
 
-            // Move the camera to the target position
-            mainCam.transform.position = targetPosition.position;
+            if (direction.sqrMagnitude > 0.001f)
+            {
+                Quaternion faceForward = Quaternion.LookRotation(direction, Vector3.up);
+                Quaternion faceLeft = faceForward * Quaternion.Euler(-80f, 0f, 0f);
+                player.GetComponent<MovementSystem>().body.transform.rotation = faceLeft;
+            }
 
-            // Rotate the camera to look at the target
-            mainCam.transform.LookAt(transform);
         }
     }
 

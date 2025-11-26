@@ -14,19 +14,19 @@ public class Grenade : Item
     public override void PrimaryUse()
     {
         hasBeenThrown = true;
-        transform.SetParent(null);
 
+        InventorySystem.i.DropCurrentItem();
         Rigidbody rb = GetComponent<Rigidbody>();
+        Collider col = GetComponent<Collider>();
+
+        gameObject.SetActive(true);
+        if (col != null) col.enabled = true;
+        
         if (rb != null)
         {
             rb.isKinematic = false;
             rb.AddForce(Camera.main.transform.forward * throwForce, ForceMode.VelocityChange);
         }
-
-        Collider col = GetComponent<Collider>();
-        if (col != null) col.enabled = true;
-
-        gameObject.SetActive(true);
 
         if (pinPulled)
         {

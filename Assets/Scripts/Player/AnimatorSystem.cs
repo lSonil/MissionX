@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class PlayerAnimator : MonoBehaviour
+public class AnimatorSystem : MonoBehaviour
 {
     private Animator animator;
     private MovementSystem movement;
@@ -17,6 +17,7 @@ public class PlayerAnimator : MonoBehaviour
     void Update()
     {
         if (movement == null || inventory == null) return;
+        int itemType = GetItemType();
         bool isMoving = GetMovementState();
         bool isHolding = GetHoldingState();
         bool isGrounded = movement.controller.isGrounded;
@@ -27,6 +28,7 @@ public class PlayerAnimator : MonoBehaviour
             LayerMask.GetMask("Structure")
         );
 
+        animator.SetFloat("ItemHeld", itemType);
         animator.SetBool("IsMoving", isMoving);
         animator.SetBool("IsHolding", isHolding);
         animator.SetBool("IsGrounded", isGrounded);
@@ -56,6 +58,10 @@ public class PlayerAnimator : MonoBehaviour
     bool GetHoldingState()
     {
         return inventory.GetHeldItem() != null;
+    }
+    int GetItemType()
+    {
+        return inventory.GetItemType();
     }
     public void SetIsInAir()
     {

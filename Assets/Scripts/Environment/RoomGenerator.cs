@@ -13,6 +13,7 @@ public class RoomGenerator : MonoBehaviour
     public int maxNumberOfRooms;
     [HideInInspector]
     public List<Vector3> roomsPositions = new List<Vector3>();
+    public List<Vector3> bonusRoomsPositions = new List<Vector3>();
     [HideInInspector]
     public List<Doorway> allDoors;
     public GameObject NPC;
@@ -292,6 +293,21 @@ public class RoomGenerator : MonoBehaviour
             Destroy(child.gameObject);
         }
     }
+
+    public List<Vector3> AllOccupiedSpaces(List<Vector3> roomsToExclude = null)
+    {
+        List<Vector3> allRoomsPositions = new List<Vector3>(roomsPositions);
+        allRoomsPositions.AddRange(bonusRoomsPositions);
+
+        if (roomsToExclude != null)
+        {
+            allRoomsPositions.RemoveAll(pos => roomsToExclude.Contains(pos));
+        }
+
+        return allRoomsPositions;
+    }
+
+
     void OnDrawGizmos()
     {
         if (!debug) return;

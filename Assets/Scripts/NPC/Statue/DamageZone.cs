@@ -4,6 +4,7 @@ using UnityEngine;
 public class DamageZone : MonoBehaviour
 {
     [SerializeField] private int damageAmount = 1;
+    public bool destroyOnTrigger = false;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -16,5 +17,6 @@ public class DamageZone : MonoBehaviour
                 Debug.Log($"Player entered damage zone. Took {damageAmount} damage.");
             }
         }
+        if( destroyOnTrigger ) {Destroy(gameObject);}
     }
 }
