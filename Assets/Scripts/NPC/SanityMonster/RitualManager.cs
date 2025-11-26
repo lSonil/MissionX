@@ -1,0 +1,37 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+public class RitualManager : MonoBehaviour
+{
+    public static RitualManager i;
+
+    public int requiredRubies = 4;
+    private HashSet<RubyPlacement> placedZones = new HashSet<RubyPlacement>();
+
+    public Collider containmentTrigger; // assign the containment zone trigger in Inspector
+
+    private void Awake()
+    {
+        i = this;
+        containmentTrigger.enabled = false; // off at the start
+    }
+
+    public void NotifyRubyPlaced(RubyPlacement zone)
+    {
+        if (!placedZones.Contains(zone))
+            placedZones.Add(zone);
+
+        Debug.Log($"Ritual progress: {placedZones.Count}/{requiredRubies}");
+
+        if (placedZones.Count >= requiredRubies)
+        {
+            ActivateContainmentZone();
+        }
+    }
+
+    private void ActivateContainmentZone()
+    {
+        Debug.Log("All rubies placed! Containment zone ACTIVE.");
+        containmentTrigger.enabled = true;
+    }
+}

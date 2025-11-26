@@ -69,7 +69,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a4968bb89462b73418f2e41b5d70e882, type: 2}
+  - {fileID: 2100000, guid: 0fa028802780f19409d982a4aee051c8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -125,13 +125,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e4ae546d42c2bc4a819d1170624d2ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ObserverNPCRoam
+  agent: {fileID: 0}
+  contained: 0
+  blockingMask:
+    serializedVersion: 2
+    m_Bits: 0
+  forwardLineLength: 10
   sanityDrainRate: 1
   stareTimeAtRuby: 3
   rubyProximityThreshold: 1.5
-  usedGrid: []
   following: 0
-  agent: {fileID: 0}
-  loseSightDelay: 2.5
 --- !u!195 &6008993730263728134
 NavMeshAgent:
   m_ObjectHideFlags: 0
