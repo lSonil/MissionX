@@ -193,8 +193,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e55c2e1075f923a4daa60e97906992a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Doorway
-  linkHall: {fileID: 347182839703386794}
-  linkDoor: {fileID: 5672583263034394351}
   hallDoor: {fileID: 6065129801312746262}
   roomDoor: {fileID: 6136518042610371215}
   wall: {fileID: 5139417251565820080}
@@ -256,6 +254,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 7609821fea9938140b9ef671b87fa574, type: 3}
       propertyPath: m_Layer
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 7609821fea9938140b9ef671b87fa574, type: 3}
+      propertyPath: m_TagString
+      value: Structure
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -352,6 +354,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 30ab2b3e0b0a1d94bbc5f5adbf27c87c, type: 3}
       propertyPath: m_Layer
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 30ab2b3e0b0a1d94bbc5f5adbf27c87c, type: 3}
+      propertyPath: m_TagString
+      value: Structure
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

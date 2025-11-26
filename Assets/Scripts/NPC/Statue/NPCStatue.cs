@@ -88,7 +88,7 @@ public class NPCStatue : NPCBase
         float timer = 0f;
         while (timer < lurkTime)
         {
-            if (PlayerInView())
+            if (visibleTargets.Count != 0)
             {
                 break; // Exit early if condition is met
             }
@@ -98,7 +98,7 @@ public class NPCStatue : NPCBase
 
         yield return new WaitForSeconds(.5f);
 
-        if (PlayerInView())
+        if (visibleTargets.Count != 0)
             currentState = isVisible ? NPCState.Lurk : NPCState.Approach;
         else
             currentState = NPCState.Patrol;
@@ -227,7 +227,7 @@ public class NPCStatue : NPCBase
 
         while (!HasReachedDestination(agent))
         {
-            if (PlayerInView())
+            if (visibleTargets.Count != 0)
             {
                 agent.ResetPath();
                 agent.velocity = Vector3.zero;
@@ -241,7 +241,7 @@ public class NPCStatue : NPCBase
             yield return null;
         }
 
-        currentState = PlayerInView() ? NPCState.Lurk : NPCState.Hide;
+        currentState = visibleTargets.Count != 0 ? NPCState.Lurk : NPCState.Hide;
         RoutinSelection();
     }
     public IEnumerator ForgetPlayer()
@@ -249,7 +249,7 @@ public class NPCStatue : NPCBase
         float timer = 0f;
         while (!isVisible && timer < forgetTime)
         {
-            if (PlayerInView())
+            if (visibleTargets.Count != 0)
             {
                 break; // Exit early if condition is met
             }
@@ -259,7 +259,6 @@ public class NPCStatue : NPCBase
 
         if (timer >= forgetTime)
         {
-
             forget = true;
         }
     }
@@ -275,20 +274,4 @@ public class NPCStatue : NPCBase
     {
         agent.speed = value;
     }    
-
-    private void OnDrawGizmos()
-    {
-        //GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        //if (playerObj == null) return;
-        //
-        //Transform player = playerObj.transform;
-        //Vector3 npcPosition = transform.position + new Vector3(0, 0.45f, 0);
-        //Vector3 playerPosition = player.position;
-        //
-        //if (PlayerInView())
-        //{
-        //    Gizmos.color = Color.red;
-        //    Gizmos.DrawLine(npcPosition, playerPosition); // Optional: show blocked line in gray
-        //}
-    }
 }

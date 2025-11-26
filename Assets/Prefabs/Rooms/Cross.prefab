@@ -280,6 +280,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56b3ed6d6717b164cb0033a06c19c738, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Room
+  layouts: []
   doors:
   - {fileID: 4494617812309903840}
   - {fileID: 7154866323261536296}
@@ -640,13 +641,25 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 2130412920329743522, guid: a52082919871de64cbbadd1080011a6b, type: 3}
+      propertyPath: m_TagString
+      value: Structure
+      objectReference: {fileID: 0}
     - target: {fileID: 5100191712389108339, guid: a52082919871de64cbbadd1080011a6b, type: 3}
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 5100191712389108339, guid: a52082919871de64cbbadd1080011a6b, type: 3}
+      propertyPath: m_TagString
+      value: Structure
+      objectReference: {fileID: 0}
     - target: {fileID: 8966425080833024711, guid: a52082919871de64cbbadd1080011a6b, type: 3}
       propertyPath: m_Layer
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8966425080833024711, guid: a52082919871de64cbbadd1080011a6b, type: 3}
+      propertyPath: m_TagString
+      value: Structure
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

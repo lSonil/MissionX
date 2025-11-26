@@ -15,6 +15,26 @@ public class NPCTheMimic : NPCBase
         StartCoroutine(SpawnLoop());
     }
 
+    public override void Update()
+    {
+        if (contained == ContainedState.Contained) return;
+        bool foundNull = false;
+
+        for (int i = spawnedRooms.Count - 1; i >= 0; i--)
+        {
+            if (spawnedRooms[i] == null)
+            {
+                spawnedRooms.RemoveAt(i);
+                foundNull = true;
+            }
+        }
+
+        if (foundNull)
+        {
+            StartCoroutine(SpawnLoop());
+        }
+    }
+
     IEnumerator SpawnLoop()
     {
         while (true)
@@ -24,7 +44,7 @@ public class NPCTheMimic : NPCBase
                 SpawnRoom();
             }
 
-            yield return new WaitForSeconds(15f); // Always wait before next attempt
+            yield return new WaitForSeconds(2f); // Always wait before next attempt
         }
     }
 
@@ -67,7 +87,7 @@ public class NPCTheMimic : NPCBase
                 Destroy(doorwayInstance);
                 continue;
             }
-
+            print(doorwayInstance);
             selectedDoor.ConnectTo(doorwayInstance.GetComponent<Doorway>());
             selectedDoor.Fill(true);
 

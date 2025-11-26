@@ -652,10 +652,12 @@ MonoBehaviour:
     amount: -1
   - room: {fileID: 8175912968028434839, guid: 2195997dcea08ab4f927aa38ac4df696, type: 3}
     amount: -1
+  - room: {fileID: 2350341281066181865, guid: dce43148be5f720408be3c81bb45f550, type: 3}
+    amount: -1
   specificRoomsToSpawn: []
   spawnedRooms:
   - {fileID: 943896657}
-  maxNumberOfRooms: 2
+  maxNumberOfRooms: 30
   roomsPositions: []
   bonusRoomsPositions: []
   allDoors: []

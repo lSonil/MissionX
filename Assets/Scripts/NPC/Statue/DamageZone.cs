@@ -8,8 +8,10 @@ public class DamageZone : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        bool collided = false;
         if (other.CompareTag("Player"))
         {
+            collided = true;
             HealthSystem health = other.GetComponent<HealthSystem>();
             if (health != null)
             {
@@ -17,6 +19,20 @@ public class DamageZone : MonoBehaviour
                 Debug.Log($"Player entered damage zone. Took {damageAmount} damage.");
             }
         }
-        if( destroyOnTrigger ) {Destroy(gameObject);}
+        if (other.CompareTag("Fragile"))
+        {
+            collided = true;
+            WeakPoint health = other.GetComponent<WeakPoint>();
+            if (health != null)
+            {
+                health.TakeDamage(damageAmount);
+                Debug.Log($"Entered damage zone. Took {damageAmount} damage.");
+            }
+        }
+        if (other.CompareTag("Structure"))
+        {
+            collided = true;
+        }
+        if (collided && destroyOnTrigger ) {Destroy(gameObject);}
     }
 }

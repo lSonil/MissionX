@@ -13,9 +13,10 @@ public class Display : MonoBehaviour, IInteraction
         GetComponent<Terminal>().enabled = !GetComponent<Terminal>().enabled;
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player.GetComponent<MovementSystem>() == null) return;
-            player.GetComponent<MovementSystem>().Block();
+        player.GetComponent<MovementSystem>().Block();
         if (player.GetComponent<MovementSystem>().isBlocked)
         {
+            player.GetComponent<InteractionSystem>().TurnOffFlashLight();
             player.transform.position = targetPosition.position;
 
             Vector3 direction = transform.position - player.transform.position;

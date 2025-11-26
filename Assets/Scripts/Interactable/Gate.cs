@@ -1,5 +1,6 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
+using UnityEngine.Events;
 
 public class Gate : MonoBehaviour, IInteraction
 {
@@ -10,7 +11,8 @@ public class Gate : MonoBehaviour, IInteraction
     public float duration = 1.5f;
 
     private bool isBusy = false;
-    public bool open = false;     
+    public bool open = false;
+    public UnityEvent onActionEvent;
 
     public string GetTextUse() => interactionPromptText;
     public string GetTextPrimary() => "";
@@ -19,6 +21,8 @@ public class Gate : MonoBehaviour, IInteraction
     public void Action()
     {
         if (isBusy || target == null) return;
+
+        onActionEvent?.Invoke();
 
         if (toggleResize)
             StartCoroutine(ResizeZCoroutine());

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 800167152431070130}
   m_Layer: 0
   m_Name: Shelf
-  m_TagString: Untagged
+  m_TagString: Structure
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -86,7 +86,8 @@ MonoBehaviour:
   - {fileID: -5002445605562317088, guid: 17d4c00a65a5a764a99dfa65b1fb2cb3, type: 3}
   - {fileID: 3738584238600848340, guid: cf7040e2b7197d3468165fa4466afea4, type: 3}
   - {fileID: 4388626988716771158, guid: d5e566af9ca86a542b884fe67c26857e, type: 3}
-  spawnChancePercent: 50
+  - {fileID: -4389262632092735462, guid: b5b8022a1544f7a428916dca72d7ddce, type: 3}
+  spawnChancePercent: 55.4
 --- !u!1 &2132473514531986244
 GameObject:
   m_ObjectHideFlags: 0
@@ -135,7 +136,8 @@ MonoBehaviour:
   - {fileID: -5002445605562317088, guid: 17d4c00a65a5a764a99dfa65b1fb2cb3, type: 3}
   - {fileID: 3738584238600848340, guid: cf7040e2b7197d3468165fa4466afea4, type: 3}
   - {fileID: 4388626988716771158, guid: d5e566af9ca86a542b884fe67c26857e, type: 3}
-  spawnChancePercent: 50
+  - {fileID: -4389262632092735462, guid: b5b8022a1544f7a428916dca72d7ddce, type: 3}
+  spawnChancePercent: 55.4
 --- !u!1 &5094824536967866754
 GameObject:
   m_ObjectHideFlags: 0
@@ -184,7 +186,8 @@ MonoBehaviour:
   - {fileID: -5002445605562317088, guid: 17d4c00a65a5a764a99dfa65b1fb2cb3, type: 3}
   - {fileID: 3738584238600848340, guid: cf7040e2b7197d3468165fa4466afea4, type: 3}
   - {fileID: 4388626988716771158, guid: d5e566af9ca86a542b884fe67c26857e, type: 3}
-  spawnChancePercent: 50
+  - {fileID: -4389262632092735462, guid: b5b8022a1544f7a428916dca72d7ddce, type: 3}
+  spawnChancePercent: 55.4
 --- !u!1 &7306463239812901539
 GameObject:
   m_ObjectHideFlags: 0
@@ -233,7 +236,8 @@ MonoBehaviour:
   - {fileID: -5002445605562317088, guid: 17d4c00a65a5a764a99dfa65b1fb2cb3, type: 3}
   - {fileID: 3738584238600848340, guid: cf7040e2b7197d3468165fa4466afea4, type: 3}
   - {fileID: 4388626988716771158, guid: d5e566af9ca86a542b884fe67c26857e, type: 3}
-  spawnChancePercent: 50
+  - {fileID: -4389262632092735462, guid: b5b8022a1544f7a428916dca72d7ddce, type: 3}
+  spawnChancePercent: 55.4
 --- !u!1 &8148158238260754294
 GameObject:
   m_ObjectHideFlags: 0
@@ -282,7 +286,8 @@ MonoBehaviour:
   - {fileID: -5002445605562317088, guid: 17d4c00a65a5a764a99dfa65b1fb2cb3, type: 3}
   - {fileID: 3738584238600848340, guid: cf7040e2b7197d3468165fa4466afea4, type: 3}
   - {fileID: 4388626988716771158, guid: d5e566af9ca86a542b884fe67c26857e, type: 3}
-  spawnChancePercent: 50
+  - {fileID: -4389262632092735462, guid: b5b8022a1544f7a428916dca72d7ddce, type: 3}
+  spawnChancePercent: 55.4
 --- !u!1 &8713659520214685477
 GameObject:
   m_ObjectHideFlags: 0
@@ -331,7 +336,8 @@ MonoBehaviour:
   - {fileID: -5002445605562317088, guid: 17d4c00a65a5a764a99dfa65b1fb2cb3, type: 3}
   - {fileID: 3738584238600848340, guid: cf7040e2b7197d3468165fa4466afea4, type: 3}
   - {fileID: 4388626988716771158, guid: d5e566af9ca86a542b884fe67c26857e, type: 3}
-  spawnChancePercent: 50
+  - {fileID: -4389262632092735462, guid: b5b8022a1544f7a428916dca72d7ddce, type: 3}
+  spawnChancePercent: 55.4
 --- !u!1001 &6115433289128620358
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -383,6 +389,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 42423b85206b60a47bf8e27859b2ca50, type: 3}
       propertyPath: m_Name
       value: Shelf
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 42423b85206b60a47bf8e27859b2ca50, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

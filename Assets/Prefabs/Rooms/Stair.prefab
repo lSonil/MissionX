@@ -90,6 +90,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56b3ed6d6717b164cb0033a06c19c738, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Room
+  layouts: []
   doors:
   - {fileID: 4851430736713377347}
   startingDoor: {fileID: 1280083403403411690}
@@ -675,6 +676,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 5f22a9597da763c4694e88f556a26418, type: 3}
       propertyPath: m_Layer
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 5f22a9597da763c4694e88f556a26418, type: 3}
+      propertyPath: m_TagString
+      value: Structure
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

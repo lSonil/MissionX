@@ -159,6 +159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56b3ed6d6717b164cb0033a06c19c738, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Room
+  layouts: []
   doors:
   - {fileID: 4851430736713377347}
   - {fileID: 8309085183655380795}
@@ -1759,21 +1760,41 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: -8675768119247919577, guid: e7d180561fb021b47bf08c566ebbfb4a, type: 3}
+      propertyPath: m_TagString
+      value: Structure
+      objectReference: {fileID: 0}
     - target: {fileID: -5353336704158661580, guid: e7d180561fb021b47bf08c566ebbfb4a, type: 3}
       propertyPath: m_Layer
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -5353336704158661580, guid: e7d180561fb021b47bf08c566ebbfb4a, type: 3}
+      propertyPath: m_TagString
+      value: Structure
       objectReference: {fileID: 0}
     - target: {fileID: -4836533088660192540, guid: e7d180561fb021b47bf08c566ebbfb4a, type: 3}
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: -4836533088660192540, guid: e7d180561fb021b47bf08c566ebbfb4a, type: 3}
+      propertyPath: m_TagString
+      value: Structure
+      objectReference: {fileID: 0}
     - target: {fileID: -2503358135163073958, guid: e7d180561fb021b47bf08c566ebbfb4a, type: 3}
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: -2503358135163073958, guid: e7d180561fb021b47bf08c566ebbfb4a, type: 3}
+      propertyPath: m_TagString
+      value: Structure
+      objectReference: {fileID: 0}
     - target: {fileID: 281855664364225751, guid: e7d180561fb021b47bf08c566ebbfb4a, type: 3}
       propertyPath: m_Layer
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 281855664364225751, guid: e7d180561fb021b47bf08c566ebbfb4a, type: 3}
+      propertyPath: m_TagString
+      value: Structure
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: e7d180561fb021b47bf08c566ebbfb4a, type: 3}
       propertyPath: m_Name
@@ -1783,17 +1804,33 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 2130412920329743522, guid: e7d180561fb021b47bf08c566ebbfb4a, type: 3}
+      propertyPath: m_TagString
+      value: Structure
+      objectReference: {fileID: 0}
     - target: {fileID: 5100191712389108339, guid: e7d180561fb021b47bf08c566ebbfb4a, type: 3}
       propertyPath: m_Layer
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5100191712389108339, guid: e7d180561fb021b47bf08c566ebbfb4a, type: 3}
+      propertyPath: m_TagString
+      value: Structure
       objectReference: {fileID: 0}
     - target: {fileID: 8338558200757672158, guid: e7d180561fb021b47bf08c566ebbfb4a, type: 3}
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 8338558200757672158, guid: e7d180561fb021b47bf08c566ebbfb4a, type: 3}
+      propertyPath: m_TagString
+      value: Structure
+      objectReference: {fileID: 0}
     - target: {fileID: 8645531508548132977, guid: e7d180561fb021b47bf08c566ebbfb4a, type: 3}
       propertyPath: m_Layer
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8645531508548132977, guid: e7d180561fb021b47bf08c566ebbfb4a, type: 3}
+      propertyPath: m_TagString
+      value: Structure
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

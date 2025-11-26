@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7765801277182609395}
   m_Layer: 0
   m_Name: Statue
-  m_TagString: Untagged
+  m_TagString: SCP
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -96,9 +96,15 @@ MonoBehaviour:
   blockingMask:
     serializedVersion: 2
     m_Bits: 8
+  validMask:
+    serializedVersion: 2
+    m_Bits: 0
   forwardLineLength: 10
+  maxAngle: 80
   viewPoint: {fileID: 8949350271797635255}
-  useWideCone: 0
+  isVisible: 0
+  stunned: 0
+  debug: 0
   attackRange: 0.05
   chaseRange: 3
   lurkTime: 5

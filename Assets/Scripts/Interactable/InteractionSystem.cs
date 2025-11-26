@@ -83,6 +83,11 @@ public class InteractionSystem : MonoBehaviour
             inventory.Scroll(scroll);
         }
     }
+    public void TurnOffFlashLight()
+    {
+        GetComponent<AudioSystem>().PlayFlashlight();
+        flashLight.SetActive(false);
+    }
     public void SetFlashLight()
     {
         GetComponent<AudioSystem>().PlayFlashlight();
@@ -151,6 +156,7 @@ public class InteractionSystem : MonoBehaviour
         // Mark NPCs that were visible but are no longer
         foreach (Transform npc in wereVisibleObjects)
         {
+            if (npc != null)
             if (!visibleObjects.Contains(npc) && npc.GetComponent<NPCBase>() != null)
             {
                 npc.GetComponent<NPCBase>().isVisible = false;
@@ -165,6 +171,8 @@ public class InteractionSystem : MonoBehaviour
         Gizmos.color = Color.green;
         foreach (Transform target in visibleObjects)
         {
+            if (target != null)
+
             Gizmos.DrawLine(transform.position, target.position);
         }
     }

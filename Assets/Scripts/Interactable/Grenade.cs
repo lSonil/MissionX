@@ -38,7 +38,6 @@ public class Grenade : Item
         if (pinPulled) return;
 
         pinPulled = true;
-        Debug.Log("Pin pulled!");
     }
 
     private void Update()
@@ -60,7 +59,6 @@ public class Grenade : Item
 
     private void Explode()
     {
-        Debug.Log("BOOM!");
         if (explosionEffect != null)
         {
             Instantiate(explosionEffect, transform.position, Quaternion.identity);

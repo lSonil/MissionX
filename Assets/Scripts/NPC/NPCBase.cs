@@ -1,4 +1,8 @@
 
+using System.Collections.Generic;
+using System.Linq;
+using UnityEditor;
+using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -11,109 +15,89 @@ public enum ContainedState
 public abstract class NPCBase : MonoBehaviour
 {
     public NavMeshAgent agent;
+    public WeakPoint weakPoint;
 
-    public ContainedState contained= ContainedState.Free;
+    public ContainedState contained = ContainedState.Free;
     public LayerMask blockingMask;
+    public LayerMask validMask;      // which objects count as NPCs/targets
     public float forwardLineLength = 10f;
+    public float maxAngle = 80f;
+    protected List<Transform> visibleTargets = new List<Transform>();
+
     public Transform viewPoint;
 
-    public bool useWideCone = false; // state flag
+    //public bool useWideCone = false; // state flag
 
     public bool isVisible = false;
-    public bool debug=false;
-
-    public bool PlayerInConeLineOfSight(float angleSize = 40f)
+    public bool stunned = false;
+    public bool debug = false;
+    public virtual void Update()
     {
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        if (playerObj == null || viewPoint == null) return false;
-
-        Vector3 npcPosition = viewPoint.position;
-        Vector3 playerPosition = playerObj.transform.position;
-        Vector3 toPlayer = (playerPosition - npcPosition);
-        float distToPlayer = toPlayer.magnitude;
-
-        if (distToPlayer <= 2f)
-            return true;
-
-        Vector3 direction = toPlayer.normalized;
-        float halfAngle = angleSize * 0.5f;
-
-        // --- Narrow cone mode (single line) ---
-        if (!useWideCone)
-        {
-            float angleToPlayer = Vector3.Angle(viewPoint.forward, direction);
-            if (angleToPlayer <= halfAngle && distToPlayer <= forwardLineLength)
-            {
-                if (!Physics.Linecast(npcPosition, playerPosition, blockingMask))
-                {
-                    useWideCone = true; // switch to wide mode
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        // --- Wide cone mode (7 parallel lines along one axis) ---
-        float offsetStep = 0.1f; // tweak spacing
-        bool anySuccess = false;
-
-        for (int i = -3; i <= 3; i++)
-        {
-            Vector3 offset = viewPoint.right * (i * offsetStep); // horizontal offsets
-            Vector3 castDir = (direction + offset).normalized;
-            float castAngle = Vector3.Angle(viewPoint.forward, castDir);
-
-            if (castAngle <= halfAngle && distToPlayer <= forwardLineLength)
-            {
-                if (!Physics.Linecast(npcPosition, npcPosition + castDir * distToPlayer, blockingMask))
-                {
-                    anySuccess = true;
-                    break;
-                }
-            }
-        }
-
-        if (!anySuccess)
-        {
-            useWideCone = false; // revert back to narrow mode
-            return false;
-        }
-
-        return true;
+        ScanForVisibleTatgets();
+        // to kill
+        // if (weakPoint!=null) weakPoint.IsAlive(gameObject);
     }
 
-
-
-    public virtual bool PlayerInView()
+    public void SetContained()
     {
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        if (playerObj == null) return false;
-        if (playerObj.GetComponent<HealthSystem>().CurrentHealth() <= 0) return false;
+        contained = contained == ContainedState.Free ? ContainedState.Contained : ContainedState.Free;
+    }
+    public void SetSuppresed()
+    {
+        contained = ContainedState.Suppressed;
+    }
 
-        Transform player = playerObj.transform;
-        Vector3 npcPosition = viewPoint.position;
-        Vector3 playerPosition = player.position;
+    void ScanForVisibleTatgets()
+    {
+        visibleTargets.Clear();
 
-        // Direction from NPC to Player
-        Vector3 directionToPlayer = (playerPosition - npcPosition).normalized;
-        float angle = Vector3.Angle(viewPoint.forward, directionToPlayer);
+        Collider[] hits = Physics.OverlapSphere(transform.position, forwardLineLength, validMask);
 
-        // Check if Player is in front of NPC
-
-        if (angle < 80f && forwardLineLength >= Vector3.Distance(npcPosition, playerPosition))
+        foreach (Collider hit in hits)
         {
-            //print(Vector3.Distance(npcPosition, playerPosition));
-            // Check for wall obstruction
-            bool blocked = Physics.Linecast(npcPosition, playerPosition, blockingMask);
+            Transform target = hit.transform;
+            Vector3 playerPosition = viewPoint.position;
+            Vector3 targetPosition = target.position;
 
-            if (!blocked)
+            float distance = Vector3.Distance(playerPosition, targetPosition);
+            if (distance > forwardLineLength) continue;
+            if (Physics.Linecast(playerPosition, targetPosition, blockingMask))
+                continue;
+
+            Vector3 directionToTarget = (targetPosition - playerPosition).normalized;
+            Vector3 localDir = viewPoint.InverseTransformDirection(directionToTarget);
+
+            float horizAngle = Mathf.Atan2(localDir.x, localDir.z) * Mathf.Rad2Deg;
+
+            float vertAngle = Mathf.Atan2(localDir.y, localDir.z) * Mathf.Rad2Deg;
+
+            bool withinHorizontal =
+                (horizAngle >= 0 && horizAngle <= maxAngle) ||
+                (horizAngle < 0 && Mathf.Abs(horizAngle) <= maxAngle);
+            
+            bool withinVertical =
+                (vertAngle >= 0 && vertAngle <= maxAngle) ||
+                (vertAngle < 0 && Mathf.Abs(vertAngle) <= maxAngle);
+
+            if (withinHorizontal && withinVertical)
             {
-                //Time.timeScale = 0f;
-                return true;
+                if (target.CompareTag("Player"))
+                {
+                    visibleTargets.Add(target);
+                }
+                else
+                {
+                    Stun();
+                }
             }
         }
-        return false;
+
+        visibleTargets = visibleTargets
+            .OrderBy(t => Vector3.Distance(transform.position, t.position))
+            .ToList();
     }
+
+    public virtual void Stun() { print("stunned"); }
     public virtual bool IsInRange(float range)
     {
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
@@ -128,5 +112,38 @@ public abstract class NPCBase : MonoBehaviour
         // Apply rotation based on X parity
         float yRotation = isOdd ? 90f : 0f;
         return range >= Vector3.Distance(npcPosition, playerPosition);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (viewPoint == null || !debug) return;
+
+        Vector3 origin = viewPoint.position;
+        Vector3 forward = viewPoint.forward;
+
+        float length = forwardLineLength;
+        float horizAngle = maxAngle;
+        float vertAngle = maxAngle;
+
+        // Compute cone radius at the far end
+        float maxAng = Mathf.Max(horizAngle, vertAngle);
+        float radius = Mathf.Tan(maxAngle * Mathf.Deg2Rad) * length;
+
+        // Center of the base circle
+        Vector3 baseCenter = origin + forward * length;
+
+        // Draw the base circle
+        Handles.color = Color.yellow;
+        Handles.DrawWireDisc(baseCenter, forward, radius);
+
+        // Connect origin to points around the circle
+        int segments = 24;
+        for (int i = 0; i < segments; i++)
+        {
+            float angle = (360f / segments) * i;
+            Vector3 dir = Quaternion.AngleAxis(angle, forward) * viewPoint.up;
+            Vector3 pointOnCircle = baseCenter + dir * radius;
+            Gizmos.DrawLine(origin, pointOnCircle);
+        }
     }
 }

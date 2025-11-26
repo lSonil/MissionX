@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 841436542664129961}
   m_Layer: 0
   m_Name: TheWhisperingWalls
-  m_TagString: Untagged
+  m_TagString: SCP
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -49,7 +49,15 @@ MonoBehaviour:
   blockingMask:
     serializedVersion: 2
     m_Bits: 0
+  validMask:
+    serializedVersion: 2
+    m_Bits: 0
   forwardLineLength: 10
+  maxAngle: 80
+  viewPoint: {fileID: 0}
+  isVisible: 0
+  stunned: 0
+  debug: 0
   possibleRoomsToSpawn:
   - room: {fileID: 8175912968028434839, guid: 0a6895d73f8936f44bc44ac60211de2c, type: 3}
     amount: -1

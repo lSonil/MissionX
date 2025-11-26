@@ -134,7 +134,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &220574607
 Transform:
   m_ObjectHideFlags: 0
@@ -716,9 +716,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 793442384024943956}
     m_Modifications:
+    - target: {fileID: 1012341891522789585, guid: baacefb4f960fb84c96512994e1b8e29, type: 3}
+      propertyPath: m_TagString
+      value: Structure
+      objectReference: {fileID: 0}
     - target: {fileID: 4317994464723846504, guid: baacefb4f960fb84c96512994e1b8e29, type: 3}
       propertyPath: m_Name
       value: Car
+      objectReference: {fileID: 0}
+    - target: {fileID: 4317994464723846504, guid: baacefb4f960fb84c96512994e1b8e29, type: 3}
+      propertyPath: m_TagString
+      value: Structure
       objectReference: {fileID: 0}
     - target: {fileID: 5705226381422131683, guid: baacefb4f960fb84c96512994e1b8e29, type: 3}
       propertyPath: m_LocalPosition.x
@@ -759,6 +767,10 @@ PrefabInstance:
     - target: {fileID: 5705226381422131683, guid: baacefb4f960fb84c96512994e1b8e29, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6404655221739735504, guid: baacefb4f960fb84c96512994e1b8e29, type: 3}
+      propertyPath: m_TagString
+      value: Structure
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -962,10 +974,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3723550780666006877, guid: b5b8022a1544f7a428916dca72d7ddce, type: 3}
-      propertyPath: m_CollisionDetection
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6069429380728370841, guid: b5b8022a1544f7a428916dca72d7ddce, type: 3}
       propertyPath: m_Name
       value: Grenade (3)
@@ -2251,10 +2259,6 @@ PrefabInstance:
     - target: {fileID: 5877571270947996257, guid: 1774761de53987d4aa0cb2e10552e5ce, type: 3}
       propertyPath: m_Name
       value: LobbyTerminal
-      objectReference: {fileID: 0}
-    - target: {fileID: 7868239259960476266, guid: 1774761de53987d4aa0cb2e10552e5ce, type: 3}
-      propertyPath: allMonsters.Array.size
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

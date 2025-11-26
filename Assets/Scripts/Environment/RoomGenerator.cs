@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.AI.Navigation;
 using UnityEngine;
-using static UnityEditor.Search.SearchColumn;
+using UnityEngine.SceneManagement;
+
 public class RoomGenerator : MonoBehaviour
 {
     public List<RoomSpawnEntry> possibleRoomsToSpawn;
@@ -29,13 +28,14 @@ public class RoomGenerator : MonoBehaviour
     {
         i = this;
     }
+    int bonustoCheck;
     private void Start()
-    {        
+    {
+        bonustoCheck = SceneData.monstersToTransfer.Count;
         foreach (NPCEntry roomToAdd in SceneData.monstersToTransfer)
         {
             specificRoomsToSpawn.Add(new RoomSpawnEntry(roomToAdd.room, 1));
         }
-
 
         allDoors.AddRange(spawnedRooms[0].doors);
         foreach (var door in spawnedRooms[0].doors)
@@ -225,12 +225,18 @@ public class RoomGenerator : MonoBehaviour
                 else
                 {
                     SpawneRooms(specificRoomsToSpawn, specificRoomsToSpawn.Count);
+                    return;
                 }
                 stopGeneration = false;
             }
         }
         if (stopGeneration)
         {
+            print(maxNumberOfRooms + bonustoCheck);
+            print(spawnedRooms.Count);
+            if(maxNumberOfRooms + bonustoCheck != spawnedRooms.Count)
+                SceneManager.LoadScene("Mission");
+
             foreach (Doorway door in allDoors)
             {
                 bool isHall1 = door.GetComponentInParent<Room>().hall;
