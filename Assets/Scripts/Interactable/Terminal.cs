@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public abstract class Terminal : MonoBehaviour
@@ -23,7 +24,6 @@ public abstract class Terminal : MonoBehaviour
 
         HandleScrollWheel();
 
-        // Poll for text changes if someone sets terminalText.text directly
         if (terminalText != null && terminalText.text != lastText)
         {
             lastText = terminalText.text;
@@ -67,7 +67,6 @@ public abstract class Terminal : MonoBehaviour
         StartCoroutine(RefocusInput());
         inputField.onSubmit.AddListener(OnSubmit);
 
-        // Initial sizing
         if (terminalText != null)
         {
             lastText = terminalText.text;
@@ -75,9 +74,6 @@ public abstract class Terminal : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Safe way to set terminal text and auto-adjust content height.
-    /// </summary>
     protected void SetTerminalText(string newText)
     {
         if (terminalText == null) return;
@@ -97,17 +93,11 @@ public abstract class Terminal : MonoBehaviour
         size.y = preferredHeight;
         content.sizeDelta = size;
 
-        // Reset scroll position when text changes
         if (scrollRect != null)
         {
-            // Snap to top
             scrollRect.verticalNormalizedPosition = 1f;
-
-            // If you prefer snapping to bottom instead, use:
-            // scrollRect.verticalNormalizedPosition = 0f;
         }
 
-        // Also reset content anchoredPosition to ensure consistency
         content.anchoredPosition = Vector2.zero;
     }
 
@@ -122,6 +112,7 @@ public abstract class Terminal : MonoBehaviour
     public void HandleEscape()
     {
         inputField.DeactivateInputField();
+        EventSystem.current.SetSelectedGameObject(null);
         GetComponent<Display>().Action();
         ShowMainMenu();
     }

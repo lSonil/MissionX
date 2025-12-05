@@ -1,7 +1,5 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class HealthSystem : MonoBehaviour
 {
@@ -13,9 +11,24 @@ public class HealthSystem : MonoBehaviour
     private void Start()
     {
         currentHealth = maxHealth;
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Heal();
     }
 
     public int CurrentHealth() => currentHealth;
+    public void Heal()
+    {
+        currentHealth = maxHealth;
+    }
 
     public void TakeDamage(int amount)
     {
@@ -46,10 +59,11 @@ public class HealthSystem : MonoBehaviour
             body.name = "Player";
         }
 
-        gameObject.SetActive(false);
+
         if (SceneManager.GetActiveScene().name == "Mission")
         {
             MissionTerminal.i.AbortMission();
         }
+        Destroy(gameObject);
     }
 }

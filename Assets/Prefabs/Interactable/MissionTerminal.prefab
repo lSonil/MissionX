@@ -46,27 +46,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4160654880019225061, guid: 1774761de53987d4aa0cb2e10552e5ce, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5999985
       objectReference: {fileID: 0}
     - target: {fileID: 4160654880019225061, guid: 1774761de53987d4aa0cb2e10552e5ce, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.12800026
+      value: -1.7000008
       objectReference: {fileID: 0}
     - target: {fileID: 4160654880019225061, guid: 1774761de53987d4aa0cb2e10552e5ce, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.5
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 4160654880019225061, guid: 1774761de53987d4aa0cb2e10552e5ce, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.5
+      value: -0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 4160654880019225061, guid: 1774761de53987d4aa0cb2e10552e5ce, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4160654880019225061, guid: 1774761de53987d4aa0cb2e10552e5ce, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4160654880019225061, guid: 1774761de53987d4aa0cb2e10552e5ce, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -74,7 +74,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4160654880019225061, guid: 1774761de53987d4aa0cb2e10552e5ce, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -90
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4160654880019225061, guid: 1774761de53987d4aa0cb2e10552e5ce, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -84,9 +84,33 @@ PrefabInstance:
       propertyPath: m_Name
       value: MissionTerminal
       objectReference: {fileID: 0}
+    - target: {fileID: 5877571270947996257, guid: 1774761de53987d4aa0cb2e10552e5ce, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6308089510666412708, guid: 1774761de53987d4aa0cb2e10552e5ce, type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7798711687561195601, guid: 1774761de53987d4aa0cb2e10552e5ce, type: 3}
+      propertyPath: m_ClearFlags
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7798711687561195601, guid: 1774761de53987d4aa0cb2e10552e5ce, type: 3}
+      propertyPath: m_BackGroundColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7798711687561195601, guid: 1774761de53987d4aa0cb2e10552e5ce, type: 3}
+      propertyPath: m_BackGroundColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7798711687561195601, guid: 1774761de53987d4aa0cb2e10552e5ce, type: 3}
+      propertyPath: m_BackGroundColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7798711687561195601, guid: 1774761de53987d4aa0cb2e10552e5ce, type: 3}
+      propertyPath: m_BackGroundColor.r
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9087856399358780239, guid: 1774761de53987d4aa0cb2e10552e5ce, type: 3}
       propertyPath: m_Pivot.y
@@ -212,4 +236,3 @@ MonoBehaviour:
   scrollRect: {fileID: 4521800483419174862}
   activNPCInfo: []
   activNPC: []
-  endOfMissionCamera: {fileID: 0}

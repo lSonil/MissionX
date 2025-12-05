@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Item : MonoBehaviour, IInteraction
 {
+    public int itemId=0;
     public int itemTypeId=0;
     [SerializeField] private string promptUse = "Pick Up";
     [SerializeField] private string promptPrimary = "";
@@ -15,7 +16,7 @@ public class Item : MonoBehaviour, IInteraction
     public string GetTextPrimary() => promptPrimary;
     public string GetTextSecundary() => promptSecundary;
 
-    public void Action()
+    public void Action(int i)
     {
         InventorySystem inv = FindFirstObjectByType<InventorySystem>();
         if (inv != null)

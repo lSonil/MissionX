@@ -2,21 +2,88 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
 public class LobyTerminal : Terminal
 {
     public static LobyTerminal i;
     public List<NPCEntry> allMonsters = new List<NPCEntry>();
 
-    private List<NPCEntry> mission1Monsters = new List<NPCEntry>();
-    private List<NPCEntry> mission2Monsters = new List<NPCEntry>();
-    private List<NPCEntry> mission3Monsters = new List<NPCEntry>();
+    [System.Serializable]
+    public class MissionData
+    {
+        public List<NPCEntry> monsters = new List<NPCEntry>();
+        public List<Buffs> buffs = new List<Buffs>();
+        public List<Debuffs> debuffs = new List<Debuffs>();
+    }
+
+    public List<MissionData> missions = new List<MissionData>();
+
     private List<NPCEntry> mainMonsters = new List<NPCEntry>();
+
     public int maxMissionDifficultyCap = 2;
     public int minMissionDifficultyCap = 2;
 
     private enum TerminalState { MainMenu, ErrorScreen }
     private TerminalState currentState = TerminalState.MainMenu;
     private int selectedMission = -1;
+    List<Buffs> GetBuffPool()
+    {
+        return new List<Buffs>((Buffs[])System.Enum.GetValues(typeof(Buffs)));
+    }
+
+    List<Debuffs> GetDebuffPool()
+    {
+        return new List<Debuffs>((Debuffs[])System.Enum.GetValues(typeof(Debuffs)));
+    }
+
+    // Generic enum selection using cap, with guaranteed fallback
+    List<T> TakeByDifficultyEnum<T>(List<T> pool, int maxDifficulty) where T : System.Enum
+    {
+        // Shuffle for randomness
+        for (int i = 0; i < pool.Count; i++)
+        {
+            int rand = Random.Range(i, pool.Count);
+            T tmp = pool[i];
+            pool[i] = pool[rand];
+            pool[rand] = tmp;
+        }
+
+        List<T> result = new List<T>();
+        int current = 0;
+
+        // Try to add as many as fit within the cap
+        foreach (var e in pool)
+        {
+            int cost = (int)(object)e;
+            if (current + cost <= maxDifficulty)
+            {
+                result.Add(e);
+                current += cost;
+            }
+        }
+
+        // If none fit, pick the cheapest one to ensure at least one
+        if (result.Count == 0 && pool.Count > 0)
+        {
+            T cheapest = pool[0];
+            int cheapestCost = (int)(object)cheapest;
+
+            for (int i = 1; i < pool.Count; i++)
+            {
+                int c = (int)(object)pool[i];
+                if (c < cheapestCost)
+                {
+                    cheapest = pool[i];
+                    cheapestCost = c;
+                }
+            }
+
+            result.Add(cheapest);
+        }
+
+        return result;
+    }
+
 
     public override void Start()
     {
@@ -24,20 +91,43 @@ public class LobyTerminal : Terminal
         AssignMonstersToMissions();
         base.Start();
     }
+
     void AssignMonstersToMissions()
     {
-        List<NPCEntry> pool = new List<NPCEntry>(allMonsters);
-        Shuffle(pool);
+        missions.Clear();
 
-        int cap1 = Random.Range(minMissionDifficultyCap, minMissionDifficultyCap + maxMissionDifficultyCap + 1);
-        mission1Monsters = TakeMonstersByDifficulty(pool, cap1);
+        int availableMissions = SceneData.GetAvailableMissionCount();
 
-        int cap2 = Random.Range(minMissionDifficultyCap, minMissionDifficultyCap + maxMissionDifficultyCap + 1);
-        mission2Monsters = TakeMonstersByDifficulty(pool, cap2);
+        List<NPCEntry> monsterPool = new List<NPCEntry>(allMonsters);
+        Shuffle(monsterPool);
 
-        int cap3 = Random.Range(minMissionDifficultyCap, minMissionDifficultyCap + maxMissionDifficultyCap + 1);
-        mission3Monsters = TakeMonstersByDifficulty(pool, cap3);
+        for (int m = 0; m < availableMissions; m++)
+        {
+            MissionData mission = new MissionData();
+
+            int cap = Random.Range(minMissionDifficultyCap, minMissionDifficultyCap + maxMissionDifficultyCap + 1);
+
+            mission.monsters = TakeMonstersByDifficulty(monsterPool, cap);
+
+            if (availableMissions == 1)
+            {
+                // Special case: only one mission
+                mission.buffs = new List<Buffs> { Buffs.nothing };
+                mission.debuffs = new List<Debuffs> { Debuffs.endGame };
+            }
+            else
+            {
+                var buffPool = GetBuffPool();
+                mission.buffs = TakeByDifficultyEnum(buffPool, cap);
+
+                var debuffPool = GetDebuffPool();
+                mission.debuffs = TakeByDifficultyEnum(debuffPool, cap);
+            }
+
+            missions.Add(mission);
+        }
     }
+
 
     List<NPCEntry> TakeMonstersByDifficulty(List<NPCEntry> pool, int maxDifficulty)
     {
@@ -74,9 +164,11 @@ public class LobyTerminal : Terminal
         terminalText.text = "Initiating jump sequence...\nLoading new scene...";
         HandleEscape();
         yield return new WaitForSeconds(2f);
-        SceneData.SetMonsters(mainMonsters);
+        MissionData selected = missions[selectedMission - 1];
+        SceneData.SetMissionData(selected);
         SceneManager.LoadScene("Mission");
     }
+
     void LoadTargetScene()
     {
         terminalText.text = "Initiating jump sequence...\nLoading new scene...";
@@ -93,7 +185,6 @@ public class LobyTerminal : Terminal
         }
         return result;
     }
-
 
     public override void OnSubmit(string input)
     {
@@ -127,54 +218,27 @@ public class LobyTerminal : Terminal
             return;
         }
 
-        if (input == "1")
+        int missionIndex;
+        if (int.TryParse(input, out missionIndex))
         {
-            if (mission1Monsters.Count > 0)
+            if (missionIndex >= 1 && missionIndex <= missions.Count)
             {
-                mainMonsters = new List<NPCEntry>(mission1Monsters);
-                selectedMission = 1;
-                ShowMainMenu();
-            }
-            else
-            {
-                terminalText.text = "ERROR: Mission 1 is unavailable.\nPress Enter to return to main menu.";
-                currentState = TerminalState.ErrorScreen;
+                MissionData chosen = missions[missionIndex - 1];
+                if (chosen.monsters.Count > 0)
+                {
+                    mainMonsters = new List<NPCEntry>(chosen.monsters);
+                    selectedMission = missionIndex;
+                    ShowMainMenu();
+                }
+                else
+                {
+                    terminalText.text = $"ERROR: Mission {missionIndex} is unavailable.\nPress Enter to return to main menu.";
+                    currentState = TerminalState.ErrorScreen;
+                }
             }
             return;
         }
 
-        if (input == "2")
-        {
-            if (mission2Monsters.Count > 0)
-            {
-                mainMonsters = new List<NPCEntry>(mission2Monsters);
-                selectedMission = 2;
-                ShowMainMenu();
-            }
-            else
-            {
-                terminalText.text = "ERROR: Mission 2 is unavailable.\nPress Enter to return to main menu.";
-                currentState = TerminalState.ErrorScreen;
-            }
-            return;
-        }
-
-        if (input == "3")
-        {
-            if (mission3Monsters.Count > 0)
-            {
-                mainMonsters = new List<NPCEntry>(mission3Monsters);
-                selectedMission = 3;
-                ShowMainMenu();
-            }
-            else
-            {
-                terminalText.text = "ERROR: Mission 3 is unavailable.\nPress Enter to return to main menu.";
-                currentState = TerminalState.ErrorScreen;
-            }
-            return;
-        }
-        
         if (string.IsNullOrEmpty(input))
         {
             if (currentState == TerminalState.ErrorScreen)
@@ -191,14 +255,17 @@ public class LobyTerminal : Terminal
     public override void ShowHelp()
     {
         string helpText = "Terminal Help Menu\n\n" +
-                          "Available commands:\n" +
-                          "- 1 : Start Mission 1 (if available)\n" +
-                          "- 2 : Start Mission 2 (if available)\n" +
-                          "- 3 : Start Mission 3 (if available)\n" +
-                          "- go : Load the next scene\n" +
-                          "- esc : Return to main menu or exit terminal\n" +
-                          "- help : Show this help menu\n\n" +
-                          "Press Enter to return to the main menu.";
+                          "Available commands:\n";
+
+        for (int m = 0; m < missions.Count; m++)
+        {
+            helpText += $"- {m + 1} : Start Mission {m + 1} (if available)\n";
+        }
+
+        helpText += "- go : Load the next scene\n" +
+                    "- esc : Return to main menu or exit terminal\n" +
+                    "- help : Show this help menu\n\n" +
+                    "Press Enter to return to the main menu.";
 
         terminalText.text = helpText;
         currentState = TerminalState.ErrorScreen;
@@ -206,27 +273,37 @@ public class LobyTerminal : Terminal
         inputField.ActivateInputField();
     }
 
+    string FormatBuffs(List<Buffs> buffs)
+    {
+        string result = "";
+        foreach (var b in buffs)
+            result += $"[{b}]";
+        return result;
+    }
+
+    string FormatDebuffs(List<Debuffs> debuffs)
+    {
+        string result = "";
+        foreach (var d in debuffs)
+            result += $"[{d}]";
+        return result;
+    }
+
     public override void ShowMainMenu()
     {
         string menuText = "Choose your mission:\nType help for details\n";
 
-        if (mission1Monsters.Count > 0)
-            menuText += $"1 - Mission 1 : {FormatMonsterIDs(mission1Monsters)}\n";
-
-        if (mission2Monsters.Count > 0)
-            menuText += $"2 - Mission 2 : {FormatMonsterIDs(mission2Monsters)}\n";
-
-        if (mission3Monsters.Count > 0)
-            menuText += $"3 - Mission 3 : {FormatMonsterIDs(mission3Monsters)}\n";
-
-        string selectedText = selectedMission switch
+        for (int m = 0; m < missions.Count; m++)
         {
-            1 => "1",
-            2 => "2",
-            3 => "3",
-            _ => "N/A"
-        };
+            if (missions[m].monsters.Count > 0)
+            {
+                menuText += $"{m + 1} - Mission {m + 1} : {FormatMonsterIDs(missions[m].monsters)}\n";
+                menuText += $"   Buffs: {FormatBuffs(missions[m].buffs)}\n";
+                menuText += $"   Debuffs: {FormatDebuffs(missions[m].debuffs)}\n";
+            }
+        }
 
+        string selectedText = selectedMission > 0 ? selectedMission.ToString() : "N/A";
         menuText += $"\nSelected mission: {selectedText}";
         menuText += "\nEnter a number:";
 
@@ -234,4 +311,5 @@ public class LobyTerminal : Terminal
         currentState = TerminalState.MainMenu;
         inputField.text = "";
     }
+
 }

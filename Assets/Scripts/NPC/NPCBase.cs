@@ -42,6 +42,7 @@ public abstract class NPCBase : MonoBehaviour
     {
         contained = contained == ContainedState.Free ? ContainedState.Contained : ContainedState.Free;
     }
+
     public void SetSuppresed()
     {
         contained = ContainedState.Suppressed;

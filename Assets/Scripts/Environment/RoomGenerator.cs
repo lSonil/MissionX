@@ -22,7 +22,7 @@ public class RoomGenerator : MonoBehaviour
     public List<Transform> grid = new List<Transform>();
     public bool debug;
     public GridManager gridManager;
-
+    public List<NPCBase> list;
     public static RoomGenerator i;
     private void Awake()
     {
@@ -31,8 +31,8 @@ public class RoomGenerator : MonoBehaviour
     int bonustoCheck;
     private void Start()
     {
-        bonustoCheck = SceneData.monstersToTransfer.Count;
-        foreach (NPCEntry roomToAdd in SceneData.monstersToTransfer)
+        bonustoCheck = SceneData.missionToTransfer.monsters.Count;
+        foreach (NPCEntry roomToAdd in SceneData.missionToTransfer.monsters)
         {
             specificRoomsToSpawn.Add(new RoomSpawnEntry(roomToAdd.room, 1));
         }
@@ -215,7 +215,10 @@ public class RoomGenerator : MonoBehaviour
                     else
                         possibleRooms[index] = entry;
                 }
-
+                if(newRoom.GetComponent<ContainmentUnit>() != null)
+                {
+                    list.Add(newRoom.GetComponent<ContainmentUnit>().npc);
+                }
                 newRoom.surface.BuildNavMesh();
 
                 if (maxNumberOfRooms + bonusRoomCount > spawnedRooms.Count)
@@ -232,8 +235,6 @@ public class RoomGenerator : MonoBehaviour
         }
         if (stopGeneration)
         {
-            print(maxNumberOfRooms + bonustoCheck);
-            print(spawnedRooms.Count);
             if(maxNumberOfRooms + bonustoCheck != spawnedRooms.Count)
                 SceneManager.LoadScene("Mission");
 
@@ -256,6 +257,7 @@ public class RoomGenerator : MonoBehaviour
                     grid.Add(node);
                 }
             }
+            MissionTerminal.i.DelayedInfo(list);
             gridManager.GridReady(grid);
         }
     }

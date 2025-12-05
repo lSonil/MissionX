@@ -8,7 +8,7 @@ public class Display : MonoBehaviour, IInteraction
     public string GetTextUse() => interactionPromptText;
     public string GetTextPrimary() => "";
     public string GetTextSecundary() => "";
-    public void Action()
+    public void Action(int i = -1)
     {
         GetComponent<Terminal>().enabled = !GetComponent<Terminal>().enabled;
         GameObject player = GameObject.FindGameObjectWithTag("Player");

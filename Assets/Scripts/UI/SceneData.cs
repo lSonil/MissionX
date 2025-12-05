@@ -1,16 +1,42 @@
 using System.Collections.Generic;
-
+using static LobyTerminal;
+public enum Debuffs
+{
+    endGame = 10,
+    slowSpeed = 1,
+    noFlashlight = 2,
+    noJump = 2
+}
+public enum Buffs
+{
+    nothing = 10,
+    fastSpeed = 2,
+    lowGravity = 1
+}
 public static class SceneData
 {
-    public static List<NPCEntry> monstersToTransfer = new List<NPCEntry>();
     public static int day;
-    public static bool showResults;
+    public static bool showResults=false;
     public static Dictionary<string, ContainedState> containmentResults = new Dictionary<string, ContainedState>();
 
-    public static void SetMonsters(List<NPCEntry> monstersOfTheDay)
+    public static MissionData missionToTransfer;
+    public static int maxMissions = 4;
+
+    public static int GetAvailableMissionCount()
     {
-        monstersToTransfer = new List<NPCEntry>(monstersOfTheDay);
+        int cycle = day % maxMissions;
+        int available = maxMissions - cycle;
+
+        if (available < 1)
+            available = 1;
+
+        return available;
     }
+    public static void SetMissionData(MissionData mission)
+    {
+        missionToTransfer = mission;
+    }
+
     public static void PrepareResults(bool state = true)
     {
         showResults = state;

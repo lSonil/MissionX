@@ -1,6 +1,6 @@
 public interface  IInteraction
 {
-    void Action();
+    void Action(int i);
     string GetTextUse();
     string GetTextPrimary();
     string GetTextSecundary();

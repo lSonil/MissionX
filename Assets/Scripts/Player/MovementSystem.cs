@@ -61,7 +61,7 @@ public class MovementSystem : MonoBehaviour
         // Get input
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
-        if ((moveX != 0 || moveZ != 0) && footstepRoutine == null)
+        if ((moveX != 0 || moveZ != 0) && footstepRoutine == null && isGrounded)
         {
             footstepRoutine = StartCoroutine(FootstepLoop());
         }
@@ -91,7 +91,7 @@ public class MovementSystem : MonoBehaviour
             float moveX = Input.GetAxis("Horizontal");
             float moveZ = Input.GetAxis("Vertical");
 
-            if (moveX == 0f && moveZ == 0f)
+            if ((moveX == 0f && moveZ == 0f) || !isGrounded)
             {
                 footstepRoutine = null;
                 yield break; 

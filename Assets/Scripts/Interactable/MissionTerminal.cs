@@ -1,10 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.XR;
 
 public class MissionTerminal : Terminal
 {
@@ -15,34 +13,23 @@ public class MissionTerminal : Terminal
     public List<NPCBase> activNPC = new List<NPCBase>();
     List<NPCEntry> entryList;
     private List<ContainedState> previousStates = new List<ContainedState>();
-    public GameObject endOfMissionCamera;
     private void Awake()
     {
         i = this;
-        endOfMissionCamera.SetActive(false);
-
-        entryList = SceneData.monstersToTransfer;
-        StartCoroutine(DelayedInfo());
+    }
+    public override void Start()
+    {
+        UISystem.i.endOfMissionCamera.SetActive(false);
+        base.Start();
     }
 
-    IEnumerator DelayedInfo()
+    public void DelayedInfo(List<NPCBase> list)
     {
-        foreach (NPCEntry entry in entryList)
-        {
-            activNPCInfo.Add(entry);
-            bool found = false;
-            do
-            {
-                if (GameObject.Find(entry.name + "Containment(Clone)") != null)
-                {
-                    found = true;
-                    activNPC.Add(GameObject.Find(entry.name + "Containment(Clone)").GetComponent<ContainmentUnit>().npc);
-                    previousStates.Add(ContainedState.Free);
-                }
-                yield return null;
-            }
-            while (!found);
-        }
+        print(1);
+        activNPCInfo = SceneData.missionToTransfer.monsters;
+        activNPC = list;
+        previousStates = Enumerable.Repeat(ContainedState.Free, activNPC.Count).ToList();
+        ShowMainMenu();
         StartCoroutine(MonitorContainmentStates());
     }
 
@@ -108,13 +95,14 @@ public class MissionTerminal : Terminal
         StoreContainmentStatesToSceneData();
         SceneData.IncrementDay();
         SceneData.PrepareResults();
-        yield return new WaitForSeconds(5f);
-
         HandleEscape();
-        endOfMissionCamera.SetActive(true);
+        yield return new WaitForSeconds(3f);
+
+        UISystem.i.endOfMissionCamera.SetActive(true);
         terminalText.text = "Initiating jump sequence...\nLoading new scene...";
 
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(3f);
+        UISystem.i.endOfMissionCamera.SetActive(false);
         SceneManager.LoadScene("Lobby"); // Replace with your actual scene name
     }
 

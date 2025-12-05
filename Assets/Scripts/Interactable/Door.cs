@@ -19,7 +19,7 @@ public class Door : MonoBehaviour, IInteraction
     public string GetTextPrimary() => "";
     public string GetTextSecundary() => "";
 
-    public void Action()
+    public void Action(int i)
     {
         if (started) return;
 

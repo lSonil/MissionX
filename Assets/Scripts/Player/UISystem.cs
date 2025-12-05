@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
 
@@ -15,6 +16,7 @@ public class UISystem : MonoBehaviour
     [SerializeField] private float maxAlpha = 0.5f;
     [SerializeField] private float fadeOutSpeed = 0.5f;
     private Coroutine fadeRoutine;
+    public GameObject endOfMissionCamera;
 
     [Header("Interaction UI")]
     public GameObject interactButton;
@@ -30,9 +32,13 @@ public class UISystem : MonoBehaviour
     public ResultsHandler results;
     public TextMeshProUGUI currentDay;
 
+    private void Awake()
+    {
+        i = this;
+    }
     private void Start()
     {
-
+        SceneManager.sceneLoaded += OnSceneLoaded;
         currentDay.text = SceneData.day.ToString();
         if (SceneData.showResults)
         {
@@ -47,7 +53,25 @@ public class UISystem : MonoBehaviour
             c.a = 0f;
             damageOverlay.color = c;
         }
+    }
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
 
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        currentDay.text = SceneData.day.ToString();
+
+        if (SceneData.showResults)
+        {
+            SceneData.PrepareResults(false);
+            StartCoroutine(ShowResults());
+        }
+        else
+        {
+            results.gameObject.SetActive(false);
+        }
     }
     private IEnumerator DamageFlash()
     {
@@ -107,8 +131,8 @@ public class UISystem : MonoBehaviour
     }
     public IEnumerator ShowResults()
     {
-        results.DisplayResults(SceneData.containmentResults);
         results.gameObject.SetActive(true); // Make visible
+        results.DisplayResults(SceneData.containmentResults);
         yield return new WaitForSeconds(5f);
         results.gameObject.SetActive(false); // Hide after 5 seconds
     }
@@ -154,9 +178,5 @@ public class UISystem : MonoBehaviour
         {
             slotIcons[i].sprite = items[i] != null ? fullIcon : emptyIcon;
         }
-    }
-    private void Awake()
-    {
-        i = this;
     }
 }

@@ -42,7 +42,7 @@ public class InteractionSystem : MonoBehaviour
             UISystem.i.EnableInteractButton(interactable);
             if (Input.GetKeyDown(KeyCode.E) && interactable != null && !GetComponent<MovementSystem>().isBlocked)
             {
-                interactable.Action();
+                interactable.Action(inventory.GetHeldItemId());
             }
         }
         if (Input.GetKeyDown(KeyCode.Mouse1) && !GetComponent<MovementSystem>().isBlocked)

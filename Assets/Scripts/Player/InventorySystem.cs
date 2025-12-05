@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,6 +22,10 @@ public class InventorySystem : MonoBehaviour
     public Item GetHeldItem()
     {
         return items[currentIndex];
+    }
+    public int GetHeldItemId()
+    {
+        return items[currentIndex] == null ? -1 : items[currentIndex].itemId;
     }
     public int GetItemType()
     {
@@ -74,7 +79,8 @@ public class InventorySystem : MonoBehaviour
         ReleaseItem(item);
         if(RoomGenerator.i!=null)
             item.transform.SetParent(RoomGenerator.i.FindClosestRoom().transform);
-        item.gameObject.SetActive(true);
+        else
+            item.transform.SetParent(Object.FindObjectsByType<Room>(FindObjectsSortMode.None).FirstOrDefault().transform);
         item.transform.position = handTransform.position;
 
         items[currentIndex] = null;
@@ -106,7 +112,7 @@ public class InventorySystem : MonoBehaviour
             item.gameObject.layer = 11;
 
             item.transform.SetParent(null);
-            item.gameObject.SetActive(false);
+            item.gameObject.SetActive(true);
 
             Rigidbody rb = item.GetComponent<Rigidbody>();
             if (rb != null) rb.isKinematic = false;

@@ -87,7 +87,6 @@ public class NPCTheMimic : NPCBase
                 Destroy(doorwayInstance);
                 continue;
             }
-            print(doorwayInstance);
             selectedDoor.ConnectTo(doorwayInstance.GetComponent<Doorway>());
             selectedDoor.Fill(true);
 
