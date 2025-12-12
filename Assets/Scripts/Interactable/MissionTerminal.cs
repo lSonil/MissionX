@@ -11,7 +11,6 @@ public class MissionTerminal : Terminal
     private TerminalState currentState = TerminalState.MainMenu;
     public List<NPCEntry> activNPCInfo = new List<NPCEntry>();
     public List<NPCBase> activNPC = new List<NPCBase>();
-    List<NPCEntry> entryList;
     private List<ContainedState> previousStates = new List<ContainedState>();
     private void Awake()
     {
@@ -25,7 +24,6 @@ public class MissionTerminal : Terminal
 
     public void DelayedInfo(List<NPCBase> list)
     {
-        print(1);
         activNPCInfo = SceneData.missionToTransfer.monsters;
         activNPC = list;
         previousStates = Enumerable.Repeat(ContainedState.Free, activNPC.Count).ToList();

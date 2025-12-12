@@ -25,6 +25,12 @@ public class Doorway : MonoBehaviour
 
     public void ForceFillBoth(bool isHall, bool filled)
     {
+        if (connectedTo == null)
+        {
+            ForceFill(isHall, filled);
+            return;
+        }
+
         hallDoor.SetActive(false);
         connectedTo.hallDoor.SetActive(false);
         roomDoor.SetActive(false);

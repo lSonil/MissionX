@@ -64,18 +64,25 @@ public class ActionTrigger : MonoBehaviour, IInteraction
             playForward = true;
         }
 
-        if (!playForward)
-            actions.Reverse();
+        // Build list with correct mode BEFORE reversing
+        List<(ActionData data, ActionData.ExecuteMode execMode)> ordered = new();
 
-        List<Coroutine> activeRoutines = new List<Coroutine>();
-
-        for (int i = 0; i < actions.Count; i++)
+        foreach (var a in actions)
         {
-            var a = actions[i];
+            var modeToUse = playForward ? a.mode : a.reverseMode;
+            ordered.Add((a, modeToUse));
+        }
+
+        // Reverse AFTER selecting reverseMode
+        if (!playForward)
+            ordered.Reverse();
+
+        List<Coroutine> activeRoutines = new();
+
+        foreach (var (a, execMode) in ordered)
+        {
             if (a.target == null)
                 continue;
-
-            ActionData.ExecuteMode actualMode = !playForward? a.reverseMode: a.mode;
 
             IEnumerator routine = a.target.DoAction(
                 a.type,
@@ -89,7 +96,7 @@ public class ActionTrigger : MonoBehaviour, IInteraction
             if (routine == null)
                 continue;
 
-            if (actualMode == ActionData.ExecuteMode.After)
+            if (execMode == ActionData.ExecuteMode.After)
             {
                 foreach (var r in activeRoutines)
                     yield return r;

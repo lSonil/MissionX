@@ -1,12 +1,11 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class FlashBang : MonoBehaviour
 {
     public float maxIntensity=20;
     public float fadeSpeed=2;
+    public LayerMask blockingMask;   // obstacles
 
     private void Start()
     {
@@ -33,5 +32,41 @@ public class FlashBang : MonoBehaviour
         }
 
         Destroy(gameObject);
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (!other.CompareTag("Player")) return;
+
+        Transform cam = Camera.main.transform;
+        Vector3 playerPosition = cam.position;
+        Vector3 targetPosition = transform.position;
+
+        // Check distance
+
+        // Check line of sight
+        if (Physics2D.Linecast(playerPosition, targetPosition, blockingMask))
+            return;
+
+        // Direction from player to this object
+        Vector3 directionToTarget = (targetPosition - playerPosition).normalized;
+        Vector3 localDir = cam.InverseTransformDirection(directionToTarget);
+
+        float horizAngle = Mathf.Atan2(localDir.x, localDir.z) * Mathf.Rad2Deg;
+        float vertAngle = Mathf.Atan2(localDir.y, localDir.z) * Mathf.Rad2Deg;
+
+        bool withinHorizontal =
+            (horizAngle >= 0 && horizAngle <= 60) ||
+            (horizAngle < 0 && Mathf.Abs(horizAngle) <= 60);
+
+        bool withinVertical =
+            (vertAngle >= 0 && vertAngle <= 40) ||
+            (vertAngle < 0 && Mathf.Abs(vertAngle) <= 40);
+
+        if (withinHorizontal && withinVertical)
+        {
+            // Player is looking at this object
+            UISystem.i.FadeFlashRoutine();
+        }
     }
 }

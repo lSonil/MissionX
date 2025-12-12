@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Animations;
 
 public enum ActionType { Rotate, Move, Resize, Spawn, Contain, PlaySound }
-public enum AxisEnum { X, Y, Z }
+public enum Axis { X, Y, Z }
 
 [System.Serializable]
 public class ActionData
@@ -14,6 +13,8 @@ public class ActionData
     public float openValue = 1f;
     public float closedValue = 0f;
     public float duration = 1f;
+
+    public GameObject objectToSpawn;
 
     public enum ExecuteMode { After, WithPrevious }
     public ExecuteMode mode = ExecuteMode.After;
@@ -26,10 +27,11 @@ public class ActionData
             case Axis.X: return Vector3.right;
             case Axis.Y: return Vector3.up;
             case Axis.Z: return Vector3.forward;
-            default: return Vector3.right;
         }
+        return Vector3.right;
     }
 }
+
 
 public class ActionList : MonoBehaviour
 {

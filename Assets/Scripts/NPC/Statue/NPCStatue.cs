@@ -18,8 +18,6 @@ public class NPCStatue : NPCBase
 
     private List<Transform> usedGrid;
 
-    public float attackRange = 1f;
-    public float chaseRange = 3f;
     public float lurkTime = 5;
     public float forgetTime = 10;
 
@@ -156,7 +154,7 @@ public class NPCStatue : NPCBase
         Coroutine forgetRoutine;
         forgetRoutine = StartCoroutine(ForgetPlayer());
 
-        while (!isVisible && !IsInRange(chaseRange) && !forget)
+        while (!isVisible && !IsInRange(visibleTargets[0]) && !forget)
         {
             Transform playerPos = GridManager.i.GetPlayerTransform();
             yield return null; // wait one frame
@@ -172,7 +170,7 @@ public class NPCStatue : NPCBase
             currentState = NPCState.Hide;
             RoutinSelection();
         }
-        else if (IsInRange(chaseRange))
+        else if (IsInRange(visibleTargets[0]))
         {
             GridManager.i.GetPlayerTransform().gameObject.GetComponent<HealthSystem>().Die();
             currentState = NPCState.Chase;
@@ -193,7 +191,7 @@ public class NPCStatue : NPCBase
         Coroutine forgetRoutine;
         forgetRoutine = StartCoroutine(ForgetPlayer());
 
-        while (!IsInRange(attackRange) && !forget)
+        while (!IsInRange(visibleTargets[0]) && !forget)
         {
             Transform playerPos = GridManager.i.GetPlayerTransform();
             yield return null; // wait one frame

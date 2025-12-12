@@ -12,6 +12,7 @@ public class RoomGenerator : MonoBehaviour
     public int maxNumberOfRooms;
     [HideInInspector]
     public List<Vector3> roomsPositions = new List<Vector3>();
+    [HideInInspector]
     public List<Vector3> bonusRoomsPositions = new List<Vector3>();
     [HideInInspector]
     public List<Doorway> allDoors;
@@ -24,17 +25,24 @@ public class RoomGenerator : MonoBehaviour
     public GridManager gridManager;
     public List<NPCBase> list;
     public static RoomGenerator i;
+    int bonusToCheck;
     private void Awake()
     {
         i = this;
     }
-    int bonustoCheck;
     private void Start()
     {
-        bonustoCheck = SceneData.missionToTransfer.monsters.Count;
-        foreach (NPCEntry roomToAdd in SceneData.missionToTransfer.monsters)
+        if (debug)
         {
-            specificRoomsToSpawn.Add(new RoomSpawnEntry(roomToAdd.room, 1));
+            bonusToCheck = 1;
+        }
+        else
+        {
+            bonusToCheck = SceneData.missionToTransfer.monsters.Count;
+            foreach (NPCEntry roomToAdd in SceneData.missionToTransfer.monsters)
+            {
+                specificRoomsToSpawn.Add(new RoomSpawnEntry(roomToAdd.room, 1));
+            }
         }
 
         allDoors.AddRange(spawnedRooms[0].doors);
@@ -51,9 +59,23 @@ public class RoomGenerator : MonoBehaviour
         
             Destroy(col);
         }
-        SpawneRooms(possibleRoomsToSpawn, 0);
+        SpawnRooms(possibleRoomsToSpawn, 0);
     }
-    public void SpawneRooms(List<RoomSpawnEntry> possibleRooms, int bonusRoomCount)
+    public void ClearNPC()
+    {
+        foreach (Transform child in NPC.transform)
+        {
+            Destroy(child.gameObject);
+        }
+    }
+    public void ClearRooms()
+    {
+        foreach (Transform child in transform.Cast<Transform>().Skip(1))
+        {
+            Destroy(child.gameObject);
+        }
+    }
+    public void SpawnRooms(List<RoomSpawnEntry> possibleRooms, int bonusRoomCount)
     {
         bool stopGeneration = true;
         if (maxNumberOfRooms + bonusRoomCount > spawnedRooms.Count)
@@ -74,7 +96,7 @@ public class RoomGenerator : MonoBehaviour
 
             if (bonusRoomCount == 0)
             {
-                if ((roll <= threshold && roomsHall.Count > 0) || roomsNoHall.Count == 0 || shuffledDoors.Count==1)
+                if ((roll <= threshold && roomsHall.Count > 0) || roomsNoHall.Count == 0 || shuffledDoors.Count == 1)
                 {
                     shuffledRooms = roomsHall;
                 }
@@ -154,8 +176,8 @@ public class RoomGenerator : MonoBehaviour
                 int maxValue = posibleRoomsToAdd.Max(x => x.Item3);
                 var highestRooms = posibleRoomsToAdd.Where(x => x.Item3 == maxValue).ToList();
                 var chosen = highestRooms[UnityEngine.Random.Range(0, highestRooms.Count)];
-                listRoom =  chosen.Item1;
-                newDoor =  chosen.Item2;
+                listRoom = chosen.Item1;
+                newDoor = chosen.Item2;
 
                 newRoom = Instantiate(listRoom);
                 newRoom.transform.position = newDoor.transform.position;
@@ -165,57 +187,46 @@ public class RoomGenerator : MonoBehaviour
                 unusedDoors.RemoveAll(pair => pair.Item1 == newDoor);
                 newDoor.ConnectTo(newRoom.startingDoor);
 
-                if (!newRoom.CompareTag("SCP"))
-                {
-                    foreach (var door in newRoom.doors)
-                    {
-                        door.connectedTo = null;
 
-                        bool isConnected = false;
-                        (Doorway, float) element = new(null, 0);
-                        foreach (var maybeDoorConnected in unusedDoors)
+                foreach (var door in newRoom.doors)
+                {
+                    door.connectedTo = null;
+
+                    bool isConnected = false;
+                    (Doorway, float) element = new(null, 0);
+                    foreach (var maybeDoorConnected in unusedDoors)
+                    {
+                        if (door.transform.position == maybeDoorConnected.Item1.transform.position)
                         {
-                            if (door.transform.position == maybeDoorConnected.Item1.transform.position)
-                            {
-                                element = maybeDoorConnected;
-                                isConnected = true;
-                                door.ConnectTo(maybeDoorConnected.Item1);
-                            }
+                            element = maybeDoorConnected;
+                            isConnected = true;
+                            door.ConnectTo(maybeDoorConnected.Item1);
                         }
-                        if (!isConnected)
-                            unusedDoors.Add((door, door.hallChance));
-                        else
-                            unusedDoors.Remove(element);
                     }
-
-                    allDoors.AddRange(newRoom.doors);
-
-                    int index = possibleRooms.FindIndex(entry => entry.room == listRoom);
-                    RoomSpawnEntry entry = possibleRooms[index];
-                    entry.amount -= 1;
-                    if (entry.amount == 0)
-                        possibleRooms.RemoveAt(index);
+                    if (!isConnected)
+                        unusedDoors.Add((door, door.hallChance));
                     else
-                        possibleRooms[index] = entry;
-
-                    BoxCollider[] newColliders = newRoom.GetComponents<BoxCollider>();
-                    foreach (BoxCollider col in newColliders)
-                    {
-                        Vector3 localCenter = col.center;
-                        roomsPositions.Add(SetToResolution(newRoom.transform.TransformPoint(localCenter)));
-                    }
+                        unusedDoors.Remove(element);
                 }
+
+                allDoors.AddRange(newRoom.doors);
+
+                int index = possibleRooms.FindIndex(entry => entry.room == listRoom);
+                RoomSpawnEntry entry = possibleRooms[index];
+                entry.amount -= 1;
+                if (entry.amount == 0)
+                    possibleRooms.RemoveAt(index);
                 else
+                    possibleRooms[index] = entry;
+
+                BoxCollider[] newColliders = newRoom.GetComponents<BoxCollider>();
+                foreach (BoxCollider col in newColliders)
                 {
-                    int index = possibleRooms.FindIndex(entry => entry.room == listRoom);
-                    RoomSpawnEntry entry = possibleRooms[index];
-                    entry.amount -= 1;
-                    if (entry.amount == 0)
-                        possibleRooms.RemoveAt(index);
-                    else
-                        possibleRooms[index] = entry;
+                    Vector3 localCenter = col.center;
+                    roomsPositions.Add(SetToResolution(newRoom.transform.TransformPoint(localCenter)));
                 }
-                if(newRoom.GetComponent<ContainmentUnit>() != null)
+
+                if (newRoom.GetComponent<ContainmentUnit>() != null)
                 {
                     list.Add(newRoom.GetComponent<ContainmentUnit>().npc);
                 }
@@ -223,11 +234,11 @@ public class RoomGenerator : MonoBehaviour
 
                 if (maxNumberOfRooms + bonusRoomCount > spawnedRooms.Count)
                 {
-                    SpawneRooms(possibleRooms, bonusRoomCount);
+                    SpawnRooms(possibleRooms, bonusRoomCount);
                 }
                 else
                 {
-                    SpawneRooms(specificRoomsToSpawn, specificRoomsToSpawn.Count);
+                    SpawnRooms(specificRoomsToSpawn, specificRoomsToSpawn.Count);
                     return;
                 }
                 stopGeneration = false;
@@ -235,8 +246,14 @@ public class RoomGenerator : MonoBehaviour
         }
         if (stopGeneration)
         {
-            if(maxNumberOfRooms + bonustoCheck != spawnedRooms.Count)
-                SceneManager.LoadScene("Mission");
+            if (maxNumberOfRooms + bonusToCheck != spawnedRooms.Count)
+            {
+
+                print(maxNumberOfRooms + bonusToCheck);
+                print(spawnedRooms.Count);
+                //SceneManager.LoadScene("Mission");
+                print("ANARCHY!!!!!!!!!");
+            }
 
             foreach (Doorway door in allDoors)
             {
@@ -257,17 +274,10 @@ public class RoomGenerator : MonoBehaviour
                     grid.Add(node);
                 }
             }
+            if(!debug)
             MissionTerminal.i.DelayedInfo(list);
             gridManager.GridReady(grid);
         }
-    }
-
-    Vector3 SetToResolution(Vector3 worldCenter)
-    {
-        worldCenter.x = Mathf.RoundToInt(worldCenter.x);
-        worldCenter.y = Mathf.RoundToInt(worldCenter.y);
-        worldCenter.z = Mathf.RoundToInt(worldCenter.z);
-        return worldCenter;
     }
     public Transform FindClosestRoom()
     {
@@ -287,21 +297,23 @@ public class RoomGenerator : MonoBehaviour
 
         return closest != null ? closest : transform; // Fallback to self
     }
-    public void ClearNPC()
+    public Doorway GetClosestUnusedDoor(Transform target)
     {
-        foreach (Transform child in NPC.transform)
-        {
-            Destroy(child.gameObject);
-        }
-    }
-    public void ClearRooms()
-    {
-        foreach (Transform child in transform.Cast<Transform>().Skip(1))
-        {
-            Destroy(child.gameObject);
-        }
-    }
+        Doorway closestDoor = null;
+        float closestDistance = float.MaxValue;
 
+        foreach (var (door, _) in unusedDoors)
+        {
+            float distance = Vector3.Distance(target.position, door.transform.position);
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                closestDoor = door;
+            }
+        }
+
+        return closestDoor;
+    }
     public List<Vector3> AllOccupiedSpaces(List<Vector3> roomsToExclude = null)
     {
         List<Vector3> allRoomsPositions = new List<Vector3>(roomsPositions);
@@ -314,8 +326,19 @@ public class RoomGenerator : MonoBehaviour
 
         return allRoomsPositions;
     }
+    public void RemoveRoomPosition(Vector3 positionToRemove)
+    {
+        roomsPositions.RemoveAll(pos => pos == positionToRemove);
+        bonusRoomsPositions.RemoveAll(pos => pos == positionToRemove);
+    }
 
-
+    Vector3 SetToResolution(Vector3 worldCenter)
+    {
+        worldCenter.x = Mathf.RoundToInt(worldCenter.x);
+        worldCenter.y = Mathf.RoundToInt(worldCenter.y);
+        worldCenter.z = Mathf.RoundToInt(worldCenter.z);
+        return worldCenter;
+    }
     void OnDrawGizmos()
     {
         if (!debug) return;

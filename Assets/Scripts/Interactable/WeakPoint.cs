@@ -6,21 +6,17 @@ public class WeakPoint : MonoBehaviour
 
     [SerializeField] private int currentHealth=10;
 
+    [SerializeField] private NPCBase body;
+
     private void Start()
     {
+        body=GetComponentInParent<NPCBase>();
         currentHealth = maxHealth;
     }
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
-    }
-    public bool HasHP()
-    {
-        return currentHealth > 0;
-    }
-    public void IsAlive(GameObject destrory)
-    {
         if (currentHealth <= 0)
-            Destroy(destrory);
+            body.Die();
     }
 }

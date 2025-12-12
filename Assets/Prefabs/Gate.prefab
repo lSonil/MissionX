@@ -64,18 +64,18 @@ MonoBehaviour:
     type: 5
     axis: 4
     openValue: 0
-    closedValue: 90
-    duration: 0.3
-    mode: 1
-    reverseMode: 0
+    closedValue: 0
+    duration: 0
+    mode: 0
+    reverseMode: 1
   - target: {fileID: 5209771708897989545}
     type: 2
-    axis: 4
+    axis: 1
     openValue: 0
     closedValue: 1
     duration: 0.3
-    mode: 0
-    reverseMode: 1
+    mode: 1
+    reverseMode: 0
 --- !u!82 &674480617967593455
 AudioSource:
   m_ObjectHideFlags: 0

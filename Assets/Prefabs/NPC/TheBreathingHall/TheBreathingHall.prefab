@@ -1,0 +1,86 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4011383182913117333
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2341625433483137131}
+  - component: {fileID: 841436542664129961}
+  - component: {fileID: 1108120936743327352}
+  m_Layer: 0
+  m_Name: TheBreathingHall
+  m_TagString: SCP
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2341625433483137131
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4011383182913117333}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &841436542664129961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4011383182913117333}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b74edd6a20a2784a8a02ae800583596, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheWhisperingWalls
+  agent: {fileID: 0}
+  bodyReference: {fileID: 0}
+  weakPoint: {fileID: 0}
+  contained: 0
+  blockingMask:
+    serializedVersion: 2
+    m_Bits: 0
+  validMask:
+    serializedVersion: 2
+    m_Bits: 0
+  visionRange: 10
+  middleRange: 10
+  maxAngle: 80
+  asr: {fileID: 0}
+  attckRange: {x: 0, y: 0, z: 0}
+  viewPoint: {fileID: 0}
+  isVisible: 0
+  stunned: 0
+  debug: 0
+  possibleRoomsToSpawn:
+  - room: {fileID: 8175912968028434839, guid: 0a6895d73f8936f44bc44ac60211de2c, type: 3}
+    amount: -1
+  spawnedRooms: []
+  roomsPositions: []
+  containmentUnit: {fileID: 0}
+  maxNumberOfRooms: 10
+  allDoors: []
+--- !u!114 &1108120936743327352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4011383182913117333}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97f68c218d66fb841995079f886208b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ActionSystem

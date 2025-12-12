@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
-using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEngine.Rendering.HableCurve;
 
 public enum ContainedState
 {
@@ -15,44 +15,39 @@ public enum ContainedState
 public abstract class NPCBase : MonoBehaviour
 {
     public NavMeshAgent agent;
+    public Transform bodyReference;
     public WeakPoint weakPoint;
 
     public ContainedState contained = ContainedState.Free;
     public LayerMask blockingMask;
     public LayerMask validMask;      // which objects count as NPCs/targets
-    public float forwardLineLength = 10f;
+    public float visionRange = 10f;
+    public float middleRange = 10f;
     public float maxAngle = 80f;
-    protected List<Transform> visibleTargets = new List<Transform>();
+    public AudioSource asr;
 
+    public Vector3 attckRange = Vector3.zero;
     public Transform viewPoint;
-
-    //public bool useWideCone = false; // state flag
+    protected List<Transform> visibleTargets = new List<Transform>();
 
     public bool isVisible = false;
     public bool stunned = false;
     public bool debug = false;
+    private void Awake()
+    {
+        asr = GetComponent<AudioSource>();
+    }
     public virtual void Update()
     {
         ScanForVisibleTatgets();
         // to kill
         // if (weakPoint!=null) weakPoint.IsAlive(gameObject);
     }
-
-    public void SetContained()
-    {
-        contained = contained == ContainedState.Free ? ContainedState.Contained : ContainedState.Free;
-    }
-
-    public void SetSuppresed()
-    {
-        contained = ContainedState.Suppressed;
-    }
-
-    void ScanForVisibleTatgets()
+    public void ScanForVisibleTatgets()
     {
         visibleTargets.Clear();
 
-        Collider[] hits = Physics.OverlapSphere(transform.position, forwardLineLength, validMask);
+        Collider[] hits = Physics.OverlapSphere(transform.position, visionRange, validMask);
 
         foreach (Collider hit in hits)
         {
@@ -60,14 +55,12 @@ public abstract class NPCBase : MonoBehaviour
             Vector3 playerPosition = viewPoint.position;
             Vector3 targetPosition = target.position;
 
-            float distance = Vector3.Distance(playerPosition, targetPosition);
-            if (distance > forwardLineLength) continue;
+            if (!IsInRange(target)) continue;
             if (Physics.Linecast(playerPosition, targetPosition, blockingMask))
                 continue;
 
             Vector3 directionToTarget = (targetPosition - playerPosition).normalized;
             Vector3 localDir = viewPoint.InverseTransformDirection(directionToTarget);
-
             float horizAngle = Mathf.Atan2(localDir.x, localDir.z) * Mathf.Rad2Deg;
 
             float vertAngle = Mathf.Atan2(localDir.y, localDir.z) * Mathf.Rad2Deg;
@@ -97,32 +90,101 @@ public abstract class NPCBase : MonoBehaviour
             .OrderBy(t => Vector3.Distance(transform.position, t.position))
             .ToList();
     }
-
-    public virtual void Stun() { print("stunned"); }
-    public virtual bool IsInRange(float range)
+    public bool IsInRange(Transform target)
     {
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        if (playerObj == null) return false;
-        Vector3 npcPosition = transform.position;
-        Vector3 playerPosition = playerObj.transform.position;
+        if (bodyReference == null) return false;
 
-        // Check if new X position is odd
-        int xRounded = Mathf.RoundToInt(transform.position.x);
-        bool isOdd = xRounded % 2 != 0;
+        Vector3 toPlayer = target.position - bodyReference.position;
 
-        // Apply rotation based on X parity
-        float yRotation = isOdd ? 90f : 0f;
-        return range >= Vector3.Distance(npcPosition, playerPosition);
+        Vector3 flatDir = new Vector3(toPlayer.x, 0f, toPlayer.z);
+        float distance = flatDir.magnitude;
+
+        Vector3 forward = new Vector3(bodyReference.forward.x, 0f, bodyReference.forward.z).normalized;
+        bool isInFront = Vector3.Dot(forward, flatDir.normalized) >= 0f;
+        return isInFront && distance <= visionRange;
     }
+    public bool IsInMiddleRange(Transform target)
+    {
+        if (bodyReference == null) return false;
 
-    private void OnDrawGizmosSelected()
+        Vector3 toPlayer = target.position - bodyReference.position;
+
+        Vector3 flatDir = new Vector3(toPlayer.x, 0f, toPlayer.z);
+        float distance = flatDir.magnitude;
+
+        Vector3 forward = new Vector3(bodyReference.forward.x, 0f, bodyReference.forward.z).normalized;
+        bool isInFront = Vector3.Dot(forward, flatDir.normalized) >= 0f;
+
+        return isInFront && distance <= middleRange;
+    }
+    public bool IsInAttackRange(Transform target)
+    {
+        Vector3 toPlayer = target.position - bodyReference.position;
+
+        Vector3 right = new Vector3(bodyReference.right.x, 0f, bodyReference.right.z).normalized;
+        Vector3 forward = new Vector3(bodyReference.forward.x, 0f, bodyReference.forward.z).normalized;
+
+        float x = Vector3.Dot(toPlayer, right);
+        float z = Vector3.Dot(toPlayer, forward);
+
+        float b = attckRange.y / 2f; // width
+        float a = attckRange.x;      // height
+
+        return z >= 0f && ((x * x) / (a * a) + (z * z) / (b * b)) <= 1f;
+    }
+    public Vector3 SetToResolution(Vector3 worldCenter)
+    {
+        worldCenter.x = Mathf.RoundToInt(worldCenter.x);
+        worldCenter.y = Mathf.RoundToInt(worldCenter.y);
+        worldCenter.z = Mathf.RoundToInt(worldCenter.z);
+        return worldCenter;
+    }
+    public Vector3[] Arch(Vector3 directionA, Vector3 DirectionB, float width, float lentgh)
+    {
+        int segments = Mathf.Max(8, (int)attckRange.z); // ensure at least 8 segments
+
+        Vector3[] points = new Vector3[segments + 1];
+
+        for (int i = 0; i <= segments; i++)
+        {
+            float t = (float)i / segments;
+            float angle = Mathf.Lerp(-90f, 90f, t) * Mathf.Deg2Rad;
+
+            // ellipse parametric equation
+            float x = Mathf.Cos(angle) * width; // width
+            float z = Mathf.Sin(angle) * lentgh;        // height
+
+            Vector3 local = DirectionB * x + directionA * z;
+            points[i] = bodyReference.position + local;
+        }
+        return points;
+    }
+    public virtual void Die()
+    {
+        Destroy(gameObject);
+    }
+    public virtual void Stun()
+    { print("stunned"); }
+    public virtual void SetContained()
+    {
+        contained = contained == ContainedState.Free ? ContainedState.Contained : ContainedState.Free;
+    }
+    public virtual void SetSuppresed()
+    {
+        contained = ContainedState.Suppressed;
+    }
+    public virtual void SetVisibility(bool state)
+    {
+        isVisible = state;
+    }
+    public virtual void OnDrawGizmosSelected()
     {
         if (viewPoint == null || !debug) return;
 
         Vector3 origin = viewPoint.position;
         Vector3 forward = viewPoint.forward;
 
-        float length = forwardLineLength;
+        float length = visionRange;
         float horizAngle = maxAngle;
         float vertAngle = maxAngle;
 

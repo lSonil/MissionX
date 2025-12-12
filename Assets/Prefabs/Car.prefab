@@ -190,13 +190,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6217471583960320124}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1.433, z: 0.058}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5705226381422131683}
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7296847650492165217
 GameObject:
   m_ObjectHideFlags: 0
@@ -249,18 +249,18 @@ MonoBehaviour:
     type: 5
     axis: 4
     openValue: 0
+    closedValue: 0
+    duration: 0
+    mode: 0
+    reverseMode: 1
+  - target: {fileID: 4292145465342189892}
+    type: 0
+    axis: 2
+    openValue: 0
     closedValue: 90
     duration: 0.3
     mode: 1
     reverseMode: 0
-  - target: {fileID: 4292145465342189892}
-    type: 0
-    axis: 4
-    openValue: 0
-    closedValue: 90
-    duration: 0.3
-    mode: 0
-    reverseMode: 1
 --- !u!114 &4292145465342189892
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -295,7 +295,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 2
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0

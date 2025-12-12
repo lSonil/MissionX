@@ -141,15 +141,11 @@ public class InteractionSystem : MonoBehaviour
 
             if (withinHorizontal && withinVertical)
             {
-                if (target.GetComponent<NPCBase>() != null)
-                {
-                    target.GetComponent<NPCBase>().isVisible = true;
-                    visibleObjects.Add(target);
-                }
-                else
-                {
-                    UISystem.i.FadeFlashRoutine();
-                }
+                NPCBase npc = target.GetComponent<NPCBase>();
+                if (npc == null) continue;
+                if (!npc.isVisible)
+                target.GetComponent<NPCBase>().SetVisibility(true);
+                visibleObjects.Add(target);
             }
         }
 
@@ -159,7 +155,7 @@ public class InteractionSystem : MonoBehaviour
             if (npc != null)
             if (!visibleObjects.Contains(npc) && npc.GetComponent<NPCBase>() != null)
             {
-                npc.GetComponent<NPCBase>().isVisible = false;
+                npc.GetComponent<NPCBase>().SetVisibility(false);
             }
         }
     }
