@@ -90,6 +90,7 @@ public class ActionTrigger : MonoBehaviour, IInteraction
                 a.openValue,
                 a.closedValue,
                 a.duration,
+                a.objectToSpawn,
                 playForward
             );
 
