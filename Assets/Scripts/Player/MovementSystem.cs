@@ -42,8 +42,19 @@ public class MovementSystem : MonoBehaviour
         MouseLook();
         MovePlayer();
         HandleCrouch();
-    }
 
+        if(Input.GetKeyDown(KeyCode.Keypad1))
+        {
+            StartCoroutine(MoveToCenter());
+        }
+    }
+    IEnumerator MoveToCenter()
+    {
+        Block();
+        transform.position = new Vector3(0,1,0);
+        yield return new WaitForSeconds(.2f);
+        Block();
+    }
     void MovePlayer()
     {
         // Ground check

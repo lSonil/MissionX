@@ -251,7 +251,7 @@ public class RoomGenerator : MonoBehaviour
 
                 print(maxNumberOfRooms + bonusToCheck);
                 print(spawnedRooms.Count);
-                //SceneManager.LoadScene("Mission");
+                SceneManager.LoadScene("Mission");
                 print("ANARCHY!!!!!!!!!");
             }
 

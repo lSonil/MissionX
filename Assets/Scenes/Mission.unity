@@ -480,12 +480,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   possibleRoomsToSpawn:
+  - room: {fileID: 2350341281066181865, guid: 952e9f45d810f9349b6fa6f909160e02, type: 3}
+    amount: -1
+  - room: {fileID: 2350341281066181865, guid: 7fe7b2bbd2b23f54a83e69122eee1d84, type: 3}
+    amount: -1
+  - room: {fileID: 2350341281066181865, guid: cd98d8d48907f1044b3a4c90c647b0bb, type: 3}
+    amount: -1
+  - room: {fileID: 2350341281066181865, guid: dce43148be5f720408be3c81bb45f550, type: 3}
+    amount: -1
   - room: {fileID: 8175912968028434839, guid: 782514b49aca67346af0fd51d57d6803, type: 3}
+    amount: -1
+  - room: {fileID: 2350341281066181865, guid: d48788827037bd241b8d84e88259aa42, type: 3}
+    amount: -1
+  - room: {fileID: 8175912968028434839, guid: 08aba6723eee9e446b8e3864471f8fbc, type: 3}
+    amount: 2
+  - room: {fileID: 8175912968028434839, guid: 2195997dcea08ab4f927aa38ac4df696, type: 3}
+    amount: -1
+  - room: {fileID: 2350745012977439139, guid: 53829b321ccc8d84f97657299c8a4ad1, type: 3}
+    amount: -1
+  - room: {fileID: 2350341281066181865, guid: fcd65d13cc70f65449326ad57782f967, type: 3}
+    amount: -1
+  - room: {fileID: 2350341281066181865, guid: 94768a312a265a642b7b62d2094ed505, type: 3}
+    amount: 2
+  - room: {fileID: 2350341281066181865, guid: c3aaba11e50339d4ca7cb89c64c060f1, type: 3}
+    amount: -1
+  - room: {fileID: 2350341281066181865, guid: d9290126d55f4e441bfba4e2e6d0aa08, type: 3}
+    amount: -1
+  - room: {fileID: 2350341281066181865, guid: d9290126d55f4e441bfba4e2e6d0aa08, type: 3}
     amount: -1
   specificRoomsToSpawn: []
   spawnedRooms:
   - {fileID: 943896657}
-  maxNumberOfRooms: 10
+  maxNumberOfRooms: 50
   roomsPositions: []
   bonusRoomsPositions: []
   allDoors: []
@@ -5252,6 +5278,7 @@ MonoBehaviour:
     openValue: 0
     closedValue: 0.875
     duration: 0.5
+    objectToSpawn: {fileID: 0}
     mode: 0
     reverseMode: 1
   - target: {fileID: 170548585}
@@ -5260,6 +5287,7 @@ MonoBehaviour:
     openValue: 0
     closedValue: -0.875
     duration: 0.5
+    objectToSpawn: {fileID: 0}
     mode: 1
     reverseMode: 0
   - target: {fileID: 1061608705}
@@ -5268,6 +5296,7 @@ MonoBehaviour:
     openValue: 0
     closedValue: 42
     duration: 20
+    objectToSpawn: {fileID: 0}
     mode: 0
     reverseMode: 0
   - target: {fileID: 1012751343}
@@ -5276,6 +5305,7 @@ MonoBehaviour:
     openValue: 0
     closedValue: -0.875
     duration: 0.5
+    objectToSpawn: {fileID: 0}
     mode: 0
     reverseMode: 1
   - target: {fileID: 917646499}
@@ -5284,6 +5314,7 @@ MonoBehaviour:
     openValue: 0
     closedValue: 0.875
     duration: 0.5
+    objectToSpawn: {fileID: 0}
     mode: 1
     reverseMode: 0
 --- !u!1 &1165870918 stripped

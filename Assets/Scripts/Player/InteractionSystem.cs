@@ -143,8 +143,8 @@ public class InteractionSystem : MonoBehaviour
             {
                 NPCBase npc = target.GetComponent<NPCBase>();
                 if (npc == null) continue;
-                if (!npc.isVisible)
-                target.GetComponent<NPCBase>().SetVisibility(true);
+                if (!npc.IsVisible())
+                target.GetComponent<NPCBase>().SetVisibility(true, transform);
                 visibleObjects.Add(target);
             }
         }
@@ -155,7 +155,7 @@ public class InteractionSystem : MonoBehaviour
             if (npc != null)
             if (!visibleObjects.Contains(npc) && npc.GetComponent<NPCBase>() != null)
             {
-                npc.GetComponent<NPCBase>().SetVisibility(false);
+                npc.GetComponent<NPCBase>().SetVisibility(false, transform);
             }
         }
     }

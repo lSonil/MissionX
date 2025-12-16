@@ -1,39 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class NPCStatue : NPCBase
 {
-    public enum NPCState
-    {
-        Patrol,
-        Hide,
-
-        Approach,
-        Lurk,
-
-        Chase
-    }
-
     private List<Transform> usedGrid;
-
-    public float lurkTime = 5;
-    public float forgetTime = 10;
-
     public Vector2 speed = new Vector3(5f, 20);
-    public NPCState currentState = NPCState.Hide;
-
-    private Animator animator;
-
-    bool forget = false;
-
-    void Awake()
+    public IsInsideNPC isInsideContainment;
+    void Start()
     {
-        agent = GetComponent<NavMeshAgent>();
         agent.enabled = true;
-        animator = GetComponent<Animator>();
-
         if (GridManager.i != null)
         {
             usedGrid = new List<Transform>(GridManager.i.grid);
@@ -43,231 +20,151 @@ public class NPCStatue : NPCBase
             Debug.LogError("GridManager not found in scene.");
         }
 
-        StartCoroutine(WaitInPlace());
+        StartCoroutine(Patrol());
     }
-    void Update()
+    public override void UpdateAnimatorStates()
     {
-        UpdateAnimatorStates();
+        //animator.SetBool("IsMoving", !(currentState == NPCState.Hide || currentState == NPCState.Lurk));
     }
-    private void UpdateAnimatorStates()
-    {
-        animator.SetBool("IsMoving", !(currentState == NPCState.Hide || currentState == NPCState.Lurk));
-    }
-    public void RoutinSelection()
-    {
-        switch (currentState)
-        {
-            case NPCState.Patrol:
-                NormalPatrol();
-                break;
-
-            case NPCState.Hide:
-                StartCoroutine(WaitInPlace());
-                break;
-
-            case NPCState.Approach:
-                StartCoroutine(Approach());
-                break;
-
-            case NPCState.Lurk:
-                StartCoroutine(WaitToMove());
-                break;
-
-            case NPCState.Chase:
-                StartCoroutine(Chase());
-                break;
-        }
-    }
-
-    public IEnumerator WaitInPlace()
+    public Transform GetTargetDestination()
     {
         SetSpeed(speed[0]);
 
-        float timer = 0f;
-        while (timer < lurkTime)
-        {
-            if (visibleTargets.Count != 0)
-            {
-                break; // Exit early if condition is met
-            }
-            timer += Time.deltaTime;
-            yield return null; // wait one frame
-        }
-
-        yield return new WaitForSeconds(.5f);
-
-        if (visibleTargets.Count != 0)
-            currentState = isVisible ? NPCState.Lurk : NPCState.Approach;
-        else
-            currentState = NPCState.Patrol;
-        RoutinSelection();
-    }
-    public IEnumerator WaitToMove()
-    {
-        SetSpeed(speed[1]);
-
-        agent.ResetPath();
-        agent.velocity = Vector3.zero;
-        while (isVisible)
-        {
-            yield return null; // wait one frame
-        }
-        if (!isVisible)
-        {
-            yield return new WaitForSeconds(.1f);
-            currentState = NPCState.Approach;
-            RoutinSelection();
-        }
-    }
-
-    public void NormalPatrol()
-    {
-        SetSpeed(speed[0]);
-
-        Transform closestTarget = GridManager.i.GetRandomPointInRange(usedGrid, transform, 10);
         Transform furtherTarget = GridManager.i.GetFurthestPoint(usedGrid, transform);
-
+        Transform closestTarget = GridManager.i.GetRandomPointInRange(usedGrid, transform, 10);
+        Transform target;
         if (closestTarget != null)
         {
-            agent.SetDestination(closestTarget.position);
             usedGrid.Remove(closestTarget);
+            target = closestTarget;
         }
         else if (furtherTarget != null)
         {
-            agent.SetDestination(furtherTarget.position);
             usedGrid.Remove(furtherTarget);
+            target = furtherTarget;
         }
         else
         {
             usedGrid = new List<Transform>(GridManager.i.grid);
-            furtherTarget = GridManager.i.GetFurthestPoint(usedGrid, transform);
-            agent.SetDestination(furtherTarget.position);
-            usedGrid.Remove(furtherTarget);
+            Transform newTarget = GridManager.i.GetRandomPointInRange(usedGrid, transform, 10);
+            usedGrid.Remove(newTarget);
+            target = newTarget;
         }
-        StartCoroutine(CheckDestination());
+
+        return target;
     }
-    public IEnumerator Approach()
+    public IEnumerator Patrol()
     {
-        SetSpeed(speed[1]);
-
-        forget = false;
-        Coroutine forgetRoutine;
-        forgetRoutine = StartCoroutine(ForgetPlayer());
-
-        while (!isVisible && !IsInRange(visibleTargets[0]) && !forget)
-        {
-            Transform playerPos = GridManager.i.GetPlayerTransform();
-            yield return null; // wait one frame
-            agent.SetDestination(playerPos.position);
-        }
-        if (forgetRoutine != null)
-        {
-            StopCoroutine(forgetRoutine);
-        }
-        if (isVisible)
-        {
-            yield return new WaitForSeconds(.1f);
-            currentState = NPCState.Hide;
-            RoutinSelection();
-        }
-        else if (IsInRange(visibleTargets[0]))
-        {
-            GridManager.i.GetPlayerTransform().gameObject.GetComponent<HealthSystem>().Die();
-            currentState = NPCState.Chase;
-            RoutinSelection();
-        }
-        else
-        {
-            currentState = NPCState.Hide;
-            RoutinSelection();
-        }
-    }
-
-    public IEnumerator Chase()
-    {
-        SetSpeed(speed[1]);
-
-        forget = false;
-        Coroutine forgetRoutine;
-        forgetRoutine = StartCoroutine(ForgetPlayer());
-
-        while (!IsInRange(visibleTargets[0]) && !forget)
-        {
-            Transform playerPos = GridManager.i.GetPlayerTransform();
-            yield return null; // wait one frame
-            if (playerPos == null)
-            {
-                forget = true;
-            }
-            else
-            agent.SetDestination(playerPos.position);
-        }
-        if (forgetRoutine != null)
-        {
-            StopCoroutine(forgetRoutine);
-        }
-        if (forget)
-        {
-            currentState = NPCState.Hide;
-            RoutinSelection();
-        }
-        else
-        {
-            yield return new WaitForSeconds(.1f);
-            currentState = NPCState.Chase;
-            RoutinSelection();
-        }
-    }
-
-    public IEnumerator CheckDestination()
-    {
-        StartCoroutine(WaitInPlace());
+        bool targetFound = false;
+        SetSpeed(speed.x);
+        agent.SetDestination(GetTargetDestination().position);
 
         while (!HasReachedDestination(agent))
         {
             if (visibleTargets.Count != 0)
             {
+                targetFound = true;
                 agent.ResetPath();
-                agent.velocity = Vector3.zero;
+                StartCoroutine(ChasePlayer());
                 break;
             }
-            if (contained != ContainedState.Free)
+            if (contained == ContainedState.Contained)
             {
                 agent.ResetPath();
-                agent.velocity = Vector3.zero;
+                break;
+            }
+            foreach (Transform t in isVisibleTo)
+            {
+                if (IsInMiddleRange(t))
+                {
+                    agent.ResetPath();
+
+                    Vector3 dir = (t.position - transform.position);
+                    dir.y = 0f; // keep it flat
+
+                    if (dir.sqrMagnitude > 0.0001f)
+                        transform.rotation = Quaternion.LookRotation(dir);
+                    agent.ResetPath();
+                    StartCoroutine(ChasePlayer());
+                    break;
+
+                }
             }
             yield return null;
         }
 
-        currentState = visibleTargets.Count != 0 ? NPCState.Lurk : NPCState.Hide;
-        RoutinSelection();
+        if (!targetFound)
+            StartCoroutine(Patrol());
     }
-    public IEnumerator ForgetPlayer()
+    public IEnumerator ChasePlayer(float waitTime = 300f)
     {
-        float timer = 0f;
-        while (!isVisible && timer < forgetTime)
+        SetSpeed(speed.y);
+        bool stop = false;
+        Transform lastTarget = visibleTargets[0];
+        float initialAngle = scanMaxAngle;
+        scanMaxAngle = 180f;
+        while (!stop)
         {
             if (visibleTargets.Count != 0)
             {
-                break; // Exit early if condition is met
+                if (!IsVisible())
+                {
+                    agent.SetDestination(visibleTargets[0].position);
+                }
+                else
+                {
+                    agent.ResetPath();
+                }
+
+                if (IsInAttackRange(visibleTargets[0]))
+                {
+                    visibleTargets[0].gameObject.GetComponent<HealthSystem>().Die();
+                    stop = true;
+                }
+
+                if (visibleTargets.Count != 0)
+                    lastTarget = visibleTargets[0];
+
+                yield return null;
             }
-            timer += Time.deltaTime;
-            yield return null; // wait one frame
-        }
+            else
+            {
+                scanMaxAngle = initialAngle;
+                float timer = 0f;
+                bool playerCameBack = false;
 
-        if (timer >= forgetTime)
-        {
-            forget = true;
+                while (timer < waitTime)
+                {
+                    if (visibleTargets.Count != 0)
+                    {
+                        playerCameBack = true;
+                        scanMaxAngle = 180f;
+                        break;
+                    }
+                    agent.SetDestination(lastTarget.position);
+
+                    timer += Time.deltaTime;
+                    yield return null;
+                }
+
+                if (!playerCameBack)
+                {
+                    scanMaxAngle = initialAngle;
+                    stop = true;
+                }
+            }
         }
+        StartCoroutine(Patrol());
     }
-
-    private bool HasReachedDestination(NavMeshAgent agent)
+    public override void SetContained()
     {
-        return !agent.pathPending &&
-               agent.remainingDistance <= agent.stoppingDistance &&
-               (!agent.hasPath || agent.velocity.sqrMagnitude == 0f);
+        if(isInsideContainment.isInside)
+        {
+            base.SetContained();
+            if(contained == ContainedState.Free)
+                StartCoroutine(Patrol());
+        }
     }
-
     private void SetSpeed(float value)
     {
         agent.speed = value;

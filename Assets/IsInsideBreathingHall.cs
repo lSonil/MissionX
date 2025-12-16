@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IsInsideTheRoom : MonoBehaviour
+public class IsInsideBreathingHall : MonoBehaviour
 {
     public bool isPlayerInside = false;
 

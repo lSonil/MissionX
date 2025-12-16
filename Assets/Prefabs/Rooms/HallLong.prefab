@@ -730,6 +730,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5352141292378932429}
     m_Modifications:
+    - target: {fileID: 1568837409129057196, guid: 9ad93116dce85094790fa55d4f6d3e45, type: 3}
+      propertyPath: actionList
+      value: 
+      objectReference: {fileID: 213678054057491289}
+    - target: {fileID: 1568837409129057196, guid: 9ad93116dce85094790fa55d4f6d3e45, type: 3}
+      propertyPath: interactionPromptText
+      value: Toggle Gate
+      objectReference: {fileID: 0}
     - target: {fileID: 8039671812042378795, guid: 9ad93116dce85094790fa55d4f6d3e45, type: 3}
       propertyPath: actions.Array.size
       value: 1
@@ -786,38 +794,13 @@ PrefabInstance:
     - {fileID: 8039671812042378795, guid: 9ad93116dce85094790fa55d4f6d3e45, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 9190572820707764841, guid: 9ad93116dce85094790fa55d4f6d3e45, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 855153547445035035}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9ad93116dce85094790fa55d4f6d3e45, type: 3}
 --- !u!4 &2875647772957402028 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8412910909203493075, guid: 9ad93116dce85094790fa55d4f6d3e45, type: 3}
   m_PrefabInstance: {fileID: 5992307087245431679}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &3216567139682269462 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 9190572820707764841, guid: 9ad93116dce85094790fa55d4f6d3e45, type: 3}
-  m_PrefabInstance: {fileID: 5992307087245431679}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &855153547445035035
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3216567139682269462}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 586485fef0986934c88ae720f34865bf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ActionTrigger
-  interactionPromptText: Toggle Gate
-  actionList: {fileID: 213678054057491289}
-  mode: 0
-  itemToUseID: -1
-  oneWayRequiredState: 0
 --- !u!1001 &6158722057142557387
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -826,6 +809,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5352141292378932429}
     m_Modifications:
+    - target: {fileID: 1568837409129057196, guid: 9ad93116dce85094790fa55d4f6d3e45, type: 3}
+      propertyPath: actionList
+      value: 
+      objectReference: {fileID: 213678054057491289}
+    - target: {fileID: 1568837409129057196, guid: 9ad93116dce85094790fa55d4f6d3e45, type: 3}
+      propertyPath: interactionPromptText
+      value: Toggle Gate
+      objectReference: {fileID: 0}
     - target: {fileID: 8039671812042378795, guid: 9ad93116dce85094790fa55d4f6d3e45, type: 3}
       propertyPath: actions.Array.size
       value: 1
@@ -882,38 +873,13 @@ PrefabInstance:
     - {fileID: 8039671812042378795, guid: 9ad93116dce85094790fa55d4f6d3e45, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 9190572820707764841, guid: 9ad93116dce85094790fa55d4f6d3e45, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5769378964669308106}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9ad93116dce85094790fa55d4f6d3e45, type: 3}
 --- !u!4 &2429838171069835800 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8412910909203493075, guid: 9ad93116dce85094790fa55d4f6d3e45, type: 3}
   m_PrefabInstance: {fileID: 6158722057142557387}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &3094910130613727394 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 9190572820707764841, guid: 9ad93116dce85094790fa55d4f6d3e45, type: 3}
-  m_PrefabInstance: {fileID: 6158722057142557387}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &5769378964669308106
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3094910130613727394}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 586485fef0986934c88ae720f34865bf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ActionTrigger
-  interactionPromptText: Toggle Gate
-  actionList: {fileID: 213678054057491289}
-  mode: 0
-  itemToUseID: -1
-  oneWayRequiredState: 0
 --- !u!1001 &7568396737664801989
 PrefabInstance:
   m_ObjectHideFlags: 0

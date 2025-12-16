@@ -175,14 +175,14 @@ public class TheWhisper : NPCBase
                     }
                 }
                 else
-                if (wasVisible != isVisible || wasInMiddleRange)
+                if (wasVisible != IsVisible() || wasInMiddleRange)
                 {
-                    if(wasVisible != isVisible)
+                    if(wasVisible != IsVisible())
                     {
-                        animator.SetBool("LookedAt", isVisible);
+                        animator.SetBool("LookedAt", IsVisible());
                         animator.SetTrigger("Look");
                     }
-                    wasVisible = wasInMiddleRange ? true: isVisible;
+                    wasVisible = wasInMiddleRange ? true: IsVisible();
                     wasInMiddleRange = false;
                 }
                 else
@@ -199,7 +199,7 @@ public class TheWhisper : NPCBase
                 if(!wasVisible)
                 {
                     wasVisible = true;
-                    animator.SetBool("LookedAt", isVisible);
+                    animator.SetBool("LookedAt", IsVisible());
                     animator.SetTrigger("Look");
                 }
                 float timer = 0f;
@@ -305,40 +305,5 @@ public class TheWhisper : NPCBase
         }
 
         base.Die();
-    }
-    public override void OnDrawGizmosSelected()
-    {
-        if (viewPoint == null || !debug) return;
-        Vector3 origin = viewPoint.position;
-        Vector3 forward = new Vector3(viewPoint.forward.x, 0f, viewPoint.forward.z).normalized;
-
-        Handles.color = Color.yellow;
-
-        // Draw central forward line
-        Handles.DrawLine(origin, origin + forward * visionRange);
-
-        Vector3 leftDir = Quaternion.AngleAxis(-maxAngle, Vector3.up) * forward;
-        Handles.DrawLine(origin, origin + leftDir * visionRange);
-        Vector3 rightDir = Quaternion.AngleAxis(maxAngle, Vector3.up) * forward;
-        Handles.DrawLine(origin, origin + rightDir * visionRange);
-        Handles.DrawWireArc(origin, Vector3.up, leftDir, maxAngle * 2, visionRange);
-
-        Vector3 position = bodyReference.position;
-        Vector3 a = new Vector3(bodyReference.right.x, 0f, bodyReference.right.z).normalized;
-        Vector3 b = new Vector3(bodyReference.forward.x, 0f, bodyReference.forward.z).normalized;
-        Vector3 axis = Vector3.Cross(a, b).normalized; // same plane as red arc
-
-        Handles.color = Color.white;
-        // Optional: draw left/right edges of vision cone
-        Vector3 left = position + Quaternion.AngleAxis(-90f, axis) * b * visionRange;
-        Vector3 right = position + Quaternion.AngleAxis(90f, axis) * b * visionRange;
-        Handles.DrawLine(left, right);
-
-        Handles.color = Color.red;
-        Handles.DrawAAPolyLine(2f, Arch(a, b, (attckRange.y / 2f), attckRange.x));
-        Handles.color = Color.white;
-        Handles.DrawAAPolyLine(2f, Arch(a, b, visionRange, visionRange));
-        Handles.color = Color.blue;
-        Handles.DrawAAPolyLine(2f, Arch(a, b, middleRange, middleRange)); 
     }
 }

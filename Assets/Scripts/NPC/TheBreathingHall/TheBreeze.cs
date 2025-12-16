@@ -1,17 +1,47 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEditor;
+using UnityEngine;
 
 public class TheBreeze : NPCBase
 {
-    public bool isInside = false;
-    public override void SetVisibility(bool state)
+    public override void SetVisibility(bool state, Transform seenBy)
     {
         if (ItIsContained()) return;
 
-        if (!state && isVisible && !isInside)
+        base.SetVisibility(state,seenBy);
+
+        if (!state && !IsVisible())
         {
-            TriggerLookAwayEvent();
+            if (!IsInMiddleRange(seenBy))
+            {
+                TriggerLookAwayEvent();
+                if (IsInRange(seenBy))
+                {
+                    StartCoroutine(PreparePrepareTrigger());
+                }
+                else
+                {
+                    TriggerLookAwayEvent();
+                }
+            }
         }
-        base.SetVisibility(state);
+    }
+    IEnumerator PreparePrepareTrigger()
+    {
+        float timer = 0f;
+        const float duration = 2f;
+
+        while (timer < duration)
+        {
+            if (IsVisible())
+            {
+                yield break;
+            }
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        TriggerLookAwayEvent();
     }
     public void TriggerLookAwayEvent()
     {
@@ -31,24 +61,5 @@ public class TheBreeze : NPCBase
         NPCTheBreathingHall brain = GetComponentInParent<NPCTheBreathingHall>();
 
         return GetComponentInParent<NPCTheBreathingHall>().contained == ContainedState.Contained;
-    }
-
-    private void OnTriggerEnter(Collider collision)
-    {
-        if (collision.CompareTag("Player"))
-        {
-            isInside = true;
-        }
-    }
-    private void OnTriggerExit(Collider collision)
-    {
-        if (collision.CompareTag("Player"))
-        {
-            isInside = false;
-            if (!isVisible && !ItIsContained())
-            {
-                TriggerLookAwayEvent();
-            }
-        }
     }
 }

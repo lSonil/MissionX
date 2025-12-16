@@ -10,39 +10,39 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: a360ddfc03b71b14ca7c497004b43d38, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a360ddfc03b71b14ca7c497004b43d38, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.7
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a360ddfc03b71b14ca7c497004b43d38, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.5
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a360ddfc03b71b14ca7c497004b43d38, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a360ddfc03b71b14ca7c497004b43d38, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.5
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a360ddfc03b71b14ca7c497004b43d38, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.5
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a360ddfc03b71b14ca7c497004b43d38, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.5
+      value: -0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a360ddfc03b71b14ca7c497004b43d38, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -90
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a360ddfc03b71b14ca7c497004b43d38, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -90
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a360ddfc03b71b14ca7c497004b43d38, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -65,7 +65,7 @@ PrefabInstance:
       addedObject: {fileID: 3607468506655084689}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a360ddfc03b71b14ca7c497004b43d38, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8039671812042378795}
+      addedObject: {fileID: 1568837409129057196}
   m_SourcePrefab: {fileID: 100100000, guid: a360ddfc03b71b14ca7c497004b43d38, type: 3}
 --- !u!1 &9190572820707764841 stripped
 GameObject:
@@ -93,7 +93,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.003, y: 0.001, z: 0.003}
   m_Center: {x: 0, y: -0.0005, z: 0}
---- !u!114 &8039671812042378795
+--- !u!114 &1568837409129057196
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -102,22 +102,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 9190572820707764841}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a3332b9e741ffec42812e348fa2725b1, type: 3}
+  m_Script: {fileID: 11500000, guid: 586485fef0986934c88ae720f34865bf, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Gate
-  interactionPromptText: Toggle Door
-  onActionEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ButtonSystem, Assembly-CSharp
-        m_MethodName: Resize
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+  m_EditorClassIdentifier: Assembly-CSharp::ActionTrigger
+  interactionPromptText: 
+  actionList: {fileID: 0}
+  mode: 0
+  itemToUseID: -1
+  oneWayRequiredState: 0

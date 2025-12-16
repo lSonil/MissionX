@@ -74,24 +74,24 @@ GameObject:
   - component: {fileID: 2616688238610928474}
   - component: {fileID: 2350745012977439139}
   - component: {fileID: -4957614280397222358}
-  - component: {fileID: 5417194377573580045}
-  - component: {fileID: 5105826831489975079}
-  - component: {fileID: 3024596323078683187}
-  - component: {fileID: 2890244517538484044}
-  - component: {fileID: 3515104049983701898}
-  - component: {fileID: 4518746284224080888}
-  - component: {fileID: 3186091041204346484}
-  - component: {fileID: 5607379281308962518}
-  - component: {fileID: 5893042336824039227}
-  - component: {fileID: 1902227143449629926}
-  - component: {fileID: 4352242819505559729}
-  - component: {fileID: 3035271295339224680}
-  - component: {fileID: 6153061511490306261}
-  - component: {fileID: 8707068828570216603}
-  - component: {fileID: 4961502972122490956}
-  - component: {fileID: 2891580444039924152}
-  - component: {fileID: 7231219970565068047}
-  - component: {fileID: 691888111225710224}
+  - component: {fileID: 5379305557262669155}
+  - component: {fileID: 6331503469114726423}
+  - component: {fileID: 8171545946367683836}
+  - component: {fileID: 8095354625617704984}
+  - component: {fileID: 6818671555785797123}
+  - component: {fileID: 78526192844734954}
+  - component: {fileID: 6820171112923135135}
+  - component: {fileID: 4274067405951652728}
+  - component: {fileID: 5472286212167219124}
+  - component: {fileID: 3917123370057348691}
+  - component: {fileID: 4984801207904259663}
+  - component: {fileID: 7839817440693065480}
+  - component: {fileID: 8212992967098573264}
+  - component: {fileID: 6014334283678460955}
+  - component: {fileID: 5300682022499637623}
+  - component: {fileID: 8131074806408437761}
+  - component: {fileID: 8202163795921938351}
+  - component: {fileID: 4496884588465312017}
   m_Layer: 0
   m_Name: Room
   m_TagString: Untagged
@@ -171,7 +171,7 @@ MonoBehaviour:
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 0}
   m_BuildHeightMesh: 0
---- !u!65 &5417194377573580045
+--- !u!65 &5379305557262669155
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -192,7 +192,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 0, y: 1, z: 1}
---- !u!65 &5105826831489975079
+--- !u!65 &6331503469114726423
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -213,7 +213,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 2, y: 1, z: 1}
---- !u!65 &3024596323078683187
+--- !u!65 &8171545946367683836
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -234,7 +234,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: -2, y: 1, z: 1}
---- !u!65 &2890244517538484044
+--- !u!65 &8095354625617704984
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -255,7 +255,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 0, y: 3, z: 1}
---- !u!65 &3515104049983701898
+--- !u!65 &6818671555785797123
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -276,7 +276,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 0, y: 1, z: 3}
---- !u!65 &4518746284224080888
+--- !u!65 &78526192844734954
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -297,7 +297,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 2, y: 3, z: 1}
---- !u!65 &3186091041204346484
+--- !u!65 &6820171112923135135
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -318,7 +318,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 2, y: 1, z: 3}
---- !u!65 &5607379281308962518
+--- !u!65 &4274067405951652728
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -339,7 +339,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: -2, y: 3, z: 1}
---- !u!65 &5893042336824039227
+--- !u!65 &5472286212167219124
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -360,7 +360,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: -2, y: 1, z: 3}
---- !u!65 &1902227143449629926
+--- !u!65 &3917123370057348691
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -381,7 +381,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 0, y: 3, z: 3}
---- !u!65 &4352242819505559729
+--- !u!65 &4984801207904259663
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -402,7 +402,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 0, y: 1, z: 5}
---- !u!65 &3035271295339224680
+--- !u!65 &7839817440693065480
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -423,7 +423,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 2, y: 3, z: 3}
---- !u!65 &6153061511490306261
+--- !u!65 &8212992967098573264
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -444,7 +444,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 2, y: 1, z: 5}
---- !u!65 &8707068828570216603
+--- !u!65 &6014334283678460955
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -465,7 +465,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: -2, y: 3, z: 3}
---- !u!65 &4961502972122490956
+--- !u!65 &5300682022499637623
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -486,7 +486,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: -2, y: 1, z: 5}
---- !u!65 &2891580444039924152
+--- !u!65 &8131074806408437761
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -507,7 +507,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 0, y: 3, z: 5}
---- !u!65 &7231219970565068047
+--- !u!65 &8202163795921938351
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -528,7 +528,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 2, y: 3, z: 5}
---- !u!65 &691888111225710224
+--- !u!65 &4496884588465312017
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -623,14 +623,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8747523679021902181}
     m_Modifications:
-    - target: {fileID: 2641389494114671949, guid: b694c3cb827761e4da7340022bd1bb92, type: 3}
-      propertyPath: wall
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2641389494114671949, guid: b694c3cb827761e4da7340022bd1bb92, type: 3}
-      propertyPath: roomDoor
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 4634361006028363979, guid: b694c3cb827761e4da7340022bd1bb92, type: 3}
       propertyPath: m_Name
       value: Sdoor
@@ -676,9 +668,7 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 7704515378972278170, guid: b694c3cb827761e4da7340022bd1bb92, type: 3}
-    - {fileID: 31421190827573653, guid: b694c3cb827761e4da7340022bd1bb92, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b694c3cb827761e4da7340022bd1bb92, type: 3}

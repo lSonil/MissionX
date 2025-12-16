@@ -41,7 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4740193300178212748}
   - component: {fileID: 4581322421610059835}
-  - component: {fileID: 4278692290899300460}
+  - component: {fileID: 7890154439595760254}
   m_Layer: 7
   m_Name: Breeze
   m_TagString: Untagged
@@ -77,7 +77,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TheWhisper
   agent: {fileID: 0}
-  bodyReference: {fileID: 0}
+  bodyReference: {fileID: 4740193300178212748}
   weakPoint: {fileID: 0}
   contained: 0
   blockingMask:
@@ -86,17 +86,16 @@ MonoBehaviour:
   validMask:
     serializedVersion: 2
     m_Bits: 0
-  visionRange: 10
-  middleRange: 10
-  maxAngle: 80
+  visionRange: 5
+  middleRange: 2
+  scanMaxAngle: 0
   asr: {fileID: 0}
-  attckRange: {x: 0, y: 0, z: 0}
-  viewPoint: {fileID: 0}
-  isVisible: 0
+  attckRange: {x: 0, y: 0, z: 20}
+  viewPoint: {fileID: 4740193300178212748}
+  isVisibleTo: []
   stunned: 0
-  debug: 0
-  isInside: 0
---- !u!65 &4278692290899300460
+  debug: 1
+--- !u!65 &7890154439595760254
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -115,8 +114,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2, y: 1.9, z: 1}
-  m_Center: {x: 0, y: 0, z: -0.2}
+  m_Size: {x: 2, y: 2, z: 0.1}
+  m_Center: {x: 0, y: 0, z: -0.05}
 --- !u!1 &6555947846378736919
 GameObject:
   m_ObjectHideFlags: 0
