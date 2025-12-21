@@ -9,30 +9,79 @@ using UnityEditor.SceneManagement;
 
 public class Room : MonoBehaviour
 {
-    public List<GameObject> layouts;
-    public List<Doorway> doors;
     public Doorway startingDoor;
+    [HideInInspector]
+    public List<GameObject> layouts;
+    [HideInInspector]
+    public List<Doorway> doors;
+    [HideInInspector]
     public List<Transform> nodes;
-    public NavMeshSurface surface;
+    [HideInInspector]
+    public List<ItemSpawner> spawnPoints;
     public bool hall;
     public List<Transform> Rubies;
+
+    [HideInInspector]
+    public NavMeshSurface surface;
 
     private List<Vector3> debugOverlapPositions = new();
     private List<Bounds> placedColliderBounds = new();
 
-    private void Start()
+    public void CollectSpawnPoints()
+    {
+        spawnPoints.Clear();
+
+        // true = include inactive, but we filter manually
+        ItemSpawner[] all = GetComponentsInChildren<ItemSpawner>(true);
+
+        foreach (var sp in all)
+        {
+            if (sp.gameObject.activeInHierarchy)
+                spawnPoints.Add(sp);
+        }
+    }
+    public void PrepareDoors()
+    {
+        doors.Clear();
+
+        GameObject parent = GameObject.Find("Doors");
+        if (parent != null)
+        {
+            foreach (Transform child in parent.transform)
+            {
+                Doorway d = child.GetComponent<Doorway>();
+                if (d != null && d != startingDoor)
+                    doors.Add(d);
+            }
+        }
+    }
+    public void PrepareLayout()
     {
         surface = GetComponent<NavMeshSurface>();
 
-        if (layouts == null || layouts.Count == 0) return;
+        layouts.Clear();
 
-        // Pick a random index
-        int randomIndex = Random.Range(0, layouts.Count);
-
-        for (int i = 0; i < layouts.Count; i++)
+        GameObject parent = GameObject.Find("Layouts");
+        if (parent != null)
         {
-            // Enable only the chosen one
-            layouts[i].SetActive(i == randomIndex);
+            foreach (Transform child in parent.transform)
+                layouts.Add(child.gameObject);
+
+            int randomIndex = Random.Range(0, layouts.Count);
+
+            for (int i = 0; i < layouts.Count; i++)
+            {
+                layouts[i].SetActive(false);
+                break;
+            }
+        }
+        nodes.Clear();
+
+        parent = GameObject.Find("Nodes");
+        if (parent != null)
+        {
+            foreach (Transform child in parent.transform)
+                nodes.Add(child);
         }
     }
     public void RegenerateColliders()

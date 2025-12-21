@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -34,12 +35,12 @@ public class InteractionSystem : MonoBehaviour
         Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
         RaycastHit hit;
 
-        UISystem.i.EnableInteractButton(null);
+        GetComponent<PlayerCore>().uis.EnableInteractButton(null);
         LayerMask interactionMask = LayerMask.GetMask("Interactable", "Item");
         if (Physics.Raycast(ray, out hit, range, interactionMask))
         {
             IInteraction interactable = hit.collider.GetComponent<IInteraction>();
-            UISystem.i.EnableInteractButton(interactable);
+            GetComponent<PlayerCore>().uis.EnableInteractButton(interactable);
             if (Input.GetKeyDown(KeyCode.E) && interactable != null && !GetComponent<MovementSystem>().isBlocked)
             {
                 interactable.Action(inventory.GetHeldItemId());
@@ -143,8 +144,8 @@ public class InteractionSystem : MonoBehaviour
             {
                 NPCBase npc = target.GetComponent<NPCBase>();
                 if (npc == null) continue;
-                if (!npc.isVisible)
-                target.GetComponent<NPCBase>().SetVisibility(true);
+                if (!npc.IsVisible())
+                target.GetComponent<NPCBase>().SetVisibility(true, transform);
                 visibleObjects.Add(target);
             }
         }
@@ -155,7 +156,7 @@ public class InteractionSystem : MonoBehaviour
             if (npc != null)
             if (!visibleObjects.Contains(npc) && npc.GetComponent<NPCBase>() != null)
             {
-                npc.GetComponent<NPCBase>().SetVisibility(false);
+                npc.GetComponent<NPCBase>().SetVisibility(false, transform);
             }
         }
     }

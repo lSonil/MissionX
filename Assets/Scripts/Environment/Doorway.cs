@@ -13,7 +13,6 @@ public class Doorway : MonoBehaviour
     {
         connectedTo = door;
         door.connectedTo = this;
-
     }
     public void Disconnect()
     {

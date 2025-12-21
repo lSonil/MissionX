@@ -25,34 +25,29 @@ public class ScanHandler : MonoBehaviour
     {
         if ((targetLayers.value & (1 << other.gameObject.layer)) == 0) return;
 
-        // Check line of sight
         Vector3 origin = transform.position;
         Vector3 target = other.transform.position;
 
         if (Physics.Linecast(origin, target, obstructionLayers)) return;
 
-        // Check if this target already has a ping
         if (activePings.ContainsKey(other.transform))
         {
-            // If the ping was destroyed, remove it
             if (activePings[other.transform] == null)
             {
                 activePings.Remove(other.transform);
             }
             else
             {
-                return; // already has a valid ping
+                return;
             }
         }
 
-        // Spawn ping
         GameObject ping = Instantiate(prefabToSpawn.gameObject, target, Quaternion.identity);
         PingInfo pingInfo = ping.GetComponent<PingInfo>();
-        pingInfo.info.text = other.gameObject.name;
+        pingInfo.info.text = other.GetComponent<Item>().GetName();
         pingInfo.lifetime = pingLifetime;
         pingInfo.trackedTarget = other.transform;
 
-        // Track it
         activePings[other.transform] = ping;
     }
 

@@ -433,7 +433,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2465676221307756367}
-  - {fileID: 1031985628714328638}
   - {fileID: 8678754748189187792}
   - {fileID: 8747523679021902181}
   m_Father: {fileID: 0}
@@ -450,6 +449,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56b3ed6d6717b164cb0033a06c19c738, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Room
+  layouts: []
   doors: []
   startingDoor: {fileID: 7092487068211934008}
   nodes:
@@ -463,9 +463,9 @@ MonoBehaviour:
   - {fileID: 5626669691782036301}
   - {fileID: 8389715448670915052}
   - {fileID: 2849081579697087923}
-  surface: {fileID: -8494299666530383221}
   hall: 0
   Rubies: []
+  surface: {fileID: -8494299666530383221}
 --- !u!65 &1758402546204972745
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -972,68 +972,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 5551418225153903260, guid: e27f7547e62afcb4fbc5c8da83447cdc, type: 3}
---- !u!1001 &2879877238440683250
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 2616688238610928474}
-    m_Modifications:
-    - target: {fileID: 8389426998506920200, guid: 3a7cc7f48ea67db4184f5a65f56fa11b, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8389426998506920200, guid: 3a7cc7f48ea67db4184f5a65f56fa11b, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1.6000001
-      objectReference: {fileID: 0}
-    - target: {fileID: 8389426998506920200, guid: 3a7cc7f48ea67db4184f5a65f56fa11b, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8389426998506920200, guid: 3a7cc7f48ea67db4184f5a65f56fa11b, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8389426998506920200, guid: 3a7cc7f48ea67db4184f5a65f56fa11b, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8389426998506920200, guid: 3a7cc7f48ea67db4184f5a65f56fa11b, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8389426998506920200, guid: 3a7cc7f48ea67db4184f5a65f56fa11b, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8389426998506920200, guid: 3a7cc7f48ea67db4184f5a65f56fa11b, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 180
-      objectReference: {fileID: 0}
-    - target: {fileID: 8389426998506920200, guid: 3a7cc7f48ea67db4184f5a65f56fa11b, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8389426998506920200, guid: 3a7cc7f48ea67db4184f5a65f56fa11b, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9162269750815081394, guid: 3a7cc7f48ea67db4184f5a65f56fa11b, type: 3}
-      propertyPath: m_Name
-      value: LightPad
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 3a7cc7f48ea67db4184f5a65f56fa11b, type: 3}
---- !u!4 &1031985628714328638 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3000866717001712844, guid: 3a7cc7f48ea67db4184f5a65f56fa11b, type: 3}
-  m_PrefabInstance: {fileID: 2879877238440683250}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5099634612543794805
 PrefabInstance:
   m_ObjectHideFlags: 0

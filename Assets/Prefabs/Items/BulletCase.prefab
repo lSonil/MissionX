@@ -48,7 +48,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbc0a8f0ff8958841a52c14eabdc9a4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ammo
+  itemId: 0
   itemTypeId: 0
+  itemWeight: 3
   promptUse: Pick Up
   promptPrimary: 
   promptSecundary: 

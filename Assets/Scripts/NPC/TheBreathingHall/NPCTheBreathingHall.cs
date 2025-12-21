@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
+
 public class NPCTheBreathingHall : NPCBase
 {
     public List<RoomSpawnEntry> possibleRoomsToSpawn;
@@ -118,6 +118,8 @@ public class NPCTheBreathingHall : NPCBase
                 newRoom = Instantiate(listRoom);
                 newDoor = shuffledDoors[0].Item1;
 
+                newRoom.PrepareDoors();
+
                 if (copyOfShuffledRooms[0].amount != 0)
                 {
                     newRoom.transform.position = newDoor.transform.position;
@@ -191,7 +193,8 @@ public class NPCTheBreathingHall : NPCBase
             if (spawnedRooms.Count == 1)
                 spawnedFirstRoom = true;
 
-            spawnedRooms.Add(newRoom); 
+            spawnedRooms.Add(newRoom);
+            newRoom.PrepareLayout();
             unusedDoors.RemoveAll(pair => pair.Item1 == newDoor);
             newDoor.ConnectTo(newRoom.startingDoor);
             newDoor.ForceFillBoth(true, false);
@@ -250,13 +253,13 @@ public class NPCTheBreathingHall : NPCBase
     }
     public void PlaceContainment()
     {
-        if (containmentUnit.startingDoor.GetComponentInChildren<TheBreeze>().isVisible)
+        if (containmentUnit.startingDoor.GetComponentInChildren<TheBreeze>().IsVisible())
             return;
 
         
         foreach (Doorway door in containmentUnit.doors)
         {
-            if (door.GetComponentInChildren<TheBreeze>().isVisible)
+            if (door.GetComponentInChildren<TheBreeze>().IsVisible())
                 return;
         }
 
@@ -293,7 +296,7 @@ public class NPCTheBreathingHall : NPCBase
                 overlaps = true;
             }
 
-            if(doorway.GetComponentInChildren<TheBreeze>().isVisible)
+            if(doorway.GetComponentInChildren<TheBreeze>().IsVisible())
             {
                 overlaps = true;
             }
@@ -338,7 +341,7 @@ public class NPCTheBreathingHall : NPCBase
             yield return new WaitForSeconds(1);
         while (true)
         {
-            while (contained == ContainedState.Contained || containmentUnit.GetComponent<IsInsideTheRoom>().isPlayerInside)
+            while (contained == ContainedState.Contained || containmentUnit.GetComponent<IsInsideBreathingHall>().isPlayerInside)
             {
                 yield return null;
             }
@@ -391,23 +394,23 @@ public class NPCTheBreathingHall : NPCBase
     {
         if(spawnedRooms.Count == 0)
         {
-            if (containmentUnit.GetComponent<IsInsideTheRoom>().isPlayerInside || containmentUnit.startingDoor.GetComponentInChildren<TheBreeze>().isVisible)
+            if (containmentUnit.GetComponent<IsInsideBreathingHall>().isPlayerInside || containmentUnit.startingDoor.GetComponentInChildren<TheBreeze>().IsVisible())
                 return false;
             else
                 return true;
         }
-        if (spawnedRooms[spawnedRooms.Count - 1].GetComponent<IsInsideTheRoom>().isPlayerInside || spawnedRooms[0].GetComponent<IsInsideTheRoom>().isPlayerInside || containmentUnit.GetComponent<IsInsideTheRoom>().isPlayerInside)
+        if (spawnedRooms[spawnedRooms.Count - 1].GetComponent<IsInsideBreathingHall>().isPlayerInside || spawnedRooms[0].GetComponent<IsInsideBreathingHall>().isPlayerInside || containmentUnit.GetComponent<IsInsideBreathingHall>().isPlayerInside)
             return false;
-        if (spawnedRooms[spawnedRooms.Count - 1].startingDoor.GetComponentInChildren<TheBreeze>().isVisible || spawnedRooms[0].startingDoor.GetComponentInChildren<TheBreeze>().isVisible)
+        if (spawnedRooms[spawnedRooms.Count - 1].startingDoor.GetComponentInChildren<TheBreeze>().IsVisible() || spawnedRooms[0].startingDoor.GetComponentInChildren<TheBreeze>().IsVisible())
             return false;
         foreach (Doorway door in spawnedRooms[0].doors)
         {
-            if (door.GetComponentInChildren<TheBreeze>().isVisible)
+            if (door.GetComponentInChildren<TheBreeze>().IsVisible())
                 return false;
         }
         foreach (Doorway door in spawnedRooms[spawnedRooms.Count - 1].doors)
         {
-            if (door.GetComponentInChildren<TheBreeze>().isVisible)
+            if (door.GetComponentInChildren<TheBreeze>().IsVisible())
                 return false;
         }
         return true;
@@ -422,7 +425,7 @@ public class NPCTheBreathingHall : NPCBase
             {
                 if (room != null)
                 {
-                    foreach (Transform player in room.GetComponent<IsInsideTheRoom>().players)
+                    foreach (Transform player in room.GetComponent<IsInsideBreathingHall>().players)
                     {
                         player.GetComponent<MovementSystem>().Block();
                         player.transform.position = startingDoor.transform.position + new Vector3(0, 1, 0);
@@ -449,7 +452,7 @@ public class NPCTheBreathingHall : NPCBase
             Transform button = GetComponentInChildren<TheBreathingButton>().transform;
 
             Dictionary<Transform, Vector3> playerOffsets = new Dictionary<Transform, Vector3>();
-            foreach (Transform player in containmentUnit.GetComponent<IsInsideTheRoom>().players)
+            foreach (Transform player in containmentUnit.GetComponent<IsInsideBreathingHall>().players)
             {
                 Vector3 offset = player.position - button.position;
                 playerOffsets[player] = offset;
@@ -458,7 +461,7 @@ public class NPCTheBreathingHall : NPCBase
             containmentUnit.transform.position = startingPos;
             containmentUnit.transform.rotation = startingRot;
 
-            foreach (Transform player in containmentUnit.GetComponent<IsInsideTheRoom>().players)
+            foreach (Transform player in containmentUnit.GetComponent<IsInsideBreathingHall>().players)
             {
                 player.GetComponent<MovementSystem>().Block();
 

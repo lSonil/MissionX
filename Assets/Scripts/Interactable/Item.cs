@@ -4,6 +4,7 @@ public class Item : MonoBehaviour, IInteraction
 {
     public int itemId=0;
     public int itemTypeId=0;
+    public int itemWeight =0;
     [SerializeField] private string promptUse = "Pick Up";
     [SerializeField] private string promptPrimary = "";
     [SerializeField] private string promptSecundary = "";
@@ -33,4 +34,6 @@ public class Item : MonoBehaviour, IInteraction
     {
         Debug.Log($"Using item: {promptSecundary}");
     }
+    public virtual int GetWeight() => itemWeight;
+    public virtual string GetName() => gameObject.name;
 }

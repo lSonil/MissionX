@@ -66,7 +66,7 @@ public class FlashBang : MonoBehaviour
         if (withinHorizontal && withinVertical)
         {
             // Player is looking at this object
-            UISystem.i.FadeFlashRoutine();
+            other.GetComponent<PlayerCore>().uis.FadeFlashRoutine();
         }
     }
 }

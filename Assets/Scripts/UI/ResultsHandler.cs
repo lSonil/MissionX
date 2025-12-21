@@ -10,7 +10,7 @@ public class ResultsHandler : MonoBehaviour
     public GameObject resultPrefab;
     public Transform container;
 
-    public void DisplayResults(Dictionary<string, ContainedState> results)
+    public void DisplayResults(Dictionary<string, ContainedState> results, MissionData rewards)
     {
         foreach (Transform child in container)
         {
@@ -34,16 +34,35 @@ public class ResultsHandler : MonoBehaviour
                 allFree = false;
         }
 
+
         Image containerImage = GetComponent<Image>();
         if (containerImage != null)
         {
-            UnityEngine.Color color;
+            Color color;
             if (allFree)
-                color = UnityEngine.Color.red;
+            {
+                foreach (var entry in rewards.debuffs)
+                {
+                    GameObject instance = Instantiate(resultPrefab, container);
+                    TextMeshProUGUI text = instance.GetComponentInChildren<TextMeshProUGUI>();
+
+                    text.text = entry.ToString();
+                }
+                color = Color.red;
+            }
             else if (anyFree)
-                color = UnityEngine.Color.yellow;
+                color = Color.yellow;
             else
-                color = UnityEngine.Color.green;
+            {
+                foreach (var entry in rewards.buffs)
+                {
+                    GameObject instance = Instantiate(resultPrefab, container);
+                    TextMeshProUGUI text = instance.GetComponentInChildren<TextMeshProUGUI>();
+
+                    text.text = entry.ToString();
+                }
+                color = Color.green;
+            }
             color.a = 0.2f;
             containerImage.color = color;
         }

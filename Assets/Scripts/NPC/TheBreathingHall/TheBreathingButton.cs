@@ -1,16 +1,16 @@
 using UnityEngine;
 
 public class TheBreathingButton : NPCBase
-{    public override void SetVisibility(bool state)
+{    public override void SetVisibility(bool state, Transform t)
     {
         NPCTheBreathingHall brain = GetComponentInParent<NPCTheBreathingHall>();
         if (brain) if (GetComponentInParent<NPCTheBreathingHall>().contained == ContainedState.Contained) return;
 
-        bool isInsideRoom = GetComponentInParent<IsInsideTheRoom>().isPlayerInside;
-        if (!state && isVisible && !isInsideRoom)
+        bool isInsideRoom = GetComponentInParent<IsInsideBreathingHall>().isPlayerInside;
+        if (!state && IsVisible() && !isInsideRoom)
         {
             GetComponentInParent<NPCTheBreathingHall>().PlaceContainment();
         }
-        base.SetVisibility(state);
+        base.SetVisibility(state, t);
     }
 }

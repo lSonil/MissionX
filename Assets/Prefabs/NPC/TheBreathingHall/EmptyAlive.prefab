@@ -233,20 +233,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 2154996344796182719}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 113678622a1040640a8f2efd1419796e, type: 3}
+  m_Script: {fileID: 11500000, guid: a23c07ade4f04ff4eaeead4f641487e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IsInsideTheWalls
   isPlayerInside: 0
-  sanityDrainRate: 0.5
+  sanityDrainRate: 2
   players: []
   asrc: {fileID: 1407556851861457482}
   sounds:
-  - {fileID: 8300000, guid: 2082a21bb8f733a45baf367d69f9f2f5, type: 3}
   - {fileID: 8300000, guid: 0f691511a3a958548a3852982eeadadc, type: 3}
-  - {fileID: 8300000, guid: b998c66ba2732814ab774523afc3ece7, type: 3}
-  - {fileID: 8300000, guid: ff417ccd804bc194d912e512f205b1a3, type: 3}
-  - {fileID: 8300000, guid: d02d0808901c1cb4599ae560daca1e61, type: 3}
   - {fileID: 8300000, guid: c7839a647d16bde4ab15e862833a9641, type: 3}
+  - {fileID: 8300000, guid: 2082a21bb8f733a45baf367d69f9f2f5, type: 3}
+  - {fileID: 8300000, guid: 426352ce5ba2ca14aa7142d003cbba4e, type: 3}
+  - {fileID: 8300000, guid: e4f1a9056cf2f4c4295270da84a4d333, type: 3}
 --- !u!65 &6217692588033126493
 BoxCollider:
   m_ObjectHideFlags: 0

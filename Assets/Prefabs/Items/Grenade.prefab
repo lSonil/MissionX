@@ -117,7 +117,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89931fa79504b6841ae9795db8013d9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Grenade
+  itemId: 0
   itemTypeId: 0
+  itemWeight: 2
   promptUse: Pick Up
   promptPrimary: Throw
   promptSecundary: Pull Pin

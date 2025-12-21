@@ -9,7 +9,6 @@ public class RoomGenerator : MonoBehaviour
     public List<RoomSpawnEntry> possibleRoomsToSpawn;
     public List<RoomSpawnEntry> specificRoomsToSpawn;
     public List<Room> spawnedRooms;
-    public int maxNumberOfRooms;
     [HideInInspector]
     public List<Vector3> roomsPositions = new List<Vector3>();
     [HideInInspector]
@@ -23,6 +22,7 @@ public class RoomGenerator : MonoBehaviour
     public List<Transform> grid = new List<Transform>();
     public bool debug;
     public GridManager gridManager;
+    public ItemManager itemManager;
     public List<NPCBase> list;
     public static RoomGenerator i;
     int bonusToCheck;
@@ -78,7 +78,7 @@ public class RoomGenerator : MonoBehaviour
     public void SpawnRooms(List<RoomSpawnEntry> possibleRooms, int bonusRoomCount)
     {
         bool stopGeneration = true;
-        if (maxNumberOfRooms + bonusRoomCount > spawnedRooms.Count)
+        if (SceneData.GetNumberOfRooms() + bonusRoomCount > spawnedRooms.Count)
         {
             Room newRoom = null;
             Room listRoom = null;
@@ -119,6 +119,8 @@ public class RoomGenerator : MonoBehaviour
                     listRoom = copyOfShuffledRooms[0].room;
                     newRoom = Instantiate(listRoom);
                     newDoor = shuffledDoors[0].Item1;
+
+                    newRoom.PrepareDoors();
 
                     if (copyOfShuffledRooms[0].amount != 0)
                     {
@@ -180,13 +182,14 @@ public class RoomGenerator : MonoBehaviour
                 newDoor = chosen.Item2;
 
                 newRoom = Instantiate(listRoom);
+                newRoom.CollectSpawnPoints();
+                newRoom.PrepareLayout();
                 newRoom.transform.position = newDoor.transform.position;
                 newRoom.transform.rotation = newDoor.transform.rotation;
                 newRoom.transform.SetParent(bonusRoomCount == 0 ? transform : NPC.transform);
                 spawnedRooms.Add(newRoom); // Add to list if no overlap
                 unusedDoors.RemoveAll(pair => pair.Item1 == newDoor);
                 newDoor.ConnectTo(newRoom.startingDoor);
-
 
                 foreach (var door in newRoom.doors)
                 {
@@ -232,7 +235,7 @@ public class RoomGenerator : MonoBehaviour
                 }
                 newRoom.surface.BuildNavMesh();
 
-                if (maxNumberOfRooms + bonusRoomCount > spawnedRooms.Count)
+                if (SceneData.GetNumberOfRooms() + bonusRoomCount > spawnedRooms.Count)
                 {
                     SpawnRooms(possibleRooms, bonusRoomCount);
                 }
@@ -246,13 +249,12 @@ public class RoomGenerator : MonoBehaviour
         }
         if (stopGeneration)
         {
-            if (maxNumberOfRooms + bonusToCheck != spawnedRooms.Count)
+            if (SceneData.GetNumberOfRooms() + bonusToCheck != spawnedRooms.Count)
             {
 
-                print(maxNumberOfRooms + bonusToCheck);
+                print(SceneData.GetNumberOfRooms() + bonusToCheck);
                 print(spawnedRooms.Count);
-                //SceneManager.LoadScene("Mission");
-                print("ANARCHY!!!!!!!!!");
+                SceneManager.LoadScene("Mission");
             }
 
             foreach (Doorway door in allDoors)
@@ -275,8 +277,11 @@ public class RoomGenerator : MonoBehaviour
                 }
             }
             if(!debug)
-            MissionTerminal.i.DelayedInfo(list);
+            
+            SceneData.npcInScene = list;
+            
             gridManager.GridReady(grid);
+            itemManager.ItemReady(spawnedRooms);
         }
     }
     public Transform FindClosestRoom()

@@ -1,14 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static UnityEngine.GraphicsBuffer;
 
 public class UISystem : MonoBehaviour
 {
-    public static UISystem i;
     [Header("Other UI")]
     [SerializeField] private Image damageOverlay;
     [SerializeField] private Image stunOverlay;
@@ -31,46 +27,16 @@ public class UISystem : MonoBehaviour
     public Sprite emptyIcon;
     public ResultsHandler results;
     public TextMeshProUGUI currentDay;
-
-    private void Awake()
-    {
-        i = this;
-    }
     private void Start()
     {
-        SceneManager.sceneLoaded += OnSceneLoaded;
         currentDay.text = SceneData.day.ToString();
-        if (SceneData.showResults)
-        {
-            SceneData.PrepareResults(false);
-            StartCoroutine(ShowResults());
-        }
-        else
-            results.gameObject.SetActive(false);
+        results.gameObject.SetActive(false);
+
         if (damageOverlay != null)
         {
             Color c = damageOverlay.color;
             c.a = 0f;
             damageOverlay.color = c;
-        }
-    }
-    private void OnDestroy()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        currentDay.text = SceneData.day.ToString();
-
-        if (SceneData.showResults)
-        {
-            SceneData.PrepareResults(false);
-            StartCoroutine(ShowResults());
-        }
-        else
-        {
-            results.gameObject.SetActive(false);
         }
     }
     private IEnumerator DamageFlash()
@@ -131,8 +97,10 @@ public class UISystem : MonoBehaviour
     }
     public IEnumerator ShowResults()
     {
+        currentDay.text = SceneData.day.ToString();
+
         results.gameObject.SetActive(true); // Make visible
-        results.DisplayResults(SceneData.containmentResults);
+        results.DisplayResults(SceneData.containmentResults, SceneData.missionToTransfer);
         yield return new WaitForSeconds(5f);
         results.gameObject.SetActive(false); // Hide after 5 seconds
     }

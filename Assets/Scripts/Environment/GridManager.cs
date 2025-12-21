@@ -7,24 +7,17 @@ public class GridManager : MonoBehaviour
 {
     public List<Transform> grid;
     public static GridManager i;
-    public int startMaxMonsterDifficulty;
-    public static float currentMonsterDifficulty;
-    public static int maxMonsterDifficulty;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
     {
-        currentMonsterDifficulty = 0;
         i = this;    
     }
-
     public void GridReady(List<Transform> fullGrid = null)
     {
         if (fullGrid != null) grid = fullGrid;
         StartCoroutine(DelayedBake());
-        maxMonsterDifficulty = startMaxMonsterDifficulty;
     }
-
     private IEnumerator DelayedBake()
     {
         yield return new WaitForSeconds(.1f);

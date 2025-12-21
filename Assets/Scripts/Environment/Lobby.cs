@@ -1,55 +1,106 @@
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Lobby : MonoBehaviour
 {
-    public GameObject lobbyTerminal;
-    public GameObject missionTerminal;
-    public Transform spawnPoint;
+    public static Lobby i;
     public Transform playerSpawnPoint;
-    public Transform player;
     public Transform playerPrefab;
+    public PlayerCore[] players;
+    public List<NPCEntry> possibleNPC = new List<NPCEntry>();
 
+    public List<BuffState> globalBuffs = new List<BuffState>();
+    public List<DebuffState> globalDebuffs = new List<DebuffState>();
+    
     private void Awake()
     {
-        // Check if another instance already exists
-        Lobby[] instances = Object.FindObjectsByType<Lobby>(FindObjectsSortMode.None);
-
-        if (instances.Length > 1)
+        if (i != null && i != this)
         {
-            // If this is not the first one, destroy it
             Destroy(gameObject);
             return;
         }
 
+        i = this;
+
         DontDestroyOnLoad(gameObject);
-        SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneData.AssignMonstersToMissions(possibleNPC);
     }
 
-    private void OnDestroy()
+    private void Start()
     {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
+        players = FindObjectsByType<PlayerCore>(FindObjectsSortMode.None);
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        ToggleTerminals(scene.name);
-    }
+        foreach (PlayerCore p in players)
+            p.uis.endOfMissionCamera.SetActive(false);
 
-    private void ToggleTerminals(string sceneName)
-    {
-        if (sceneName == "Mission")
+        if(players.Length==0)
         {
-            Instantiate(missionTerminal, spawnPoint.position, spawnPoint.rotation);
+            Transform player = Instantiate(playerPrefab, playerSpawnPoint.position, Quaternion.identity);
+            player.transform.SetParent(transform);
+        }
+        
+    }
+
+    public void SetBuffsAndDebuffs(Dictionary<string, ContainedState> results, MissionData rewards)
+    {
+        bool allFree = true;
+        bool anyFree = false;
+
+        foreach (var entry in results)
+        {
+            if (entry.Value == ContainedState.Free)
+                anyFree = true;
+            else
+                allFree = false;
+        }
+
+        if (!anyFree)
+        {
+            foreach (var buff in rewards.buffs)
+            {
+                BuffState existing = globalBuffs.Find(b => b.buff == buff);
+
+                if (existing != null)
+                {
+                    existing.times += 1;
+                }
+                else
+                {
+                    globalBuffs.Add(new BuffState
+                    {
+                        buff = buff,
+                        times = 1
+                    });
+                }
+            }
+
+            return;
         }
         else
+        if (allFree)
         {
-            Instantiate(lobbyTerminal, spawnPoint.position, spawnPoint.rotation);
-            if (player == null)
-                player = Instantiate(playerPrefab, playerSpawnPoint.position, playerSpawnPoint.rotation);
+            foreach (var debuff in rewards.debuffs)
+            {
+                DebuffState existing = globalDebuffs.Find(d => d.debuff == debuff);
 
+                if (existing != null)
+                {
+                    existing.times += 1;
+                }
+                else
+                {
+                    globalDebuffs.Add(new DebuffState
+                    {
+                        debuff = debuff,
+                        times = 1
+                    });
+                }
+            }
         }
     }
+
 
     private void OnTriggerEnter(Collider other)
     {
@@ -66,5 +117,4 @@ public class Lobby : MonoBehaviour
             other.transform.SetParent(null);
         }
     }
-
 }
