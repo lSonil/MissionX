@@ -55,6 +55,10 @@ public class NPCStatue : NPCBase
     }
     public IEnumerator Patrol()
     {
+        while(contained == ContainedState.Contained)
+        {
+            yield return null;
+        }
         bool targetFound = false;
         SetSpeed(speed.x);
         agent.SetDestination(GetTargetDestination().position);

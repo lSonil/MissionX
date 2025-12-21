@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -34,12 +35,12 @@ public class InteractionSystem : MonoBehaviour
         Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
         RaycastHit hit;
 
-        UISystem.i.EnableInteractButton(null);
+        GetComponent<PlayerCore>().uis.EnableInteractButton(null);
         LayerMask interactionMask = LayerMask.GetMask("Interactable", "Item");
         if (Physics.Raycast(ray, out hit, range, interactionMask))
         {
             IInteraction interactable = hit.collider.GetComponent<IInteraction>();
-            UISystem.i.EnableInteractButton(interactable);
+            GetComponent<PlayerCore>().uis.EnableInteractButton(interactable);
             if (Input.GetKeyDown(KeyCode.E) && interactable != null && !GetComponent<MovementSystem>().isBlocked)
             {
                 interactable.Action(inventory.GetHeldItemId());

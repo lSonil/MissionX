@@ -118,6 +118,8 @@ public class NPCTheBreathingHall : NPCBase
                 newRoom = Instantiate(listRoom);
                 newDoor = shuffledDoors[0].Item1;
 
+                newRoom.PrepareDoors();
+
                 if (copyOfShuffledRooms[0].amount != 0)
                 {
                     newRoom.transform.position = newDoor.transform.position;
@@ -191,7 +193,8 @@ public class NPCTheBreathingHall : NPCBase
             if (spawnedRooms.Count == 1)
                 spawnedFirstRoom = true;
 
-            spawnedRooms.Add(newRoom); 
+            spawnedRooms.Add(newRoom);
+            newRoom.PrepareLayout();
             unusedDoors.RemoveAll(pair => pair.Item1 == newDoor);
             newDoor.ConnectTo(newRoom.startingDoor);
             newDoor.ForceFillBoth(true, false);

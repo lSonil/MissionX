@@ -35,7 +35,7 @@ public class HealthSystem : MonoBehaviour
         currentHealth -= amount;
 
         // trigger overlay effect
-        UISystem.i.FadeDamageRoutine();
+        GetComponent<PlayerCore>().uis.FadeDamageRoutine();
         GetComponent<AudioSystem>()?.PlayDamage();
 
         // call tilt on damage
@@ -59,11 +59,6 @@ public class HealthSystem : MonoBehaviour
             body.name = "Player";
         }
 
-
-        if (SceneManager.GetActiveScene().name == "Mission")
-        {
-            MissionTerminal.i.AbortMission();
-        }
         Destroy(gameObject);
     }
 }

@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 1, y: 0, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 2, z: 2}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 0.01, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3509282667775708448}
@@ -66,14 +66,25 @@ MonoBehaviour:
     openValue: 0
     closedValue: 0
     duration: 0
+    objectToSpawn: {fileID: 0}
     mode: 0
     reverseMode: 1
   - target: {fileID: 5209771708897989545}
     type: 2
     axis: 1
+    openValue: 1
+    closedValue: 0.01
+    duration: 0.3
+    objectToSpawn: {fileID: 0}
+    mode: 1
+    reverseMode: 1
+  - target: {fileID: 0}
+    type: 4
+    axis: 1
     openValue: 0
     closedValue: 1
     duration: 0.3
+    objectToSpawn: {fileID: 0}
     mode: 1
     reverseMode: 0
 --- !u!82 &674480617967593455
@@ -283,7 +294,7 @@ NavMeshObstacle:
   m_Shape: 1
   m_Extents: {x: 0.0095, y: 0.00025, z: 0.0095}
   m_MoveThreshold: 0.1
-  m_Carve: 0
+  m_Carve: 1
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0, z: 0.010000001}
   m_TimeToStationary: 0.5

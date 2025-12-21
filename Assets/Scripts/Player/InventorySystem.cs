@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class InventorySystem : MonoBehaviour
 {
@@ -15,7 +13,7 @@ public class InventorySystem : MonoBehaviour
     private void Start()
     {
         i = this;
-        UISystem.i.UpdateInventoryUI(items, currentIndex);
+        GetComponent<PlayerCore>().uis.UpdateInventoryUI(items, currentIndex);
         HoldItem(items[currentIndex]);
     }
 
@@ -44,7 +42,7 @@ public class InventorySystem : MonoBehaviour
         {
             items[currentIndex] = item;
             HoldItem(item);
-            UISystem.i.UpdateInventoryUI(items, currentIndex);
+            GetComponent<PlayerCore>().uis.UpdateInventoryUI(items, currentIndex);
             return true;
         }
 
@@ -64,7 +62,7 @@ public class InventorySystem : MonoBehaviour
                     item.gameObject.SetActive(false);
                 }
 
-                UISystem.i.UpdateInventoryUI(items, currentIndex);
+                GetComponent<PlayerCore>().uis.UpdateInventoryUI(items, currentIndex);
                 return true;
             }
         }
@@ -77,6 +75,8 @@ public class InventorySystem : MonoBehaviour
         if (item == null) return;
 
         ReleaseItem(item);
+
+        // REWORK!
         if(RoomGenerator.i!=null)
             item.transform.SetParent(RoomGenerator.i.FindClosestRoom().transform);
         else
@@ -84,7 +84,7 @@ public class InventorySystem : MonoBehaviour
         item.transform.position = handTransform.position;
 
         items[currentIndex] = null;
-        UISystem.i.UpdateInventoryUI(items, currentIndex);
+        GetComponent<PlayerCore>().uis.UpdateInventoryUI(items, currentIndex);
     }
 
     void HoldItem(Item item)
@@ -126,11 +126,13 @@ public class InventorySystem : MonoBehaviour
         if (scroll == 0)return;
 
         int direction = scroll > 0 ? 1 : -1;
-        ReleaseItem(items[currentIndex]);
+        if(items[currentIndex]!= null) 
+            items[currentIndex].gameObject.SetActive(false);
+
         currentIndex = (currentIndex + direction + items.Length) % items.Length;
 
         HoldItem(items[currentIndex]);
-        UISystem.i.UpdateInventoryUI(items, currentIndex);
+        GetComponent<PlayerCore>().uis.UpdateInventoryUI(items, currentIndex);
 
     }
     public Item ConsumeFirstMatching(System.Predicate<Item> match)
@@ -142,7 +144,7 @@ public class InventorySystem : MonoBehaviour
                 Item found = items[i];
                 items[i] = null;
                 if (i == currentIndex) ReleaseItem(found);
-                UISystem.i.UpdateInventoryUI(items, currentIndex);
+                GetComponent<PlayerCore>().uis.UpdateInventoryUI(items, currentIndex);
                 return found;
             }
         }

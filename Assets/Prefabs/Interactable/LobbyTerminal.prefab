@@ -939,7 +939,7 @@ GameObject:
   - component: {fileID: 6127102610238965189}
   - component: {fileID: 7853996249810955689}
   - component: {fileID: 6648974337423548138}
-  - component: {fileID: 7868239259960476266}
+  - component: {fileID: 5524627162519161391}
   m_Layer: 9
   m_Name: Panel
   m_TagString: Untagged
@@ -1054,7 +1054,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Panel
   interactionPromptText: Use Terminal
   targetPosition: {fileID: 6308089510666412708}
---- !u!114 &7868239259960476266
+--- !u!114 &5524627162519161391
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1063,18 +1063,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 7102733819226282667}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67418fed89e04b94dbc153f7d2a8025f, type: 3}
+  m_Script: {fileID: 11500000, guid: 0ce5ab8b0ce1dcd4d8e51f472c77bb4a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LobyTerminal
+  m_EditorClassIdentifier: Assembly-CSharp::Terminal
   inputField: {fileID: 7717242270136487145}
   terminalText: {fileID: 5570072760310979924}
   scrollSpeed: 900
   scrollRect: {fileID: 2457250980985530964}
-  allMonsters:
-  - {fileID: 11400000, guid: 22f2d6a8b58b3634cbbedff604af74c3, type: 2}
-  missions: []
-  maxMissionDifficultyCap: 2
-  minMissionDifficultyCap: 2
+  terminalType: 0
 --- !u!1 &8068508904779245711
 GameObject:
   m_ObjectHideFlags: 0
