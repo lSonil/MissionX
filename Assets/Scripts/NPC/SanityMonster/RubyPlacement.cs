@@ -46,11 +46,27 @@ public class RubyPlacement : MonoBehaviour
 
         if (ruby != null)
         {
+            // Re-enable physics components for placement
+            ruby.gameObject.layer = LayerMask.NameToLayer("Default");
+            
+            Rigidbody rb = ruby.GetComponent<Rigidbody>();
+            if (rb != null) 
+            {
+                rb.isKinematic = true; // Keep it static when placed
+            }
+
+            Collider col = ruby.GetComponent<Collider>();
+            if (col != null) 
+            {
+                col.enabled = false; // Disable collision once placed
+            }
+
             // Place it visually in the placement zone
             ruby.transform.SetParent(transform);
-            ruby.transform.position = transform.position;
-            ruby.transform.rotation = transform.rotation;
+            ruby.transform.localPosition = Vector3.zero;
+            ruby.transform.localRotation = Quaternion.identity;
             ruby.gameObject.SetActive(true);
+            
             RitualManager.i.NotifyRubyPlaced(this);
             Debug.Log("Ruby placed!");
         }

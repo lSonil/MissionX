@@ -8,12 +8,12 @@ public class RitualManager : MonoBehaviour
     public int requiredRubies = 4;
     private HashSet<RubyPlacement> placedZones = new HashSet<RubyPlacement>();
 
-    public Collider containmentTrigger; // assign the containment zone trigger in Inspector
+    public Collider containmentTrigger; 
 
     private void Awake()
     {
         i = this;
-        containmentTrigger.enabled = false; // off at the start
+        containmentTrigger.enabled = false;
     }
 
     public void NotifyRubyPlaced(RubyPlacement zone)
