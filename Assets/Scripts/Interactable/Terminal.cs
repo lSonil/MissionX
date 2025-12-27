@@ -1,10 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Terminal : MonoBehaviour
@@ -23,18 +20,10 @@ public class Terminal : MonoBehaviour
     public enum TerminalType { LobyTerminal, GameTerminal, Terminal }
     public TerminalType terminalType = TerminalType.Terminal;
 
-    private int selectedMission = -1;
-
     void Update()
     {
-        if (terminalType == TerminalType.GameTerminal && SceneManager.GetActiveScene().name == "Lobby")
-        {
-            terminalType = TerminalType.LobyTerminal;
-        }
-        if (terminalType == TerminalType.LobyTerminal && SceneManager.GetActiveScene().name != "Lobby")
-        {
-            terminalType = TerminalType.GameTerminal;
-        }
+        if(!isTurnOn) return;
+        if(changing) return;
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             OnSubmit("esc");
@@ -81,23 +70,13 @@ public class Terminal : MonoBehaviour
                 : scrollRect.GetComponent<RectTransform>();
         }
 
-        ShowMainMenu();
-        StartCoroutine(RefocusInput());
         inputField.onSubmit.AddListener(OnSubmit);
-
+        ShowMainMenu();
         if (terminalText != null)
         {
             lastText = terminalText.text;
             AdjustContentHeight();
         }
-    }
-
-    protected void SetTerminalText(string newText)
-    {
-        if (terminalText == null) return;
-        terminalText.text = newText;
-        lastText = newText;
-        AdjustContentHeight();
     }
 
     private void AdjustContentHeight()
@@ -119,77 +98,28 @@ public class Terminal : MonoBehaviour
         content.anchoredPosition = Vector2.zero;
     }
 
-    IEnumerator RefocusInput()
+    bool isTurnOn;
+    bool changing;
+    public void TurnOn()
     {
-        yield return new WaitForEndOfFrame();
-        inputField.Select();
-        inputField.DeactivateInputField();
-        this.enabled = false;
+        if (isTurnOn)
+        {
+            inputField.DeactivateInputField();
+        }
+        else
+        {
+            inputField.Select();
+            inputField.ActivateInputField();
+        }
+        isTurnOn = !isTurnOn;
     }
-
     public void HandleEscape()
     {
         inputField.DeactivateInputField();
-        print(EventSystem.current);
         EventSystem.current.SetSelectedGameObject(null);
         GetComponent<Display>().Action();
-        ShowMainMenu();
     }
 
-    void OnEnable()
-    {
-        inputField.Select();
-        inputField.ActivateInputField();
-    }
-
-    void OnDisable()
-    {
-        inputField.DeactivateInputField();
-    }
-    IEnumerator LoadTargetScene()
-    {
-        terminalText.text = "Initiating jump sequence...\nLoading new scene...";
-        HandleEscape();
-
-        switch (terminalType)
-        {
-            case TerminalType.LobyTerminal:
-                yield return new WaitForSeconds(2f);
-
-                SceneManager.LoadSceneAsync("Mission");
-                selectedMission = -1;
-                terminalType = TerminalType.GameTerminal;
-                while (SceneData.npcInScene == null)
-                {
-                    yield return null;
-                }
-                ShowMainMenu();
-                StartCoroutine(MonitorContainmentStates());
-                break;
-
-            case TerminalType.GameTerminal:
-                SceneData.DayEnd();
-                yield return new WaitForSeconds(3f);
-
-                terminalType = TerminalType.LobyTerminal;
-
-                //foreach (PlayerCore p in Lobby.i.players)
-                //    p.uis.endOfMissionCamera.SetActive(true);
-                //
-                //yield return new WaitForSeconds(3f);
-                //
-                //foreach (PlayerCore p in Lobby.i.players)
-                //    p.uis.endOfMissionCamera.SetActive(false);
-                ShowMainMenu();
-                Lobby.i.SetBuffsAndDebuffs(SceneData.containmentResults, SceneData.missionToTransfer);
-
-                foreach (PlayerCore p in Lobby.i.players)
-                    StartCoroutine(p.uis.ShowResults());
-                SceneManager.LoadScene("Lobby");
-                SceneData.AssignMonstersToMissions(Lobby.i.possibleNPC);
-                break;
-        }
-    }
     public void OnSubmit(string input)
     {
         input = input.Trim().ToLower();
@@ -218,7 +148,8 @@ public class Terminal : MonoBehaviour
         {
             if (SceneData.missionToTransfer.monsters.Count > 0)
             {
-                StartCoroutine(LoadTargetScene());
+                HandleEscape();
+                Go();
             }
             else
             {
@@ -237,7 +168,7 @@ public class Terminal : MonoBehaviour
                     if (SceneData.lobbyMissions[missionIndex - 1].monsters.Count > 0)
                     {
                         SceneData.missionToTransfer = SceneData.lobbyMissions[missionIndex - 1];
-                        selectedMission = missionIndex;
+                        LobyManager.i.selectedMission = missionIndex;
                         ShowMainMenu();
                     }
                     else
@@ -252,8 +183,17 @@ public class Terminal : MonoBehaviour
         terminalText.text = "ERROR: Invalid input.\nPress Enter to return to main menu.";
         currentState = TerminalState.ErrorScreen;
     }
+    public void Go()
+    {
+        changing = true;
+        terminalText.text = "Initiating jump sequence...\nLoading...";
+        StartCoroutine(LobyManager.i.LoadMision());
+        terminalType = TerminalType.LobyTerminal == terminalType ? TerminalType.GameTerminal : TerminalType.LobyTerminal;
+    }
     public void ShowMainMenu()
     {
+        changing = false;
+
         string menuText = "";
         switch (terminalType)
         {
@@ -270,7 +210,7 @@ public class Terminal : MonoBehaviour
                     }
                 }
 
-                string selectedText = selectedMission > 0 ? selectedMission.ToString() : "N/A";
+                string selectedText = LobyManager.i.selectedMission > 0 ? LobyManager.i.selectedMission.ToString() : "N/A";
                 menuText += $"\nSelected mission: {selectedText}";
                 menuText += "\nEnter a number:";
 
@@ -279,11 +219,13 @@ public class Terminal : MonoBehaviour
                 menuText = "Mission Overview:\n";
 
                 if (SceneData.missionToTransfer.monsters.Count == SceneData.npcInScene.Count)
+                {
                     for (int i = 0; i < SceneData.missionToTransfer.monsters.Count; i++)
                     {
                         string state = SceneData.npcInScene[i].contained == ContainedState.Free ? " " : SceneData.npcInScene[i].contained == ContainedState.Contained ? "o" : "x";
                         menuText += $"- {SceneData.missionToTransfer.monsters[i].id} [{state}]\n";
                     }
+                }
 
                 menuText += "\nType 'help' for assistance or 'esc' to exit.";
 
@@ -331,52 +273,5 @@ public class Terminal : MonoBehaviour
         inputField.text = "";
         inputField.ActivateInputField();
 
-    }
-
-    private List<ContainedState> previousStates = new List<ContainedState>();
-
-    IEnumerator MonitorContainmentStates()
-    {
-        bool print = true;
-        previousStates = Enumerable.Repeat(ContainedState.Free, SceneData.npcInScene.Count).ToList();
-
-        while (terminalType == TerminalType.GameTerminal)
-        {
-            for (int i = 0; i < SceneData.npcInScene.Count; i++)
-            {
-                var current = SceneData.npcInScene[i].contained;
-                var previous = previousStates[i];
-
-                if (current != previous)
-                {
-                    string name = SceneData.missionToTransfer.monsters[i].id;
-
-                    if (previous == ContainedState.Contained && current == ContainedState.Free)
-                    {
-                        foreach (PlayerCore p in Lobby.i.players)
-                            p.uis.popUpHanle.ShowPopUp("r", name);
-                        print = true;
-                    }
-                    else if (previous == ContainedState.Free && (current == ContainedState.Contained || current == ContainedState.Suppressed))
-                    {
-                        foreach (PlayerCore p in Lobby.i.players)
-
-                            p.uis.popUpHanle.ShowPopUp("y", name);
-                        print = true;
-                    }
-
-                    previousStates[i] = current;
-                }
-            }
-
-            if (SceneData.npcInScene.All(n => n.contained == ContainedState.Contained || n.contained == ContainedState.Suppressed) && print)
-            {
-                print = false;
-                foreach (PlayerCore p in Lobby.i.players)
-                    p.uis.popUpHanle.ShowPopUp("g", "All contained");
-            }
-
-            yield return new WaitForSeconds(0.5f); // Adjust polling rate as needed
-        }
     }
 }

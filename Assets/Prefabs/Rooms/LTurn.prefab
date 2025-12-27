@@ -190,21 +190,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Room
   startingDoor: {fileID: 1280083403403411690}
-  layouts:
-  - {fileID: 378325114996915790}
-  - {fileID: 4193824549810856371}
+  layouts: []
   doors:
   - {fileID: 4851430736713377347}
   - {fileID: 3648442057317088387}
   - {fileID: 1031963805184311825}
   - {fileID: 870894871466181287}
-  nodes:
-  - {fileID: 5260445041148638305}
-  - {fileID: 5260445041148638305}
-  - {fileID: 2866610263160319216}
-  - {fileID: 2161732734391831135}
-  - {fileID: 3653977036135283431}
-  - {fileID: 5482172901544096981}
+  nodes: []
   spawnPoints: []
   hall: 1
   Rubies:

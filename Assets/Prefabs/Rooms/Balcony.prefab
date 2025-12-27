@@ -645,7 +645,7 @@ MonoBehaviour:
     type: 2
     axis: 1
     openValue: 0
-    closedValue: 0
+    closedValue: 1
     duration: 0
     objectToSpawn: {fileID: 0}
     mode: 1
@@ -789,19 +789,7 @@ MonoBehaviour:
   - {fileID: 7154866323261536296}
   - {fileID: 3381437368687312286}
   - {fileID: 619910313803052612}
-  nodes:
-  - {fileID: 158744219385952520}
-  - {fileID: 2064530146519675057}
-  - {fileID: 8224176855381173914}
-  - {fileID: 7174554600098313353}
-  - {fileID: 5818757250501245967}
-  - {fileID: 5087883650456915098}
-  - {fileID: 2064608939196730806}
-  - {fileID: 7050857184216501168}
-  - {fileID: 207389518560505179}
-  - {fileID: 2653048864441543728}
-  - {fileID: 2168180481017125998}
-  - {fileID: 8589397632115157016}
+  nodes: []
   spawnPoints: []
   hall: 0
   Rubies:
@@ -1689,6 +1677,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Gate
       objectReference: {fileID: 0}
+    - target: {fileID: 4802074117088323698, guid: 9f42e03069433ec45995f2184f6ee30b, type: 3}
+      propertyPath: actions.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7610685538520174097, guid: 9f42e03069433ec45995f2184f6ee30b, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7610685538520174097, guid: 9f42e03069433ec45995f2184f6ee30b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2
@@ -1761,6 +1757,14 @@ PrefabInstance:
     - target: {fileID: 3168249775155556289, guid: 9f42e03069433ec45995f2184f6ee30b, type: 3}
       propertyPath: m_Name
       value: Gate (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4802074117088323698, guid: 9f42e03069433ec45995f2184f6ee30b, type: 3}
+      propertyPath: actions.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7610685538520174097, guid: 9f42e03069433ec45995f2184f6ee30b, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7610685538520174097, guid: 9f42e03069433ec45995f2184f6ee30b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2570,6 +2574,14 @@ PrefabInstance:
     - target: {fileID: 3168249775155556289, guid: 9f42e03069433ec45995f2184f6ee30b, type: 3}
       propertyPath: m_Name
       value: Gate (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4802074117088323698, guid: 9f42e03069433ec45995f2184f6ee30b, type: 3}
+      propertyPath: actions.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7610685538520174097, guid: 9f42e03069433ec45995f2184f6ee30b, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7610685538520174097, guid: 9f42e03069433ec45995f2184f6ee30b, type: 3}
       propertyPath: m_LocalPosition.x

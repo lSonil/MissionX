@@ -320,12 +320,7 @@ MonoBehaviour:
   - {fileID: 4494617812309903840}
   - {fileID: 7154866323261536296}
   - {fileID: 3381437368687312286}
-  nodes:
-  - {fileID: 158744219385952520}
-  - {fileID: 7174554600098313353}
-  - {fileID: 2653048864441543728}
-  - {fileID: 2168180481017125998}
-  - {fileID: 8589397632115157016}
+  nodes: []
   spawnPoints: []
   hall: 1
   Rubies:
@@ -712,7 +707,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 382636322628767424, guid: 66c7860896dd3b04093797f4c260d48f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.049999952
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 382636322628767424, guid: 66c7860896dd3b04093797f4c260d48f, type: 3}
       propertyPath: m_LocalPosition.z

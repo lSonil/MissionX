@@ -14,7 +14,6 @@ public enum Buffs
     minimap = 2,
     longrangeflashlight = 1
 }
-
 [System.Serializable]
 public class BuffState
 {
@@ -52,10 +51,9 @@ public static class SceneData
     public static List<NPCBase> npcInScene;
     public static List<MissionData> lobbyMissions = new List<MissionData>();
 
-    public static int GetNumberOfRooms() => numberOfRooms + day * 5;
     public static int GetItemsValue() => itemWeightCap + itemWeightCap * MathFunc.Triangular(day) / 100;
+    public static int GetNumberOfRooms() => numberOfRooms + day * 5;
     public static int GetMonsterDifficulty() => monsterDiffMap + MathFunc.Fibonacci(day);
-
     public static int GetTotalDataValue()
     {
         float fastScale = itemWeightCap * 0.5f;
@@ -85,8 +83,8 @@ public static class SceneData
             ContainedState state = npcInScene[i].contained;
             results[id] = state;
         }
-        Debug.Log(missionToTransfer.debuffs.Count);
-        Debug.Log(missionToTransfer.buffs.Count);
+        //Debug.Log(missionToTransfer.debuffs.Count);
+        //Debug.Log(missionToTransfer.buffs.Count);
         containmentResults = new Dictionary<string, ContainedState>(results);
         day++;
     }

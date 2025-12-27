@@ -16,7 +16,6 @@ public class DamageZone : MonoBehaviour
             if (health != null)
             {
                 health.TakeDamage(damageAmount);
-                Debug.Log($"Player entered damage zone. Took {damageAmount} damage.");
             }
         }
         if (other.CompareTag("Fragile"))
@@ -26,7 +25,6 @@ public class DamageZone : MonoBehaviour
             if (health != null)
             {
                 health.TakeDamage(damageAmount);
-                Debug.Log($"Entered damage zone. Took {damageAmount} damage.");
             }
         }
         if (other.CompareTag("Structure"))

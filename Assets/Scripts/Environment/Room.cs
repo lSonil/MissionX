@@ -10,11 +10,9 @@ using UnityEditor.SceneManagement;
 public class Room : MonoBehaviour
 {
     public Doorway startingDoor;
-    [HideInInspector]
-    public List<GameObject> layouts;
+    public List<Transform> layouts;
     [HideInInspector]
     public List<Doorway> doors;
-    [HideInInspector]
     public List<Transform> nodes;
     [HideInInspector]
     public List<ItemSpawner> spawnPoints;
@@ -61,23 +59,24 @@ public class Room : MonoBehaviour
 
         layouts.Clear();
 
-        GameObject parent = GameObject.Find("Layouts");
+        Transform parent = transform.Find("Layouts");
         if (parent != null)
         {
-            foreach (Transform child in parent.transform)
-                layouts.Add(child.gameObject);
+            foreach (Transform child in parent)
+            {
+                layouts.Add(child);
+            }
 
             int randomIndex = Random.Range(0, layouts.Count);
 
             for (int i = 0; i < layouts.Count; i++)
-            {
-                layouts[i].SetActive(false);
-                break;
-            }
+                layouts[i].gameObject.SetActive(false);
+
+            layouts[randomIndex].gameObject.SetActive(true);
         }
         nodes.Clear();
 
-        parent = GameObject.Find("Nodes");
+        parent = transform.Find("Nodes");
         if (parent != null)
         {
             foreach (Transform child in parent.transform)
@@ -86,7 +85,6 @@ public class Room : MonoBehaviour
     }
     public void RegenerateColliders()
     {
-        // Remove only BoxColliders on this object (not children)
         foreach (BoxCollider col in GetComponents<BoxCollider>())
         {
 #if UNITY_EDITOR

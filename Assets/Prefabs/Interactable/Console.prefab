@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 382636322628767424, guid: 6c771ae7e2fd0e441b282459de93d6e6, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.61
+      value: 0.975
       objectReference: {fileID: 0}
     - target: {fileID: 382636322628767424, guid: 6c771ae7e2fd0e441b282459de93d6e6, type: 3}
       propertyPath: m_LocalPosition.z
@@ -84,6 +84,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1287151604729664346, guid: 6c771ae7e2fd0e441b282459de93d6e6, type: 3}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
     - target: {fileID: 1287151604729664346, guid: 6c771ae7e2fd0e441b282459de93d6e6, type: 3}
       propertyPath: m_Name
       value: BodySpawner

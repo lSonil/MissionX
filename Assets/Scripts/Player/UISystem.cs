@@ -12,7 +12,6 @@ public class UISystem : MonoBehaviour
     [SerializeField] private float maxAlpha = 0.5f;
     [SerializeField] private float fadeOutSpeed = 0.5f;
     private Coroutine fadeRoutine;
-    public GameObject endOfMissionCamera;
 
     [Header("Interaction UI")]
     public GameObject interactButton;
@@ -85,7 +84,6 @@ public class UISystem : MonoBehaviour
 
         fadeRoutine = null;
     }
-
     public void FadeDamageRoutine()
     {
         if (fadeRoutine != null) StopCoroutine(fadeRoutine);

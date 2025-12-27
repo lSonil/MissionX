@@ -22,28 +22,25 @@ public class MovementSystem : MonoBehaviour
     public CharacterController controller;
     private Vector3 velocity;
     private bool isGrounded;
-    private bool inAir=false;
+    private bool inAir = false;
     private bool isCrouching = false;
     public bool isBlocked = false;
     private Coroutine footstepRoutine;
-    void Start()
+    public void Start()
     {
         controller = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
-
-    void Update()
+    public void NetworkUpdate()
     {
-        if (isBlocked)
-        {
-            return;
-        }
+        if (isBlocked) return;
+
         MouseLook();
         MovePlayer();
         HandleCrouch();
 
-        if(Input.GetKeyDown(KeyCode.Keypad1))
+        if (Input.GetKeyDown(KeyCode.Keypad1))
         {
             StartCoroutine(MoveToCenter());
         }

@@ -1,3 +1,4 @@
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,7 +8,10 @@ public class HealthSystem : MonoBehaviour
     [SerializeField] private GameObject ragdollPrefab;
 
     private int currentHealth;
+    private bool isDead;
+    public GameObject error;
 
+    public bool IsDead() => isDead;
     private void Start()
     {
         currentHealth = maxHealth;
@@ -34,11 +38,9 @@ public class HealthSystem : MonoBehaviour
     {
         currentHealth -= amount;
 
-        // trigger overlay effect
         GetComponent<PlayerCore>().uis.FadeDamageRoutine();
         GetComponent<AudioSystem>()?.PlayDamage();
 
-        // call tilt on damage
         MovementSystem movement = GetComponent<MovementSystem>();
         if (movement != null)
         {
@@ -55,10 +57,12 @@ public class HealthSystem : MonoBehaviour
     {
         if (ragdollPrefab != null)
         {
-            GameObject body = Instantiate(ragdollPrefab, transform.position, transform.rotation);
-            body.name = "Player";
-        }
+            error.SetActive(true);
 
-        Destroy(gameObject);
+            GameObject body = Instantiate(ragdollPrefab, transform.position, transform.rotation);
+            isDead = true;
+            body.name = "Player";
+            GetComponentInParent<PlayerCore>().Stop(body.transform);
+        }
     }
 }

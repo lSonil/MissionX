@@ -251,10 +251,7 @@ public class RoomGenerator : MonoBehaviour
         {
             if (SceneData.GetNumberOfRooms() + bonusToCheck != spawnedRooms.Count)
             {
-
-                print(SceneData.GetNumberOfRooms() + bonusToCheck);
-                print(spawnedRooms.Count);
-                SceneManager.LoadScene("Mission");
+                Destroy(transform.parent);
             }
 
             foreach (Doorway door in allDoors)

@@ -517,6 +517,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4160654880019225061}
+  - component: {fileID: 2159892698190641295}
+  - component: {fileID: 5135921502473914893}
+  - component: {fileID: 8919207122527102184}
   m_Layer: 0
   m_Name: LobbyTerminal
   m_TagString: Untagged
@@ -543,6 +546,63 @@ Transform:
   - {fileID: 6308089510666412708}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: -90, y: -90, z: 0}
+--- !u!114 &2159892698190641295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5877571270947996257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ce5ab8b0ce1dcd4d8e51f472c77bb4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Terminal
+  inputField: {fileID: 7717242270136487145}
+  terminalText: {fileID: 5570072760310979924}
+  scrollSpeed: 900
+  scrollRect: {fileID: 2457250980985530964}
+  missionManagerPrefab: {fileID: 4137155558771444619, guid: 12c815f291f15124a9aebed1bee55570, type: 3}
+  possibleNPC:
+  - {fileID: 11400000, guid: a5a3c03d14ec6cf44a48c30092622af2, type: 2}
+  terminalType: 0
+--- !u!114 &5135921502473914893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5877571270947996257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54a431a80375273429e0114b8a63f668, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Panel
+  interactionPromptText: Use Terminal
+  targetPosition: {fileID: 6308089510666412708}
+  focusPosition: {fileID: 9147057952028738275}
+--- !u!64 &8919207122527102184
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5877571270947996257}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
 --- !u!1 &6091064971012310956
 GameObject:
   m_ObjectHideFlags: 0
@@ -938,7 +998,6 @@ GameObject:
   - component: {fileID: 8016231129982642035}
   - component: {fileID: 6127102610238965189}
   - component: {fileID: 7853996249810955689}
-  - component: {fileID: 6648974337423548138}
   - component: {fileID: 5524627162519161391}
   m_Layer: 9
   m_Name: Panel
@@ -1040,20 +1099,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &6648974337423548138
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7102733819226282667}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54a431a80375273429e0114b8a63f668, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Panel
-  interactionPromptText: Use Terminal
-  targetPosition: {fileID: 6308089510666412708}
 --- !u!114 &5524627162519161391
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1070,6 +1115,8 @@ MonoBehaviour:
   terminalText: {fileID: 5570072760310979924}
   scrollSpeed: 900
   scrollRect: {fileID: 2457250980985530964}
+  missionManagerPrefab: {fileID: 0}
+  possibleNPC: []
   terminalType: 0
 --- !u!1 &8068508904779245711
 GameObject:
