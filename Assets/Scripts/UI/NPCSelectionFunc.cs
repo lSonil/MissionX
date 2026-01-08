@@ -3,13 +3,13 @@ using UnityEngine;
 
 public static class NPCSelectionFunc
 {
-    public static List<Buffs> GetBuffPool()
+    public static List<Buff> GetBuffPool()
     {
-        return new List<Buffs>((Buffs[])System.Enum.GetValues(typeof(Buffs)));
+        return new List<Buff>((Buff[])System.Enum.GetValues(typeof(Buff)));
     }
-    public static List<Debuffs> GetDebuffPool()
+    public static List<Debuff> GetDebuffPool()
     {
-        return new List<Debuffs>((Debuffs[])System.Enum.GetValues(typeof(Debuffs)));
+        return new List<Debuff>((Debuff[])System.Enum.GetValues(typeof(Debuff)));
     }
     public static List<NPCEntry> TakeMonstersByDifficulty(List<NPCEntry> pool, int maxDifficulty)
     {
@@ -38,7 +38,7 @@ public static class NPCSelectionFunc
 
         foreach (var e in pool)
         {
-            int cost = (int)(object)e;
+            int cost = EffectWeights.GetWeight(e);
             if (current + cost <= maxDifficulty)
             {
                 result.Add(e);
@@ -68,7 +68,7 @@ public static class NPCSelectionFunc
     }
 
 
-    public static string FormatBuffs(List<Buffs> buffs)
+    public static string FormatBuffs(List<Buff> buffs)
     {
         string result = "";
         foreach (var b in buffs)
@@ -76,7 +76,7 @@ public static class NPCSelectionFunc
         return result;
     }
 
-    public static string FormatDebuffs(List<Debuffs> debuffs)
+    public static string FormatDebuffs(List<Debuff> debuffs)
     {
         string result = "";
         foreach (var d in debuffs)

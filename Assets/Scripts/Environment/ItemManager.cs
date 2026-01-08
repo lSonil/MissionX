@@ -65,7 +65,7 @@ public class ItemManager : MonoBehaviour
         maxWeight = maxWeight + maxWeight * randomOffset / 100;
 
         List<Item> result = new List<Item>();
-        float currentWeight = 0f;
+        int currentWeight = 0;
 
         while (pool.Count > 0)
         {
@@ -79,7 +79,7 @@ public class ItemManager : MonoBehaviour
             if (currentWeight >= maxWeight)
                 break;
         }
-
+        SceneData.currentMissionItemWeight = currentWeight;
         return result;
     }
 }

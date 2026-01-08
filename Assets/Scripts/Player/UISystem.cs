@@ -98,7 +98,7 @@ public class UISystem : MonoBehaviour
         currentDay.text = SceneData.day.ToString();
 
         results.gameObject.SetActive(true); // Make visible
-        results.DisplayResults(SceneData.containmentResults, SceneData.missionToTransfer);
+        StartCoroutine(results.DisplayResults(SceneData.containmentResults, SceneData.missionToTransfer));
         yield return new WaitForSeconds(5f);
         results.gameObject.SetActive(false); // Hide after 5 seconds
     }

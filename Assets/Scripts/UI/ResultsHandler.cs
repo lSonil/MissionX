@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class ResultsHandler : MonoBehaviour
 {
@@ -10,12 +12,19 @@ public class ResultsHandler : MonoBehaviour
     public GameObject resultPrefab;
     public Transform container;
 
-    public void DisplayResults(Dictionary<string, ContainedState> results, MissionData rewards)
+    public IEnumerator DisplayResults(Dictionary<string, ContainedState> results, MissionData rewards)
     {
         foreach (Transform child in container)
         {
             Destroy(child.gameObject);
         }
+        GameObject weekQuota = Instantiate(resultPrefab, container);
+        TextMeshProUGUI weekQuotaText = weekQuota.GetComponentInChildren<TextMeshProUGUI>();
+        weekQuotaText.text = $"This Week Quota: {SceneData.currentStoredItemWeight}/{SceneData.GetTotalDataValue()}";
+
+        GameObject dayTotal = Instantiate(resultPrefab, container);
+        TextMeshProUGUI dayTotalText = dayTotal.GetComponentInChildren<TextMeshProUGUI>();
+        dayTotalText.text = $"This day results: {SceneData.currentAllSavedItemWeight}/{SceneData.currentMissionItemWeight}";
 
         bool allFree = true;
         bool anyFree = false;
@@ -35,12 +44,16 @@ public class ResultsHandler : MonoBehaviour
         }
 
 
+
         Image containerImage = GetComponent<Image>();
         if (containerImage != null)
         {
             Color color;
             if (allFree)
             {
+                GameObject type = Instantiate(resultPrefab, container);
+                TextMeshProUGUI typeText = type.GetComponentInChildren<TextMeshProUGUI>();
+                typeText.text = $"Debuffs:\n";
                 foreach (var entry in rewards.debuffs)
                 {
                     GameObject instance = Instantiate(resultPrefab, container);
@@ -54,6 +67,10 @@ public class ResultsHandler : MonoBehaviour
                 color = Color.yellow;
             else
             {
+                GameObject type = Instantiate(resultPrefab, container);
+                TextMeshProUGUI typeText = type.GetComponentInChildren<TextMeshProUGUI>();
+                typeText.text = $"Buffs:\n";
+
                 foreach (var entry in rewards.buffs)
                 {
                     GameObject instance = Instantiate(resultPrefab, container);
@@ -67,12 +84,7 @@ public class ResultsHandler : MonoBehaviour
             containerImage.color = color;
         }
 
-        StartCoroutine(HideAfterDelay(5f));
-    }
-
-    IEnumerator HideAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
+        yield return new WaitForSeconds(5f);
         gameObject.SetActive(false);
     }
 }

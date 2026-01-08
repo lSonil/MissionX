@@ -51,14 +51,6 @@ public class LobyManager : MonoBehaviour
             SceneData.DayEnd();
             selectedMission = -1;
 
-            yield return new WaitForSeconds(2f);
-
-            foreach (PlayerCore p in LobyData.players)
-            {
-                p.hs.error.SetActive(false);
-                p.Stop(endCameraPos, transform);
-            }
-
             yield return new WaitForSeconds(3f);
 
             SetBuffsAndDebuffs(SceneData.containmentResults, SceneData.missionToTransfer);
@@ -68,6 +60,7 @@ public class LobyManager : MonoBehaviour
                 StartCoroutine(p.uis.ShowResults());
                 p.GetReady(playerSpawnPoint);
             }
+
             Destroy(missionManager.gameObject);
 
             SceneData.AssignMonstersToMissions(possibleNPC);

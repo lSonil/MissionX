@@ -1,37 +1,63 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-public enum Debuffs
+public enum Debuff
 {
-    doublequota = 3,
-    slowSpeed = 1,
-    noFlashlight = 2,
-    noJump = 2
+    DoubleQuota,
+    SlowSpeed,
+    NoFlashlight,
+    NoJump
 }
-public enum Buffs
+
+public static class EffectWeights
 {
-    halfquota = 3,
-    fastSpeed = 1,
-    minimap = 2,
-    longrangeflashlight = 1
+    private static readonly Dictionary<Enum, int> Weights = new()
+    {
+        // Debuffs
+        { Debuff.DoubleQuota, 3 },
+        { Debuff.SlowSpeed, 1 },
+        { Debuff.NoFlashlight, 2 },
+        { Debuff.NoJump, 2 },
+
+        // Buffs
+        { Buff.Halfquota, 3 },
+        { Buff.DoubleJump, 2 },
+        { Buff.Minimap, 2 },
+        { Buff.Regen, 1 }
+    };
+
+    public static int GetWeight(Enum effect)
+    {
+        return Weights[effect];
+    }
+}
+
+public enum Buff
+{
+    Halfquota,
+    DoubleJump,
+    Minimap,
+    Regen
 }
 [System.Serializable]
+
 public class BuffState
 {
-    public Buffs buff;
+    public Buff buff;
     public int times;
 }
 [System.Serializable]
 public class DebuffState
 {
-    public Debuffs debuff;
+    public Debuff debuff;
     public int times;
 }
 [System.Serializable]
 public class MissionData
 {
     public List<NPCEntry> monsters = new List<NPCEntry>();
-    public List<Buffs> buffs = new List<Buffs>();
-    public List<Debuffs> debuffs = new List<Debuffs>();
+    public List<Buff> buffs = new List<Buff>();
+    public List<Debuff> debuffs = new List<Debuff>();
 }
 
 public static class SceneData
@@ -42,6 +68,11 @@ public static class SceneData
     public static int itemWeightCap = 200;
     public static int totalDataToErase = 500;
     public static int monsterDiffMap = 1;
+    public static int buffCap = 1;
+    public static int currentMissionItemWeight;
+    public static int currentStoredItemWeight;
+    public static int currentTodaySavedItemWeight;
+    public static int currentAllSavedItemWeight;
 
     public static bool showResults = false;
     public static Dictionary<string, ContainedState> containmentResults = new Dictionary<string, ContainedState>();
@@ -54,6 +85,7 @@ public static class SceneData
     public static int GetItemsValue() => itemWeightCap + itemWeightCap * MathFunc.Triangular(day) / 100;
     public static int GetNumberOfRooms() => numberOfRooms + day * 5;
     public static int GetMonsterDifficulty() => monsterDiffMap + MathFunc.Fibonacci(day);
+    public static int GetBuffDebuffMax() => buffCap + day;
     public static int GetTotalDataValue()
     {
         float fastScale = itemWeightCap * 0.5f;
@@ -83,8 +115,7 @@ public static class SceneData
             ContainedState state = npcInScene[i].contained;
             results[id] = state;
         }
-        //Debug.Log(missionToTransfer.debuffs.Count);
-        //Debug.Log(missionToTransfer.buffs.Count);
+
         containmentResults = new Dictionary<string, ContainedState>(results);
         day++;
     }
@@ -96,7 +127,7 @@ public static class SceneData
 
         lobbyMissions.Clear();
 
-        int availableMissions = SceneData.GetAvailableMissionCount();
+        int availableMissions = GetAvailableMissionCount();
 
         List<NPCEntry> monsterPool = new List<NPCEntry>(allMonsters);
         MathFunc.Shuffle(monsterPool);
@@ -105,13 +136,13 @@ public static class SceneData
         {
             MissionData mission = new MissionData();
 
-            mission.monsters = NPCSelectionFunc.TakeMonstersByDifficulty(monsterPool, SceneData.GetMonsterDifficulty());
+            mission.monsters = NPCSelectionFunc.TakeMonstersByDifficulty(monsterPool, GetMonsterDifficulty());
 
             var buffPool = NPCSelectionFunc.GetBuffPool();
-            mission.buffs = NPCSelectionFunc.TakeByDifficultyEnum(buffPool, SceneData.GetMonsterDifficulty());
+            mission.buffs = NPCSelectionFunc.TakeByDifficultyEnum(buffPool, GetBuffDebuffMax());
 
             var debuffPool = NPCSelectionFunc.GetDebuffPool();
-            mission.debuffs = NPCSelectionFunc.TakeByDifficultyEnum(debuffPool, SceneData.GetMonsterDifficulty());
+            mission.debuffs = NPCSelectionFunc.TakeByDifficultyEnum(debuffPool, GetBuffDebuffMax());
 
             lobbyMissions.Add(mission);
         }

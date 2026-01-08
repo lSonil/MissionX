@@ -25,12 +25,9 @@ public class NPCTheBreathingHall : NPCBase
     Doorway startingDoor;
     public void Start()
     {
-        containmentUnit = GetComponentInParent<Room>();
-        transform.SetParent(RoomGenerator.i.NPC.transform);
-        transform.position = Vector3.zero;
-        containmentUnit.transform.SetParent(transform);
         allDoors.Add(containmentUnit.startingDoor.connectedTo);
         unusedDoors.Add((containmentUnit.startingDoor.connectedTo, 100));
+
         BoxCollider colliders = containmentUnit.GetComponent<BoxCollider>();
         Vector3 resolved = SetToResolution(containmentUnit.transform.TransformPoint(colliders.center));
 
@@ -38,19 +35,21 @@ public class NPCTheBreathingHall : NPCBase
         startingPos = containmentUnit.transform.position;
         startingRot = containmentUnit.transform.rotation;
         startingDoor = containmentUnit.startingDoor.connectedTo;
+
         SpawnRooms();
+
     }
     public override void Update()
     {
-        if (containmentUnit.GetComponent<NPCBase>())
-        {
-            willChange = true;
-        }
-        if (willChange && !containmentUnit.GetComponent<NPCBase>())
-        {
-            willChange = false;
-            PlaceContainment();
-        }
+        //if (containmentUnit.GetComponent<NPCBase>())
+        //{
+        //    willChange = true;
+        //}
+        //if (willChange && !containmentUnit.GetComponent<NPCBase>())
+        //{
+        //    willChange = false;
+        //    PlaceContainment();
+        //}
     }
     public List<(Doorway, float)> GetDoors(Room room)
     {
@@ -221,7 +220,6 @@ public class NPCTheBreathingHall : NPCBase
                 }
 
             }
-
             allDoors.AddRange(newRoom.doors);
 
             int index = possibleRoomsToSpawn.FindIndex(entry => entry.room == listRoom);
@@ -256,21 +254,8 @@ public class NPCTheBreathingHall : NPCBase
         if (containmentUnit.startingDoor.GetComponentInChildren<TheBreeze>().IsVisible())
             return;
 
-        
-        foreach (Doorway door in containmentUnit.doors)
-        {
-            if (door.GetComponentInChildren<TheBreeze>().IsVisible())
-                return;
-        }
-
         if (containmentUnit.startingDoor.connectedTo)
             containmentUnit.startingDoor.Disconnect();
-
-        foreach (Doorway door in containmentUnit.doors)
-        {
-            if (door.connectedTo)
-                door.Disconnect();
-        }
 
         Vector3 sparePos = containmentUnit.transform.position;
         Quaternion spareRot = containmentUnit.transform.rotation;
@@ -300,6 +285,7 @@ public class NPCTheBreathingHall : NPCBase
             {
                 overlaps = true;
             }
+
             if (!overlaps)
             {
                 doorway.ConnectTo(containmentUnit.startingDoor);
@@ -333,6 +319,7 @@ public class NPCTheBreathingHall : NPCBase
         {
             PlaceContainment();
         }
+
         yield return new WaitForSeconds(.1f);
 
         if (maxNumberOfRooms > spawnedRooms.Count)

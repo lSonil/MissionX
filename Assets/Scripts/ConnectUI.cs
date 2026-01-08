@@ -22,8 +22,7 @@ public class ConnectUI : MonoBehaviour
     private IEnumerator HostFlow()
     {
         AsyncOperation op = SceneManager.LoadSceneAsync("Lobby", LoadSceneMode.Single);
-        while (!op.isDone){
-            print(1); yield return null; }
+        while (!op.isDone){; yield return null; }
         NetworkManager.Singleton.StartHost();
     }
     void ClientButtonOnClick()

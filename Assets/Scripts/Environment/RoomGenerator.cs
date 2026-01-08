@@ -251,6 +251,7 @@ public class RoomGenerator : MonoBehaviour
         {
             if (SceneData.GetNumberOfRooms() + bonusToCheck != spawnedRooms.Count)
             {
+                print("a");
                 Destroy(transform.parent);
             }
 

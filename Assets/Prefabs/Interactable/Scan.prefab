@@ -92,6 +92,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!135 &3391316111043259103
 SphereCollider:
@@ -131,7 +132,7 @@ MonoBehaviour:
     m_Bits: 2048
   obstructionLayers:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 0
   minSize: 0.1
   maxSize: 5
   growthSpeed: 2

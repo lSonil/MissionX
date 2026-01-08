@@ -29,9 +29,9 @@ public class Door : MonoBehaviour, IInteraction
             Vector3 toPlayer = GameObject.FindWithTag("Player").transform.position - transform.position;
             float dot = Vector3.Dot(transform.right, toPlayer); // right = hinge axis
 
-            float deltaZ = dot > 0 ? 90f : -90f;
+            float deltaY = dot > 0 ? 90f : -90f;
             Vector3 openEuler = transform.eulerAngles;
-            openEuler.z += deltaZ;
+            openEuler.y += deltaY;
             openRotation = Quaternion.Euler(openEuler);
 
             StartCoroutine(RotateTo(openRotation, 0.2f));

@@ -5,6 +5,7 @@ public class Item : MonoBehaviour, IInteraction
     public int itemId=0;
     public int itemTypeId=0;
     public int itemWeight =0;
+    public int dayCreated =0;
     [SerializeField] private string promptUse = "Pick Up";
     [SerializeField] private string promptPrimary = "";
     [SerializeField] private string promptSecundary = "";

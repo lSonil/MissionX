@@ -198,6 +198,8 @@ public class Terminal : MonoBehaviour
         switch (terminalType)
         {
             case TerminalType.LobyTerminal:
+                menuText += $"This week Quota: {SceneData.GetTotalDataValue()}\n";
+                menuText += $"Colected data: {SceneData.GetTotalDataValue()}\n";
                 menuText = "Choose your mission:\nType help for details\n";
 
                 for (int m = 0; m < SceneData.lobbyMissions.Count; m++)
