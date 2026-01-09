@@ -3,6 +3,8 @@ using UnityEngine;
 public class RubyPlacement : MonoBehaviour
 {
     public KeyCode placeKey = KeyCode.E;
+    public GameObject rubyPrefab; // Add reference to ruby prefab
+    public float heightOffset = 0.5f; // Height above placement zone
 
     private bool playerInside = false;
     private InventorySystem playerInventory;
@@ -46,26 +48,30 @@ public class RubyPlacement : MonoBehaviour
 
         if (ruby != null)
         {
-            // Re-enable physics components for placement
-            ruby.gameObject.layer = LayerMask.NameToLayer("Default");
+            // Destroy the inventory ruby
+            Destroy(ruby.gameObject);
             
-            Rigidbody rb = ruby.GetComponent<Rigidbody>();
+            // Instantiate a new ruby above the placement zone
+            Vector3 spawnPosition = transform.position + Vector3.up * heightOffset;
+            GameObject placedRuby = Instantiate(rubyPrefab, spawnPosition, transform.rotation);
+            
+            // Configure the placed ruby
+            placedRuby.transform.SetParent(transform);
+            placedRuby.gameObject.layer = LayerMask.NameToLayer("Default");
+            
+            Rigidbody rb = placedRuby.GetComponent<Rigidbody>();
             if (rb != null) 
             {
                 rb.isKinematic = true; // Keep it static when placed
             }
 
-            Collider col = ruby.GetComponent<Collider>();
+            Collider col = placedRuby.GetComponent<Collider>();
             if (col != null) 
             {
                 col.enabled = false; // Disable collision once placed
             }
-
-            // Place it visually in the placement zone
-            ruby.transform.SetParent(transform);
-            ruby.transform.localPosition = Vector3.zero;
-            ruby.transform.localRotation = Quaternion.identity;
-            ruby.gameObject.SetActive(true);
+            
+            placedRuby.SetActive(true);
             
             RitualManager.i.NotifyRubyPlaced(this);
             Debug.Log("Ruby placed!");

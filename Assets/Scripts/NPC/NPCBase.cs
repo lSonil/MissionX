@@ -27,7 +27,8 @@ public abstract class NPCBase : MonoBehaviour
 
     public Vector3 attckRange = Vector3.zero;
     public Transform viewPoint;
-    protected List<Transform> visibleTargets = new List<Transform>();
+    [HideInInspector]
+    public List<Transform> visibleTargets = new List<Transform>();
     protected List<Transform> isVisibleTo = new List<Transform>();
     private Animator animator;
 

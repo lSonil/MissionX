@@ -8,7 +8,8 @@ public class RitualManager : MonoBehaviour
     public int requiredRubies = 4;
     private HashSet<RubyPlacement> placedZones = new HashSet<RubyPlacement>();
 
-    public Collider containmentTrigger; 
+    public Collider containmentTrigger;
+    public bool ritualComplete { get; private set; } = false;
 
     private void Awake()
     {
@@ -32,6 +33,7 @@ public class RitualManager : MonoBehaviour
     private void ActivateContainmentZone()
     {
         Debug.Log("All rubies placed! Containment zone ACTIVE.");
+        ritualComplete = true;
         containmentTrigger.enabled = true;
     }
 }

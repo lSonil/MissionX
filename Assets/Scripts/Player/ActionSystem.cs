@@ -47,6 +47,7 @@ public class ActionSystem : MonoBehaviour
 
             case ActionType.Spawn:
                 Instantiate(objToSpawn, transform.position, transform.rotation);
+                Destroy(gameObject);
                 yield break;
         }
 

@@ -9,33 +9,40 @@ public class LastFollowState : IObserverState
     private Coroutine drainRoutine;
     private float timer = 0f;
     private float initialStoppingDistance;
+    private Vector3 lastKnownPosition;
 
     public void Enter(ObserverNPCRoam npc)
     {
         Debug.Log("Enter LastFollowState");
-        //npc.agent.speed *= 0.8f;
-        if (GridManager.i.GetPlayerTransform() == null)
-            return;
+      
+        lastKnownPosition = npc.agent.destination;
         initialStoppingDistance = npc.agent.stoppingDistance;
         npc.agent.stoppingDistance = 0.5f;
-        npc.agent.SetDestination(GridManager.i.GetPlayerTransform().position);
-        drainRoutine = npc.StartCoroutine(DrainSanityWhileLingering(npc));
+        npc.agent.SetDestination(npc.currentSeenPlayer.position != null ? npc.currentSeenPlayer.position : lastKnownPosition);
+        
+        if (npc.currentSeenPlayer != null)
+        {
+            drainRoutine = npc.StartCoroutine(DrainSanityWhileLingering(npc));
+        }
     }
 
     public void Execute(ObserverNPCRoam npc)
     {
         timer += Time.deltaTime;
+        
         if (npc.following)
         {
             npc.ChangeState(new FollowState());
             return;
         }
-        if (timer >= lingerTime || GridManager.i.GetPlayerTransform() == null)
+        
+        if (timer >= lingerTime)
         {
             npc.ChangeState(new PatrolState());
             return;
         }
-        npc.agent.SetDestination(GridManager.i.GetPlayerTransform().position);
+
+        npc.agent.SetDestination(npc.currentSeenPlayer.position != null ? npc.currentSeenPlayer.position : lastKnownPosition);
     }
 
     public void Exit(ObserverNPCRoam npc)
@@ -48,15 +55,17 @@ public class LastFollowState : IObserverState
 
     private IEnumerator DrainSanityWhileLingering(ObserverNPCRoam npc)
     {
-        SanitySystem sanity = GridManager.i.GetPlayerTransform().GetComponent<SanitySystem>();
+        if (npc.currentSeenPlayer == null)
+            yield break;
+            
+        SanitySystem sanity = npc.currentSeenPlayer.GetComponent<SanitySystem>();
         if (sanity == null)
             yield break;
 
-        while (true)
+        while (timer < lingerTime && npc.currentSeenPlayer != null)
         {
             sanity.DrainSanity(npc.sanityDrainRate);
             yield return new WaitForSeconds(1f);
         }
     }
-
 }

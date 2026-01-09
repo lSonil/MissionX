@@ -56,7 +56,8 @@ public class SanitySystem : MonoBehaviour
     public void OnPlayerLeaveSafeZone()
     {
         inSafeZone = false;
-        StopCoroutine(regenCoroutine);
+        if (regenCoroutine != null)
+            StopCoroutine(regenCoroutine);
     }
 
     private IEnumerator HandleRegeneration()
