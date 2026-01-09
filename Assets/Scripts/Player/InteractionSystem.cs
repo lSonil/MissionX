@@ -46,6 +46,8 @@ public class InteractionSystem : MonoBehaviour
                 interactable.Action(inventory.GetHeldItemId());
             }
         }
+        if (GetComponentInParent<PlayerCore>().ms.isBlocked) return;
+
         if (Input.GetKeyDown(KeyCode.Mouse1) && !GetComponent<MovementSystem>().isBlocked)
         {
             // Only allow scan if cooldown expired

@@ -11,6 +11,8 @@ public class PopUpHandle : MonoBehaviour
     {
         GameObject selectedPrefab = prefabKey switch
         {
+            "+" => prefabG,
+            "-" => prefabR,
             "r" => prefabR,
             "y" => prefabY,
             "g" => prefabG,
@@ -24,6 +26,8 @@ public class PopUpHandle : MonoBehaviour
         }
         string newMessage = prefabKey switch
         {
+            "+" => $"+ {message}",
+            "-" => $"- {message}",
             "r" => $"Status- NPC [{message}] ESCAPED",
             "y" => $"Status- NPC [{message}] CONTAINED",
             "g" => $"Status- ALL NPC CONTAINED",

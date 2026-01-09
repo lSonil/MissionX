@@ -135,26 +135,21 @@ public class SanitySystem : MonoBehaviour
         if (echo == null) echo = Camera.main.gameObject.AddComponent<AudioEchoFilter>();
 
         float targetCutoff = 500f;
-        float speed = 100f; // how fast to interpolate
+        float speed = 100f;
 
-        // Configure echo parameters
-        echo.delay = 200f;   // milliseconds between echoes
-        echo.decayRatio = 0.4f; // how quickly echoes fade
-        echo.wetMix = 0.5f;  // how much echo is mixed in
-        echo.dryMix = 1f;    // keep original sound present
+        echo.delay = 200f;
+        echo.decayRatio = 0.4f;
+        echo.wetMix = 0.5f;
+        echo.dryMix = 1f;
 
         while (currentSanity <= mildThreshold)
         {
-            // Muffle gradually
             filter.cutoffFrequency = Mathf.MoveTowards(filter.cutoffFrequency, targetCutoff, speed * Time.deltaTime);
-
-            // Optionally ramp echo intensity
             echo.wetMix = Mathf.MoveTowards(echo.wetMix, 0.7f, 0.2f * Time.deltaTime);
 
             yield return null;
         }
 
-        // Reset gradually
         while (filter.cutoffFrequency < 22000f || echo.wetMix > 0f)
         {
             filter.cutoffFrequency = Mathf.MoveTowards(filter.cutoffFrequency, 22000f, speed * Time.deltaTime);
@@ -172,33 +167,28 @@ public class SanitySystem : MonoBehaviour
 
     private IEnumerator TriggerMediumDistortion()
     {
-        // Ensure heartbeat is playing
         if (!heartbeatSource.isPlaying)
             heartbeatSource.Play();
 
-        // Start low
         heartbeatSource.volume = 0;
 
-        float targetVolume = 0.7f;   // how loud it should get
-        float fadeSpeed = 0.1f;      // how fast to ramp up
+        float targetVolume = 0.7f;
+        float fadeSpeed = 0.1f;
 
         while (currentSanity <= mediumThreshold)
         {
-            // Smoothly ramp volume up
             heartbeatSource.volume = Mathf.MoveTowards(
                 heartbeatSource.volume,
                 targetVolume,
                 fadeSpeed * Time.deltaTime
             );
 
-            // Safety check: if it ever stops, restart
             if (!heartbeatSource.isPlaying)
                 heartbeatSource.Play();
 
             yield return null;
         }
 
-        // Fade out when sanity recovers
         while (heartbeatSource.volume > 0f)
         {
             heartbeatSource.volume = Mathf.MoveTowards(
@@ -225,10 +215,9 @@ public class SanitySystem : MonoBehaviour
         if (postProcessVolume.profile.TryGet(out UnityEngine.Rendering.Universal.ColorAdjustments colorAdjust) &&
             postProcessVolume.profile.TryGet(out UnityEngine.Rendering.Universal.Vignette vignette))
         {
-            float hueRange = 90f;   // swing range for hue shift
-            float hueSpeed = 50f;   // oscillation speed
+            float hueRange = 90f;
+            float hueSpeed = 50f;
 
-            // Phase 1: ramp heartbeat, audio, saturation, vignette
             while (currentSanity <= severeThreshold && colorAdjust.saturation.value > targetSaturation + 0.1f)
             {
                 heartbeatSource.volume = Mathf.MoveTowards(heartbeatSource.volume, targetHeartbeat, speed * Time.deltaTime);
@@ -240,19 +229,16 @@ public class SanitySystem : MonoBehaviour
                 yield return null;
             }
 
-            // Phase 2: once saturation is maxed, start hue oscillation
             while (currentSanity <= severeThreshold)
             {
                 heartbeatSource.volume = Mathf.MoveTowards(heartbeatSource.volume, targetHeartbeat, speed * Time.deltaTime);
                 AudioListener.volume = Mathf.MoveTowards(AudioListener.volume, targetListenerVol, speed * Time.deltaTime);
 
-                // Oscillating hue shift
                 colorAdjust.hueShift.value = Mathf.PingPong(Time.time * hueSpeed, hueRange * 2f) - hueRange;
 
                 yield return null;
             }
 
-            // Reset gradually
             while (heartbeatSource.volume > 0.5f || AudioListener.volume < 1f ||
                    colorAdjust.saturation.value < 0f || vignette.intensity.value > 0f ||
                    Mathf.Abs(colorAdjust.hueShift.value) > 0.1f)
@@ -274,32 +260,10 @@ public class SanitySystem : MonoBehaviour
 
     private IEnumerator TriggerCriticalDistortion()
     {
-        Transform cam = Camera.main.transform;
-        Vector3 originalPos = cam.localPosition;
-
-        while (currentSanity <= criticalThreshold)
-        {
-            cam.localPosition = originalPos + Random.insideUnitSphere * 0.1f;
-
-            if (postProcessVolume.profile.TryGet(out UnityEngine.Rendering.Universal.LensDistortion lens))
-                lens.intensity.value = 0.5f;
-
-            yield return null;
-        }
-
-        // Reset
-        cam.localPosition = originalPos;
-        if (postProcessVolume.profile.TryGet(out UnityEngine.Rendering.Universal.LensDistortion resetLens))
-            resetLens.intensity.value = 0f;
-
-        criticalRoutine = null;
+        yield return null;
     }
     private void TriggerInsanity()
     {
-        Debug.Log("Player lost all sanity!");
-        if (playerHealth != null)
-        {
-            playerHealth.Die();
-        }
+        playerHealth.Die();
     }
 }

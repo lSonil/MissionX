@@ -4,13 +4,14 @@ public class Display : MonoBehaviour, IInteraction
 {
     public string interactionPromptText ="Use Terminal";
 
-    public Transform targetPosition; // Assign in Inspector or dynamically
+    public Transform targetPosition;
+    public Transform focusPosition;
     public string GetTextUse() => interactionPromptText;
     public string GetTextPrimary() => "";
     public string GetTextSecundary() => "";
     public void Action(int i = -1)
     {
-        GetComponent<Terminal>().enabled = !GetComponent<Terminal>().enabled;
+        GetComponent<Terminal>().TurnOn();
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player.GetComponent<MovementSystem>() == null) return;
         player.GetComponent<MovementSystem>().Block();
@@ -19,7 +20,7 @@ public class Display : MonoBehaviour, IInteraction
             player.GetComponent<InteractionSystem>().TurnOffFlashLight();
             player.transform.position = targetPosition.position;
 
-            Vector3 direction = transform.position - player.transform.position;
+            Vector3 direction = focusPosition.position - player.transform.position;
             direction.y = 0f; // flatten to horizontal plane
 
             if (direction.sqrMagnitude > 0.001f)
@@ -28,7 +29,6 @@ public class Display : MonoBehaviour, IInteraction
                 Quaternion faceLeft = faceForward * Quaternion.Euler(-80f, 0f, 0f);
                 player.GetComponent<MovementSystem>().body.transform.rotation = faceLeft;
             }
-
         }
     }
 

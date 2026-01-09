@@ -10,13 +10,11 @@ using UnityEditor.SceneManagement;
 public class Room : MonoBehaviour
 {
     public Doorway startingDoor;
-    [HideInInspector]
-    public List<GameObject> layouts;
+
     [HideInInspector]
     public List<Doorway> doors;
     [HideInInspector]
     public List<Transform> nodes;
-    [HideInInspector]
     public List<ItemSpawner> spawnPoints;
     public bool hall;
     public List<Transform> Rubies;
@@ -43,11 +41,11 @@ public class Room : MonoBehaviour
     public void PrepareDoors()
     {
         doors.Clear();
+        Transform allDoors = transform.Find("DOORS");
 
-        GameObject parent = GameObject.Find("Doors");
-        if (parent != null)
+        if (allDoors != null)
         {
-            foreach (Transform child in parent.transform)
+            foreach (Transform child in allDoors)
             {
                 Doorway d = child.GetComponent<Doorway>();
                 if (d != null && d != startingDoor)
@@ -58,134 +56,89 @@ public class Room : MonoBehaviour
     public void PrepareLayout()
     {
         surface = GetComponent<NavMeshSurface>();
+        Transform allNodes = transform.Find("DOORS");
 
-        layouts.Clear();
-
-        GameObject parent = GameObject.Find("Layouts");
-        if (parent != null)
+        if (allNodes != null)
         {
-            foreach (Transform child in parent.transform)
-                layouts.Add(child.gameObject);
-
-            int randomIndex = Random.Range(0, layouts.Count);
-
-            for (int i = 0; i < layouts.Count; i++)
-            {
-                layouts[i].SetActive(false);
-                break;
-            }
-        }
-        nodes.Clear();
-
-        parent = GameObject.Find("Nodes");
-        if (parent != null)
-        {
-            foreach (Transform child in parent.transform)
+            foreach (Transform child in allNodes)
                 nodes.Add(child);
         }
     }
+    
+    [Header("Collider Settings")]
+    public Vector3 colliderSize = new Vector3(2f, 2f, 2f);
+    public Vector3 startLocal = new Vector3(0f, 1f, 1f);
+    public float overlapScale = 0.6f;
+
     public void RegenerateColliders()
     {
-        // Remove only BoxColliders on this object (not children)
+        // Remove old colliders
         foreach (BoxCollider col in GetComponents<BoxCollider>())
         {
 #if UNITY_EDITOR
             Undo.DestroyObjectImmediate(col);
 #else
-            DestroyImmediate(col);
+        DestroyImmediate(col);
 #endif
         }
 
-        // Settings
-        Vector3 size = new Vector3(2f, 2f, 2f);
-        Vector3 startLocal = new Vector3(0f, 1f, 1f);
-        Vector3 startWorld = transform.TransformPoint(startLocal);
-
-        Vector3[] directions = new Vector3[]
-        {
-            new Vector3(2f, 0f, 0f),
-            new Vector3(-2f, 0f, 0f),
-            new Vector3(0f, 2f, 0f),
-            new Vector3(0f, -2f, 0f),
-            new Vector3(0f, 0f, 2f),
-            new Vector3(0f, 0f, -2f)
-        };
-
-        HashSet<Vector3> visited = new();
-        Queue<Vector3> toCheck = new();
         debugOverlapPositions.Clear();
         placedColliderBounds.Clear();
 
-        // Force initial collider placement at starting position
-        Bounds initialBounds = new Bounds(startWorld, size * 0.6f);
-        BoxCollider initialCol = gameObject.AddComponent<BoxCollider>();
-        initialCol.size = size;
-        initialCol.isTrigger = true;
-        initialCol.center = transform.InverseTransformPoint(startWorld);
-
-#if UNITY_EDITOR
-        Undo.RegisterCreatedObjectUndo(initialCol, "Add Collider");
-        PrefabUtility.RecordPrefabInstancePropertyModifications(initialCol);
-        EditorUtility.SetDirty(initialCol);
-#endif
-
-        placedColliderBounds.Add(initialBounds);
-        debugOverlapPositions.Add(startWorld);
-        visited.Add(startWorld);
-
-        foreach (Vector3 dir in directions)
+        // Find the "Structure" object
+        Transform structureRoot = transform.Find("Structure");
+        if (structureRoot == null)
         {
-            Vector3 nextWorld = startWorld + dir;
-            toCheck.Enqueue(nextWorld);
+            Debug.LogError("Room: No 'Structure' object found.");
+            return;
         }
 
-        int placedCount = 1;
+        // Track which snapped positions already have colliders
+        HashSet<Vector3> usedPositions = new HashSet<Vector3>();
 
-        while (toCheck.Count > 0)
+        // Your custom grid origin
+        Vector3 gridOrigin = new Vector3(0f, 1f, 1f);
+
+        foreach (Transform piece in structureRoot)
         {
-            Vector3 currentWorld = toCheck.Dequeue();
-            if (visited.Contains(currentWorld)) continue;
-            visited.Add(currentWorld);
-            debugOverlapPositions.Add(currentWorld);
+            if (piece == structureRoot)
+                continue;
 
-            Bounds candidateBounds = new Bounds(currentWorld, size * 0.6f);
+            Vector3 worldPos = piece.position;
 
-            bool overlapsExisting = false;
-            foreach (Bounds placed in placedColliderBounds)
-            {
-                if (candidateBounds.Intersects(placed))
-                {
-                    overlapsExisting = true;
-                    break;
-                }
-            }
+            print(worldPos);
+            // Snap adjusted position to your custom grid: origin (0,1,1), step 2
+            Vector3 snapped = new Vector3(
+                Mathf.Round((worldPos.x - gridOrigin.x) / 2f) * 2f + gridOrigin.x,
+                Mathf.Round((worldPos.y - gridOrigin.y) / 2f) * 2f + gridOrigin.y,
+                Mathf.Round((worldPos.z - gridOrigin.z) / 2f) * 2f + gridOrigin.z
+            );
 
-            if (OverlapsWithSelf(currentWorld, size * 0.6f) && !overlapsExisting)
-            {
-                BoxCollider newCol = gameObject.AddComponent<BoxCollider>();
-                newCol.size = size;
-                newCol.isTrigger = true;
-                newCol.center = transform.InverseTransformPoint(currentWorld);
-                placedCount++;
+            // Skip duplicates
+            if (usedPositions.Contains(snapped))
+                continue;
+
+            print(piece.gameObject.name);
+            print(snapped);
+            print("");
+            usedPositions.Add(snapped);
+
+            // Create collider
+            BoxCollider col = gameObject.AddComponent<BoxCollider>();
+            col.size = colliderSize;
+            col.isTrigger = true;
+            col.center = transform.InverseTransformPoint(snapped);
 
 #if UNITY_EDITOR
-                Undo.RegisterCreatedObjectUndo(newCol, "Add Collider");
-                PrefabUtility.RecordPrefabInstancePropertyModifications(newCol);
-                EditorUtility.SetDirty(newCol);
+            Undo.RegisterCreatedObjectUndo(col, "Add Collider");
+            PrefabUtility.RecordPrefabInstancePropertyModifications(col);
+            EditorUtility.SetDirty(col);
 #endif
 
-                placedColliderBounds.Add(candidateBounds);
-
-                foreach (Vector3 dir in directions)
-                {
-                    Vector3 nextWorld = currentWorld + dir;
-                    if (!visited.Contains(nextWorld))
-                    {
-                        toCheck.Enqueue(nextWorld);
-                    }
-                }
-            }
+            placedColliderBounds.Add(new Bounds(snapped, colliderSize));
+            debugOverlapPositions.Add(snapped);
         }
+
 
 #if UNITY_EDITOR
         PrefabUtility.RecordPrefabInstancePropertyModifications(this);
@@ -193,35 +146,6 @@ public class Room : MonoBehaviour
         EditorSceneManager.MarkSceneDirty(gameObject.scene);
 #endif
 
-        Debug.Log($"Collider regeneration complete for {gameObject.name}. Placed: {placedCount}");
-    }
-
-    bool OverlapsWithSelf(Vector3 worldCenter, Vector3 worldSize)
-    {
-        Bounds testBounds = new Bounds(worldCenter, worldSize);
-
-        foreach (MeshCollider meshCol in GetComponentsInChildren<MeshCollider>())
-        {
-            if (!meshCol.enabled || meshCol.sharedMesh == null) continue;
-
-            Bounds colBounds = meshCol.bounds;
-            if (testBounds.Intersects(colBounds))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-        Vector3 size = new Vector3(2f, 2f, 2f);
-
-        foreach (Vector3 pos in debugOverlapPositions)
-        {
-            Gizmos.DrawWireCube(pos, size);
-        }
+        Debug.Log($"Collider regeneration complete for {gameObject.name}. Placed: {usedPositions.Count}");
     }
 }

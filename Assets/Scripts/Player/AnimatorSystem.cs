@@ -14,7 +14,7 @@ public class AnimatorSystem : MonoBehaviour
         inventory = GetComponent<InventorySystem>();
     }
 
-    void Update()
+    public void NetworkUpdate()
     {
         if (movement == null || inventory == null) return;
         int itemType = GetItemType();
