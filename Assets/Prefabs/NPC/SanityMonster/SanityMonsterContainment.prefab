@@ -833,10 +833,7 @@ Transform:
   m_Children:
   - {fileID: 8811938523067074476}
   - {fileID: 1314725568319828347}
-  - {fileID: 3241837519042104940}
   - {fileID: 8432358026527477799}
-  - {fileID: 2524505763731848195}
-  - {fileID: 3346917508898109742}
   - {fileID: 7104783937809840038}
   - {fileID: 4762261284053824668}
   - {fileID: 552358116625615211}
@@ -845,29 +842,21 @@ Transform:
   - {fileID: 7098877574822629487}
   - {fileID: 7306887352699739500}
   - {fileID: 7178410950042948647}
-  - {fileID: 4396688254210004476}
   - {fileID: 5887730983240535567}
-  - {fileID: 4988146052553824150}
   - {fileID: 6656280460407897611}
   - {fileID: 6165183197128705632}
-  - {fileID: 3001695742319238784}
   - {fileID: 7664159735787189425}
   - {fileID: 8900059942862543875}
   - {fileID: 6658962048609992650}
   - {fileID: 733568171109222419}
   - {fileID: 7025993129087644766}
-  - {fileID: 3321985119909877455}
   - {fileID: 8512682305040536011}
   - {fileID: 5246464355624783418}
   - {fileID: 7331307191233024043}
-  - {fileID: 1776969066310233078}
   - {fileID: 8543925141486274179}
   - {fileID: 8877654608938560321}
   - {fileID: 767948370613842566}
   - {fileID: 1303327155543709655}
-  - {fileID: 3235845336439119529}
-  - {fileID: 4340517848562864868}
-  - {fileID: 4231470094279053241}
   - {fileID: 8152206580540536896}
   - {fileID: 6783194850965813273}
   - {fileID: 5558246817420851194}
@@ -1158,7 +1147,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Room
   startingDoor: {fileID: 7092487068211934008}
-  layouts: []
   doors: []
   nodes:
   - {fileID: 6687297673344578330}
@@ -1176,6 +1164,9 @@ MonoBehaviour:
   Rubies:
   - {fileID: 9056672846755672132}
   surface: {fileID: -4957614280397222358}
+  colliderSize: {x: 2, y: 2, z: 2}
+  startLocal: {x: 0, y: 1, z: 1}
+  overlapScale: 0.6
 --- !u!114 &-4957614280397222358
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2118,6 +2109,10 @@ PrefabInstance:
     - target: {fileID: 4714172009149357700, guid: 101334103b4707747a75160520e5d7f4, type: 3}
       propertyPath: m_Name
       value: SanityMonster
+      objectReference: {fileID: 0}
+    - target: {fileID: 4714172009149357700, guid: 101334103b4707747a75160520e5d7f4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9082673970721440969, guid: 101334103b4707747a75160520e5d7f4, type: 3}
       propertyPath: m_LocalPosition.x

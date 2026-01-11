@@ -13,7 +13,7 @@ public class ObserverNPCRoam : NPCBase
 
     [Header("Chase State")]
     public bool following;
-    public Transform currentSeenPlayer; // Dedicated reference for chase behavior
+    public Transform currentSeenPlayer;
 
     private IObserverState currentState;
 
@@ -35,7 +35,6 @@ public class ObserverNPCRoam : NPCBase
 
     void Update()
     {
-        // Priority 1: Check if contained (final state)
         if(contained != ContainedState.Free && currentState is not SanityContainedState)
         {
             ChangeState(new SanityContainedState());
@@ -43,7 +42,6 @@ public class ObserverNPCRoam : NPCBase
         }
         if (contained != ContainedState.Free) return;
         
-        // Priority 2: Check if ritual is complete (override all other states)
         if (RitualManager.i != null && RitualManager.i.ritualComplete && currentState is not GoToContainmentState)
         {
             ChangeState(new GoToContainmentState());
@@ -51,7 +49,7 @@ public class ObserverNPCRoam : NPCBase
         }
         
         if (GridManager.i == null || agent.pathPending) return;
-        RaycastCone(); // Visualize cone and update following status
+        RaycastCone();
         currentState?.Execute(this);
     }
 
@@ -110,7 +108,6 @@ public class ObserverNPCRoam : NPCBase
         if (!playerSeen)
         {
             following = false;
-            // Don't clear currentSeenPlayer here - keep it for LastFollowState
         }
     }
 }
