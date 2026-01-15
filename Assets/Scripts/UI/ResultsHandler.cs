@@ -1,10 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.EventSystems.EventTrigger;
 
 public class ResultsHandler : MonoBehaviour
 {
@@ -24,7 +22,7 @@ public class ResultsHandler : MonoBehaviour
 
         GameObject dayTotal = Instantiate(resultPrefab, container);
         TextMeshProUGUI dayTotalText = dayTotal.GetComponentInChildren<TextMeshProUGUI>();
-        dayTotalText.text = $"This day results: {SceneData.currentAllSavedItemWeight}/{SceneData.currentMissionItemWeight}";
+        dayTotalText.text = $"This day results: {SceneData.currentDayStoredItemWeight}/{SceneData.currentMissionItemWeight}";
 
         bool allFree = true;
         bool anyFree = false;

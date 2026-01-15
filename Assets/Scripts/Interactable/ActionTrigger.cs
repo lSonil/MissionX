@@ -20,9 +20,10 @@ public class ActionTrigger : MonoBehaviour, IInteraction
     public string GetTextPrimary() => "";
     public string GetTextSecundary() => "";
 
-    public void Action(int i)
+    public void Action(Item i = null, PlayerCore p = null)
     {
-        if (i == itemToUseID || itemToUseID == -1)
+        bool isAnItem = i == null ? false : i.itemId == itemToUseID;
+        if (isAnItem || itemToUseID == -1)
         {
             if (!running)
                 StartCoroutine(RunActions());

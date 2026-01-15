@@ -21,9 +21,9 @@ public class InventorySystem : MonoBehaviour
     {
         return items[currentIndex];
     }
-    public int GetHeldItemId()
+    public Item GetHeldItemId()
     {
-        return items[currentIndex] == null ? -1 : items[currentIndex].itemId;
+        return items[currentIndex] == null ? null : items[currentIndex];
     }
     public int GetItemType()
     {
@@ -77,12 +77,23 @@ public class InventorySystem : MonoBehaviour
         ReleaseItem(item);
 
         // REWORK!
-        if(RoomGenerator.i!=null)
+        if (RoomGenerator.i != null)
             item.transform.SetParent(RoomGenerator.i.FindClosestRoom().transform);
         else
             item.transform.SetParent(Object.FindObjectsByType<Room>(FindObjectsSortMode.None).FirstOrDefault().transform);
         item.transform.position = handTransform.position;
 
+        items[currentIndex] = null;
+        GetComponent<PlayerCore>().uis.UpdateInventoryUI(items, currentIndex);
+    }
+    public void DestroyCurrentItem()
+    {
+        Item item = items[currentIndex];
+        if (item == null) return;
+
+        ReleaseItem(item);
+        Destroy(item.gameObject);
+        
         items[currentIndex] = null;
         GetComponent<PlayerCore>().uis.UpdateInventoryUI(items, currentIndex);
     }

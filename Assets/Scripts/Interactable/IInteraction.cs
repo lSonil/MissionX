@@ -1,6 +1,6 @@
 public interface  IInteraction
 {
-    void Action(int i);
+    void Action(Item i, PlayerCore p);
     string GetTextUse();
     string GetTextPrimary();
     string GetTextSecundary();

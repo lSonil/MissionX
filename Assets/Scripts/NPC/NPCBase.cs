@@ -177,7 +177,7 @@ public abstract class NPCBase : MonoBehaviour
         worldCenter.z = Mathf.RoundToInt(worldCenter.z);
         return worldCenter;
     }
-    
+#if UNITY_EDITOR
     public void OnDrawGizmosSelected()
     {
         if (viewPoint == null || !debug) return;
@@ -214,6 +214,7 @@ public abstract class NPCBase : MonoBehaviour
         Handles.color = Color.blue;
         Handles.DrawWireArc(bodyReference.position, Vector3.up, Vector3.forward, 360, middleRange);
     }
+#endif
     public Vector3[] Arch(Vector3 directionA, Vector3 DirectionB, float width, float lentgh)
     {
         int segments = Mathf.Max(8, (int)attckRange.z); // ensure at least 8 segments

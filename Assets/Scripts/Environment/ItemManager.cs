@@ -5,6 +5,7 @@ using UnityEngine;
 public class ItemManager : MonoBehaviour
 {
     public List<ItemSpawner> spawnPoints;
+    public List<Item> spawnedItems;
     public static ItemManager i;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -33,6 +34,7 @@ public class ItemManager : MonoBehaviour
             {
                 if (spawnPoint.possibleItemsToSpawn.Contains(item))
                 {
+                    spawnedItems.Add(item);
                     spawnPointsCopy.Remove(spawnPoint);
                     spawnPoint.Spawn(item);
                     break;

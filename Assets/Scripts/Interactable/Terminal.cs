@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class Terminal : MonoBehaviour
 {
-
+    PlayerCore playerUsingTerminal;
     public TMP_InputField inputField;
     public TextMeshProUGUI terminalText;
     public float scrollSpeed = 900f; // pixels per wheel tick
@@ -100,24 +100,30 @@ public class Terminal : MonoBehaviour
 
     bool isTurnOn;
     bool changing;
-    public void TurnOn()
+    public PlayerCore TurnOn(PlayerCore p)
     {
+        PlayerCore uP;
         if (isTurnOn)
         {
             inputField.DeactivateInputField();
+            uP = playerUsingTerminal;
+            playerUsingTerminal =null;
         }
         else
         {
             inputField.Select();
             inputField.ActivateInputField();
+            playerUsingTerminal = p;
+            uP = p;
         }
         isTurnOn = !isTurnOn;
+        return uP;
     }
     public void HandleEscape()
     {
         inputField.DeactivateInputField();
         EventSystem.current.SetSelectedGameObject(null);
-        GetComponent<Display>().Action();
+        GetComponent<Display>().Action(null,playerUsingTerminal);
     }
 
     public void OnSubmit(string input)
@@ -198,9 +204,22 @@ public class Terminal : MonoBehaviour
         switch (terminalType)
         {
             case TerminalType.LobyTerminal:
-                menuText += $"This week Quota: {SceneData.GetTotalDataValue()}\n";
-                menuText += $"Colected data: {SceneData.GetTotalDataValue()}\n";
-                menuText = "Choose your mission:\nType help for details\n";
+
+                int remainder = SceneData.day % 4;
+
+                if (remainder == 0 && SceneData.day != 0)
+                {
+                    menuText += "Deadline today\n";
+                }
+                else
+                {
+                    int daysLeft = remainder == 0 ? 4 : 4 - remainder;
+                    menuText += $"Days until deadline: {daysLeft}\n\n";
+                }
+
+                menuText += $"This week Quota: {SceneData.currentStoredItemWeight}/{SceneData.GetTotalDataValue()}\n";
+                menuText += $"Colected data: {SceneData.GetTotalSavedDataValue()}\n";
+                menuText += "Choose your mission:\n\nType help for details\n\n";
 
                 for (int m = 0; m < SceneData.lobbyMissions.Count; m++)
                 {

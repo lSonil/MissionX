@@ -18,7 +18,7 @@ public class Item : MonoBehaviour, IInteraction
     public string GetTextPrimary() => promptPrimary;
     public string GetTextSecundary() => promptSecundary;
 
-    public void Action(int i)
+    public void Action(Item i = null, PlayerCore p = null)
     {
         InventorySystem inv = FindFirstObjectByType<InventorySystem>();
         if (inv != null)

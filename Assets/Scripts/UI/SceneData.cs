@@ -8,7 +8,13 @@ public enum Debuff
     NoFlashlight,
     NoJump
 }
-
+public enum Buff
+{
+    Halfquota,
+    DoubleJump,
+    Minimap,
+    Regen
+}
 public static class EffectWeights
 {
     private static readonly Dictionary<Enum, int> Weights = new()
@@ -31,16 +37,7 @@ public static class EffectWeights
         return Weights[effect];
     }
 }
-
-public enum Buff
-{
-    Halfquota,
-    DoubleJump,
-    Minimap,
-    Regen
-}
 [System.Serializable]
-
 public class BuffState
 {
     public Buff buff;
@@ -70,9 +67,8 @@ public static class SceneData
     public static int monsterDiffMap = 1;
     public static int buffCap = 1;
     public static int currentMissionItemWeight;
+    public static int currentDayStoredItemWeight;
     public static int currentStoredItemWeight;
-    public static int currentTodaySavedItemWeight;
-    public static int currentAllSavedItemWeight;
 
     public static bool showResults = false;
     public static Dictionary<string, ContainedState> containmentResults = new Dictionary<string, ContainedState>();
@@ -82,6 +78,15 @@ public static class SceneData
     public static List<NPCBase> npcInScene;
     public static List<MissionData> lobbyMissions = new List<MissionData>();
 
+    public static int GetTotalSavedDataValue()
+    {
+        int total = 0;
+        foreach(Item i in Storage.i.items)
+        {
+            total += i.itemWeight;
+        }
+        return total;
+    }
     public static int GetItemsValue() => itemWeightCap + itemWeightCap * MathFunc.Triangular(day) / 100;
     public static int GetNumberOfRooms() => numberOfRooms + day * 5;
     public static int GetMonsterDifficulty() => monsterDiffMap + MathFunc.Fibonacci(day);
@@ -107,6 +112,16 @@ public static class SceneData
     }
     public static void DayEnd()
     {
+        int total = 0;
+        foreach (Item i in ItemManager.i.spawnedItems)
+        {
+            if (Storage.i.items.Contains(i))
+            {
+                total += i.itemWeight;
+            }
+        }
+        currentDayStoredItemWeight = total;
+
         Dictionary<string, ContainedState> results = new Dictionary<string, ContainedState>();
 
         for (int i = 0; i < missionToTransfer.monsters.Count; i++)
@@ -117,7 +132,20 @@ public static class SceneData
         }
 
         containmentResults = new Dictionary<string, ContainedState>(results);
+        
         day++;
+
+        if(day%4==0)
+        {
+            if(currentStoredItemWeight >= GetTotalDataValue())
+            {
+                currentStoredItemWeight = 0;
+            }
+            else
+            {
+                Application.Quit();
+            }
+        }
     }
     public static void AssignMonstersToMissions(List<NPCEntry> allMonsters)
     {

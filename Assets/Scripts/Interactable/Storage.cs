@@ -5,49 +5,44 @@ using UnityEngine;
 
 public class Storage : MonoBehaviour
 {
-    public List<(Item, int, int)> items = new List<(Item, int, int)>();
+    public static Storage i;
+    public List<Item> items = new List<Item>();
+    private void Start()
+    {
+        i = this;
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Item"))
         {
-            if (!items.Contains((other.GetComponent<Item>(), other.GetComponent<Item>().dayCreated, other.GetComponent<Item>().itemWeight)))
+            if (!items.Contains(other.GetComponent<Item>()))
             {
                 other.transform.SetParent(transform);
-                int weight = other.GetComponent<Item>().itemWeight;
-                SceneData.currentAllSavedItemWeight += weight;
-                if(other.GetComponent<Item>().dayCreated==SceneData.day)
-                    SceneData.currentTodaySavedItemWeight += weight;
-                items.Add((other.GetComponent<Item>(), other.GetComponent<Item>().dayCreated, other.GetComponent<Item>().itemWeight));
+                items.Add(other.GetComponent<Item>());
                 foreach (PlayerCore p in LobyData.players)
                     p.uis.popUpHanle.ShowPopUp("+", $"+{other.GetComponent<Item>().itemWeight}");
-
             }
         }
     }
 
-    public void Remove((Item,int, int) i)
+    public void Remove(Item i)
     {
-        int weight = i.Item3;
-        SceneData.currentAllSavedItemWeight -= weight;
-        if (i.Item2 == SceneData.day)
-            SceneData.currentTodaySavedItemWeight += weight;
         items.Remove(i);
         foreach (PlayerCore p in LobyData.players)
-            p.uis.popUpHanle.ShowPopUp("-", $"-{weight}");
-
-
+            p.uis.popUpHanle.ShowPopUp("-", $"-{i.itemWeight}");
     }
+
     private void LateUpdate()
     {
         for (int i = items.Count - 1; i >= 0; i--)
         {
-            if (items[i].Item1 == null)
+            if (items[i] == null)
             {
-                Remove(items[i]);
+                items.Remove(items[i]);
                 continue;
             }
             else
-            if (items[i].Item1.gameObject.layer != LayerMask.NameToLayer("Item"))
+            if (items[i].gameObject.layer != LayerMask.NameToLayer("Item"))
             {
                 Remove(items[i]);
                 continue;
@@ -59,7 +54,7 @@ public class Storage : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Item"))
         {
-            Remove((other.GetComponent<Item>(), other.GetComponent<Item>().dayCreated, other.GetComponent<Item>().itemWeight));
+            Remove(other.GetComponent<Item>());
         }
     }
 }

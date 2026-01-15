@@ -30,12 +30,14 @@ public class InteractionSystem : MonoBehaviour
     }
     void Update()
     {
+
+        GetComponent<PlayerCore>().uis.EnableInteractButton(null);
+        if (GetComponent<PlayerCore>().ms.isBlocked) return;
         ScanForVisibleObjects();
 
         Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
         RaycastHit hit;
 
-        GetComponent<PlayerCore>().uis.EnableInteractButton(null);
         LayerMask interactionMask = LayerMask.GetMask("Interactable", "Item");
         if (Physics.Raycast(ray, out hit, range, interactionMask))
         {
@@ -43,7 +45,7 @@ public class InteractionSystem : MonoBehaviour
             GetComponent<PlayerCore>().uis.EnableInteractButton(interactable);
             if (Input.GetKeyDown(KeyCode.E) && interactable != null && !GetComponent<MovementSystem>().isBlocked)
             {
-                interactable.Action(inventory.GetHeldItemId());
+                interactable.Action(inventory.GetHeldItemId(),GetComponent<PlayerCore>());
             }
         }
         if (GetComponentInParent<PlayerCore>().ms.isBlocked) return;
