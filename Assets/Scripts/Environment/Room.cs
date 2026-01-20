@@ -11,7 +11,6 @@ public class Room : MonoBehaviour
 {
     public Doorway startingDoor;
 
-    [HideInInspector]
     public List<Doorway> doors;
     [HideInInspector]
     public List<Transform> nodes;

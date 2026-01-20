@@ -1,8 +1,11 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static UnityEngine.Rendering.DebugUI;
 
 public class Terminal : MonoBehaviour
 {
@@ -20,6 +23,12 @@ public class Terminal : MonoBehaviour
     public enum TerminalType { LobyTerminal, GameTerminal, Terminal }
     public TerminalType terminalType = TerminalType.Terminal;
 
+    [Header("Audio")]
+    public AudioSource audioSource;
+    public List<AudioClip> keyPressSounds = new List<AudioClip>();
+    public AudioClip error;
+
+    public GameObject wall;
     void Update()
     {
         if(!isTurnOn) return;
@@ -28,14 +37,27 @@ public class Terminal : MonoBehaviour
         {
             OnSubmit("esc");
         }
+        if (Input.anyKeyDown)
+        {
+            PlayRandomKeySound();
+        }
 
         HandleScrollWheel();
+
 
         if (terminalText != null && terminalText.text != lastText)
         {
             lastText = terminalText.text;
             AdjustContentHeight();
         }
+    }
+    private void PlayRandomKeySound()
+    {
+        if (audioSource == null || keyPressSounds == null || keyPressSounds.Count == 0)
+            return;
+
+        int index = UnityEngine.Random.Range(0, keyPressSounds.Count);
+        audioSource.PlayOneShot(keyPressSounds[index]);
     }
 
     void HandleScrollWheel()
@@ -62,6 +84,8 @@ public class Terminal : MonoBehaviour
 
     public void Start()
     {
+        inputField.interactable = false;
+
         if (scrollRect != null)
         {
             content = scrollRect.content;
@@ -105,23 +129,32 @@ public class Terminal : MonoBehaviour
         PlayerCore uP;
         if (isTurnOn)
         {
+            inputField.gameObject.SetActive(false);
             inputField.DeactivateInputField();
             uP = playerUsingTerminal;
             playerUsingTerminal =null;
+            inputField.interactable = false;
         }
         else
         {
+            inputField.gameObject.SetActive(true);
+            inputField.interactable = true;
             inputField.Select();
             inputField.ActivateInputField();
+            inputField.text = "";
+            ShowMainMenu();
             playerUsingTerminal = p;
             uP = p;
+
         }
         isTurnOn = !isTurnOn;
         return uP;
     }
     public void HandleEscape()
     {
-        inputField.DeactivateInputField();
+        terminalText.text = "";
+
+        inputField.interactable = false;
         EventSystem.current.SetSelectedGameObject(null);
         GetComponent<Display>().Action(null,playerUsingTerminal);
     }
@@ -159,6 +192,7 @@ public class Terminal : MonoBehaviour
             }
             else
             {
+                audioSource.PlayOneShot(error);
                 terminalText.text = "NoMissionSelected\n\nPress Enter to return.";
                 currentState = TerminalState.ErrorScreen;
             }
@@ -191,6 +225,7 @@ public class Terminal : MonoBehaviour
     }
     public void Go()
     {
+        wall.SetActive(!wall.activeInHierarchy);
         changing = true;
         terminalText.text = "Initiating jump sequence...\nLoading...";
         StartCoroutine(LobyManager.i.LoadMision());
@@ -216,6 +251,9 @@ public class Terminal : MonoBehaviour
                     int daysLeft = remainder == 0 ? 4 : 4 - remainder;
                     menuText += $"Days until deadline: {daysLeft}\n\n";
                 }
+                string selectedText = LobyManager.i.selectedMission > 0 ? LobyManager.i.selectedMission.ToString() : "N/A";
+                menuText += $"\nSelected mission: {selectedText}\n";
+
 
                 menuText += $"This week Quota: {SceneData.currentStoredItemWeight}/{SceneData.GetTotalDataValue()}\n";
                 menuText += $"Colected data: {SceneData.GetTotalSavedDataValue()}\n";
@@ -230,9 +268,7 @@ public class Terminal : MonoBehaviour
                         menuText += $"   Debuffs: {NPCSelectionFunc.FormatDebuffs(SceneData.lobbyMissions[m].debuffs)}\n";
                     }
                 }
-
-                string selectedText = LobyManager.i.selectedMission > 0 ? LobyManager.i.selectedMission.ToString() : "N/A";
-                menuText += $"\nSelected mission: {selectedText}";
+                menuText += $"\nSelected mission: {selectedText}\n";
                 menuText += "\nEnter a number:";
 
                 break;

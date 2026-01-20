@@ -1,5 +1,7 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class Door : MonoBehaviour, IInteraction
 {
@@ -11,8 +13,13 @@ public class Door : MonoBehaviour, IInteraction
     private Quaternion closedRotation;
     private Quaternion openRotation;
 
+    public AudioSource audioSource;
+    public AudioClip open;
+    public AudioClip close;
+
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         closedRotation = transform.rotation;
     }
     public string GetTextUse() => interactionPromptText;
@@ -35,9 +42,11 @@ public class Door : MonoBehaviour, IInteraction
             openRotation = Quaternion.Euler(openEuler);
 
             StartCoroutine(RotateTo(openRotation, 0.2f));
+            audioSource.PlayOneShot(open);
         }
         else
         {
+            audioSource.PlayOneShot(close);
             StartCoroutine(RotateTo(closedRotation, 0.2f));
         }
 

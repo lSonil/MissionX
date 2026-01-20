@@ -90,8 +90,11 @@ public class InteractionSystem : MonoBehaviour
     }
     public void TurnOffFlashLight()
     {
-        GetComponent<AudioSystem>().PlayFlashlight();
-        flashLight.SetActive(false);
+        if (flashLight.gameObject.activeInHierarchy)
+        {
+            GetComponent<AudioSystem>().PlayFlashlight();
+            flashLight.SetActive(false);
+        }
     }
     public void SetFlashLight()
     {

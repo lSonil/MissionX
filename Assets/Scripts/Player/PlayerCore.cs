@@ -4,6 +4,8 @@ using UnityEngine;
 public class PlayerCore : NetworkBehaviour
 {
     [HideInInspector]
+    public CharacterController cc;
+    [HideInInspector]
     public MovementSystem ms;
     [HideInInspector]
     public SanitySystem ss;
@@ -20,8 +22,11 @@ public class PlayerCore : NetworkBehaviour
     [HideInInspector]
     public UISystem uis;
     public GameObject body;
+    bool dead;
+    Transform focus;
     private void Start()
     {        
+        cc = GetComponent<CharacterController>();
         ms = GetComponent<MovementSystem>();
         ss = GetComponent<SanitySystem>();
         ivs = GetComponent<InventorySystem>();
@@ -35,8 +40,14 @@ public class PlayerCore : NetworkBehaviour
     public void Update()
     {
         if (!IsOwner) return;
+        if(dead)
+        {
+            transform.LookAt(focus);
+            return;
+        }
         ms.NetworkUpdate();
         ans.NetworkUpdate();
+
     }
     public override void OnNetworkSpawn() {
         if (IsServer) LobyData.Register(this);
@@ -47,6 +58,7 @@ public class PlayerCore : NetworkBehaviour
     }
     public void GetReady(Transform pos)
     {
+        cc.enabled = true;
         ms.enabled = true;
         ss.enabled = true;
         ivs.enabled = true;
@@ -58,9 +70,11 @@ public class PlayerCore : NetworkBehaviour
         body.SetActive(true);
         transform.position = pos.position;
         transform.rotation = Quaternion.identity;
+        dead = false;
     }
-    public void Stop(Transform focus,Transform pos = null)
+    public void Stop(Transform theFocus,Transform pos = null)
     {
+        cc.enabled = false;
         ms.enabled = false;
         ss.enabled = false;
         ivs.enabled = false;
@@ -71,7 +85,8 @@ public class PlayerCore : NetworkBehaviour
         uis.enabled = false;
 
         if(pos != null) transform.position = pos.position;
-        transform.LookAt(focus);
+        focus = theFocus;
+        dead = true;
         body.SetActive(false);
     }
 
