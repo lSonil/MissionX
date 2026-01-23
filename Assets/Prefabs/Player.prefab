@@ -2225,7 +2225,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 79553aae5e281d54aad3112f85310831, type: 2}
+  - {fileID: 2100000, guid: 16e41574c4ca30345823c7fbd4072726, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3223,7 +3223,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 14804491
+  GlobalObjectIdHash: 2667620608
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -3317,14 +3317,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6f44ff2cb1b355409f676ce7ff06ee5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 5
-  crouchSpeed: 2
+  walkSpeed: 2
   jumpHeight: 0.5
   gravity: -9.81
   mouseSensitivity: 150
   body: {fileID: 4943009409938797529}
-  crouchHeight: 0.45
-  standingHeight: 0.9
+  sprintSpeed: 5
+  sprintCounter: 10
+  maxSprint: 10
+  depleteRate: 2
+  regenRate: 0.5
   controller: {fileID: 0}
   isBlocked: 0
 --- !u!114 &7255588510697030770
@@ -3407,6 +3409,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   maxHealth: 10
   ragdollPrefab: {fileID: 8080793605942164656, guid: 7e6a9b0be02c6ca488bc5ee7bbcdab50, type: 3}
+  isDead: 0
   error: {fileID: 6323878080233144438}
 --- !u!114 &3921213306517485795
 MonoBehaviour:

@@ -6,7 +6,6 @@ public class MovementSystem : MonoBehaviour
 {
     [Header("Movement Settings")]
     public float walkSpeed = 5f;
-    public float crouchSpeed = 2.5f;
     public float jumpHeight = 2f;
     public float gravity = -9.81f;
 
@@ -15,9 +14,13 @@ public class MovementSystem : MonoBehaviour
     public Transform body;
     private float xRotation = 0f;
 
-    [Header("Crouch Settings")]
-    public float crouchHeight = .5f;
-    public float standingHeight = 1f;
+    [Header("Sprinting Settings")]
+    public float sprintSpeed = 8f; // Changed from crouchSpeed
+    public float sprintCounter = 10f; // Your counter of 10
+    public float maxSprint = 10f;
+    public float depleteRate = 0.5f; // Deplete by 0.5
+    public float regenRate = 0.3f;   // Optional: regen when not sprinting
+    private bool isSprinting = false;
 
     public CharacterController controller;
     private Vector3 velocity;
@@ -38,7 +41,7 @@ public class MovementSystem : MonoBehaviour
 
         MouseLook();
         MovePlayer();
-        HandleCrouch();
+        HandleSprint();
 
         if (Input.GetKeyDown(KeyCode.Keypad1))
         {
@@ -54,7 +57,6 @@ public class MovementSystem : MonoBehaviour
     }
     void MovePlayer()
     {
-        // Ground check
         isGrounded = controller.isGrounded;
         if (isGrounded && velocity.y < 0)
         {
@@ -66,27 +68,29 @@ public class MovementSystem : MonoBehaviour
             velocity.y = -2f;
         }
 
-        // Get input
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
-        if ((moveX != 0 || moveZ != 0) && footstepRoutine == null && isGrounded)
+
+        bool isMoving = (moveX != 0 || moveZ != 0);
+
+        if (isMoving && footstepRoutine == null && isGrounded)
         {
             footstepRoutine = StartCoroutine(FootstepLoop());
         }
 
         Vector3 move = transform.right * moveX + transform.forward * moveZ;
-        float currentSpeed = isCrouching && isGrounded ? crouchSpeed : walkSpeed;
+
+        float currentSpeed = (isSprinting && sprintCounter > 0) ? sprintSpeed : walkSpeed;
+
         controller.Move(move * currentSpeed * Time.deltaTime);
 
-        // Jump
-        if (Input.GetButtonDown("Jump") && isGrounded && !isCrouching)
+        if (Input.GetButtonDown("Jump") && isGrounded)
         {
             inAir = true;
             GetComponent<AudioSystem>().PlayJumpEffect();
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
 
-        // Apply gravity
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
     }
@@ -102,10 +106,14 @@ public class MovementSystem : MonoBehaviour
             if ((moveX == 0f && moveZ == 0f) || !isGrounded)
             {
                 footstepRoutine = null;
-                yield break; 
+                yield break;
             }
+
             audio.PlayFootstep();
-            yield return new WaitForSeconds(0.3f);
+
+            float stepDelay = isSprinting ? 0.3f : 0.5f;
+
+            yield return new WaitForSeconds(stepDelay);
         }
     }
 
@@ -121,18 +129,22 @@ public class MovementSystem : MonoBehaviour
         transform.Rotate(Vector3.up * mouseX);
     }
 
-    void HandleCrouch()
+    void HandleSprint()
     {
-        if (Input.GetKeyDown(KeyCode.LeftControl))
+        if (Input.GetKey(KeyCode.LeftShift) && sprintCounter > 0)
         {
-            isCrouching = true;
-            controller.height = crouchHeight;
+            isSprinting = true;
+            sprintCounter -= depleteRate * Time.deltaTime;
         }
-        else if (Input.GetKeyUp(KeyCode.LeftControl))
+        else
         {
-            isCrouching = false;
-            controller.height = standingHeight;
+            isSprinting = false;
+            if (sprintCounter < maxSprint)
+                sprintCounter += regenRate * Time.deltaTime;
         }
+
+        // Clamp to ensure it doesn't go below 0
+        sprintCounter = Mathf.Clamp(sprintCounter, 0, maxSprint);
     }
     public void TiltOnDamage(float tiltAmount = 10f, float duration = 0.2f)
     {
