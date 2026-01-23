@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class InteractionSystem : MonoBehaviour
 {
@@ -22,7 +23,6 @@ public class InteractionSystem : MonoBehaviour
 
     public float scanCooldown = 2f;   // cooldown duration
     private float lastScanTime = -999f; // track last scan time
-
     private InventorySystem inventory;
     private void Start()
     {
@@ -88,6 +88,7 @@ public class InteractionSystem : MonoBehaviour
             inventory.Scroll(scroll);
         }
     }
+
     public void TurnOffFlashLight()
     {
         if (flashLight.gameObject.activeInHierarchy)

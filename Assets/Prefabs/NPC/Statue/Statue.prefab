@@ -109,9 +109,10 @@ MonoBehaviour:
   asr: {fileID: 0}
   attckRange: {x: 0.5, y: 2, z: 20}
   viewPoint: {fileID: 8949350271797635255}
+  visibleTargets: []
   stunned: 0
   debug: 1
-  speed: {x: 0.02, y: 0.02}
+  speed: {x: 1, y: 10}
   isInsideContainment: {fileID: 0}
 --- !u!65 &3066004937644268677
 BoxCollider:

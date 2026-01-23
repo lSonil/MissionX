@@ -11,6 +11,7 @@ public class Room : MonoBehaviour
 {
     public Doorway startingDoor;
 
+    [HideInInspector]
     public List<Doorway> doors;
     [HideInInspector]
     public List<Transform> nodes;
@@ -35,32 +36,6 @@ public class Room : MonoBehaviour
         {
             if (sp.gameObject.activeInHierarchy)
                 spawnPoints.Add(sp);
-        }
-    }
-    public void PrepareDoors()
-    {
-        doors.Clear();
-        Transform allDoors = transform.Find("DOORS");
-
-        if (allDoors != null)
-        {
-            foreach (Transform child in allDoors)
-            {
-                Doorway d = child.GetComponent<Doorway>();
-                if (d != null && d != startingDoor)
-                    doors.Add(d);
-            }
-        }
-    }
-    public void PrepareLayout()
-    {
-        surface = GetComponent<NavMeshSurface>();
-        Transform allNodes = transform.Find("DOORS");
-
-        if (allNodes != null)
-        {
-            foreach (Transform child in allNodes)
-                nodes.Add(child);
         }
     }
     
@@ -146,5 +121,30 @@ public class Room : MonoBehaviour
 #endif
 
         Debug.Log($"Collider regeneration complete for {gameObject.name}. Placed: {usedPositions.Count}");
+        doors.Clear();
+        Transform allDoors = transform.Find("Doors");
+        print(allDoors.parent.name);
+        if (allDoors != null)
+        {
+            foreach (Transform child in allDoors)
+            {
+                print(child.name);
+                Doorway d = child.GetComponent<Doorway>();
+                print(d);
+                print(child != startingDoor.transform);
+
+                if (d != null && child != startingDoor.transform)
+                    doors.Add(d);
+            }
+        }
+        surface = GetComponent<NavMeshSurface>();
+        Transform allNodes = transform.Find("Nodes");
+
+        if (allNodes != null)
+        {
+            foreach (Transform child in allNodes)
+                nodes.Add(child);
+        }
     }
+
 }

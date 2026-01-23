@@ -18,6 +18,7 @@ public class UISystem : MonoBehaviour
     public GameObject usePrimaryButton;
     public GameObject useSecundaryButton;
     public GameObject dropButton;
+    public GameObject loadingScreen;
     public PopUpHandle popUpHanle;
 
     [Header("Inventory UI")]
@@ -30,6 +31,7 @@ public class UISystem : MonoBehaviour
     {
         currentDay.text = SceneData.day.ToString();
         results.gameObject.SetActive(false);
+        loadingScreen.gameObject.SetActive(false);
 
         if (damageOverlay != null)
         {
@@ -53,6 +55,36 @@ public class UISystem : MonoBehaviour
         }
 
         fadeRoutine = null;
+    }
+    public IEnumerator LoadingRoutine()
+    {
+        loadingScreen.SetActive(true);
+
+        yield return StartCoroutine(Fade(0, 1));
+
+        while (!RoomGenerator.generated)
+        {
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(2.0f);
+
+        yield return StartCoroutine(Fade(1, 0));
+
+        loadingScreen.SetActive(false);
+    }
+
+    private IEnumerator Fade(float start, float end)
+    {
+        float elapsed = 0;
+        Image fadeImage = loadingScreen.GetComponent<Image>();
+        while (elapsed < 0.2f)
+        {
+            elapsed += Time.deltaTime;
+            float newAlpha = Mathf.Lerp(start, end, elapsed / .2f);
+            fadeImage.color = new Color(fadeImage.color.r, fadeImage.color.g, fadeImage.color.b, newAlpha);
+            yield return null;
+        }
     }
     private IEnumerator StunFlash()
     {

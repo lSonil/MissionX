@@ -118,6 +118,12 @@ public class InventorySystem : MonoBehaviour
     {
         if (item == null) return;
 
+        Rigidbody rb = item.GetComponent<Rigidbody>();
+        if (rb != null) rb.isKinematic = false;
+
+        Collider col = item.GetComponent<Collider>();
+        if (col != null) col.enabled = true;
+        
         if (item.transform.parent == handTransform)
         {
             item.gameObject.layer = 11;
@@ -125,11 +131,6 @@ public class InventorySystem : MonoBehaviour
             item.transform.SetParent(null);
             item.gameObject.SetActive(true);
 
-            Rigidbody rb = item.GetComponent<Rigidbody>();
-            if (rb != null) rb.isKinematic = false;
-
-            Collider col = item.GetComponent<Collider>();
-            if (col != null) col.enabled = true;
         }
     }
     public void Scroll(float scroll)

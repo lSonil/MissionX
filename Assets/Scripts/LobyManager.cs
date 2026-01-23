@@ -32,7 +32,11 @@ public class LobyManager : MonoBehaviour
 
         if (!inMission)
         {
-            yield return new WaitForSeconds(1f);
+            foreach (PlayerCore p in LobyData.players)
+            {
+                StartCoroutine(p.uis.LoadingRoutine());
+            }
+            yield return new WaitForSeconds(2f);
 
             missionManager = Instantiate(missionManagerPrefab, Vector3.zero, Quaternion.identity);
 

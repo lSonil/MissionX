@@ -7,29 +7,19 @@ public class HealthSystem : MonoBehaviour
     [SerializeField] private GameObject ragdollPrefab;
 
     private int currentHealth;
-    private bool isDead;
+    public bool isDead;
     public GameObject error;
 
     public bool IsDead() => isDead;
     private void Start()
     {
         currentHealth = maxHealth;
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
-    private void OnDestroy()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        Heal();
     }
 
     public int CurrentHealth() => currentHealth;
     public void Heal()
     {
+        isDead = false;
         currentHealth = maxHealth;
     }
 

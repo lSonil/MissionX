@@ -68,6 +68,7 @@ public class PlayerCore : NetworkBehaviour
         aus.enabled = true;
         uis.enabled = true;
         body.SetActive(true);
+        hs.Heal();
         transform.position = pos.position;
         transform.rotation = Quaternion.identity;
         dead = false;

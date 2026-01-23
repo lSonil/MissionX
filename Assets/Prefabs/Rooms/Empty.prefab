@@ -108,7 +108,7 @@ GameObject:
   - component: {fileID: 710157383412612060}
   - component: {fileID: 8175912968028434839}
   - component: {fileID: 1529952543048039811}
-  - component: {fileID: 101932423839692807}
+  - component: {fileID: 2820102367410990950}
   m_Layer: 0
   m_Name: Empty
   m_TagString: Untagged
@@ -148,12 +148,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Room
   startingDoor: {fileID: 1280083403403411690}
-  layouts: []
   doors:
   - {fileID: 4851430736713377347}
   - {fileID: 4191162947600819174}
   - {fileID: 1035262775908577483}
-  nodes: []
+  nodes:
+  - {fileID: 5260445041148638305}
+  - {fileID: 5260445041148638305}
   spawnPoints: []
   hall: 1
   Rubies:
@@ -194,7 +195,7 @@ MonoBehaviour:
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 0}
   m_BuildHeightMesh: 0
---- !u!65 &101932423839692807
+--- !u!65 &2820102367410990950
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

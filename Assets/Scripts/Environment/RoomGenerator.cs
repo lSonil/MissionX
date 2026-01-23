@@ -25,6 +25,7 @@ public class RoomGenerator : MonoBehaviour
     public ItemManager itemManager;
     public List<NPCBase> list;
     public static RoomGenerator i;
+    public static bool generated;
     int bonusToCheck;
     private void Awake()
     {
@@ -32,6 +33,7 @@ public class RoomGenerator : MonoBehaviour
     }
     private void Start()
     {
+        generated = false;
         if (debug)
         {
             bonusToCheck = 1;
@@ -120,7 +122,6 @@ public class RoomGenerator : MonoBehaviour
                     newRoom = Instantiate(listRoom);
                     newDoor = shuffledDoors[0].Item1;
 
-                    newRoom.PrepareDoors();
 
                     if (copyOfShuffledRooms[0].amount != 0)
                     {
@@ -183,7 +184,6 @@ public class RoomGenerator : MonoBehaviour
 
                 newRoom = Instantiate(listRoom);
                 newRoom.CollectSpawnPoints();
-                newRoom.PrepareLayout();
                 newRoom.transform.position = newDoor.transform.position;
                 newRoom.transform.rotation = newDoor.transform.rotation;
                 newRoom.transform.SetParent(bonusRoomCount == 0 ? transform : NPC.transform);
@@ -279,6 +279,7 @@ public class RoomGenerator : MonoBehaviour
             
             gridManager.GridReady(grid);
             itemManager.ItemReady(spawnedRooms);
+            generated = true;
         }
     }
     public Transform FindClosestRoom()

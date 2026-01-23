@@ -29,6 +29,7 @@ public class Terminal : MonoBehaviour
     public AudioClip error;
 
     public GameObject wall;
+    public List<GameObject> addons;
     void Update()
     {
         if(!isTurnOn) return;
@@ -130,6 +131,10 @@ public class Terminal : MonoBehaviour
         if (isTurnOn)
         {
             inputField.gameObject.SetActive(false);
+            foreach (GameObject add in addons)
+            {
+                add.SetActive(false);
+            }
             inputField.DeactivateInputField();
             uP = playerUsingTerminal;
             playerUsingTerminal =null;
@@ -138,6 +143,10 @@ public class Terminal : MonoBehaviour
         else
         {
             inputField.gameObject.SetActive(true);
+            foreach (GameObject add in addons)
+            {
+                add.SetActive(true);
+            }
             inputField.interactable = true;
             inputField.Select();
             inputField.ActivateInputField();
@@ -230,6 +239,7 @@ public class Terminal : MonoBehaviour
         terminalText.text = "Initiating jump sequence...\nLoading...";
         StartCoroutine(LobyManager.i.LoadMision());
         terminalType = TerminalType.LobyTerminal == terminalType ? TerminalType.GameTerminal : TerminalType.LobyTerminal;
+        print(terminalType);
     }
     public void ShowMainMenu()
     {

@@ -710,6 +710,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 5a4c288e3ee9be747be78e44f8b86e8e, type: 3}
   - {fileID: 8300000, guid: cb5c57e8bcb24484a8e1485826cd334a, type: 3}
   error: {fileID: 8300000, guid: 0c67e042d49f3d74388b34499163e2d9, type: 3}
+  wall: {fileID: 0}
+  addons:
+  - {fileID: 8282948214876594808}
+  - {fileID: 4959817810677014139}
 --- !u!114 &5135921502473914893
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1363,6 +1367,8 @@ MonoBehaviour:
   audioSource: {fileID: 0}
   keyPressSounds: []
   error: {fileID: 0}
+  wall: {fileID: 0}
+  addons: []
 --- !u!1 &8068508904779245711
 GameObject:
   m_ObjectHideFlags: 0
